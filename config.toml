@@ -1,0 +1,8 @@
+baseURL = "https://www.jvandertil.nl"
+languageCode = "en-us"
+
+[params]
+	useSummaryIfNoDescription = true
+
+	title = "Jos van der Til"
+	subtitle = "Software Engineer"

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+    <header>
+        {{ with .Site.Params.title }}
+        <p class="blog-title"><a href="{{ $.Site.BaseURL }}">{{ . | markdownify }}</a></p>
+        {{ end }}
+        {{ with .Site.Params.subtitle }}
+        <p class="blog-subtitle">{{ . | markdownify }}</p>
+        {{ end }}
+    </header>
+    <nav>
+
+    </nav>
+    <main>
+        {{ block "main" . }}{{ end }}
+    </main>
+</body>
+</html>
