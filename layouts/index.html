@@ -1,8 +1,8 @@
 {{ define "main" }}
-    {{ $paginator := .Paginate .Data.Pages.ByDate.Reverse }}
+    {{ $pages := where .Site.RegularPages "Section" "posts" }} 
+    {{ $paginator := .Paginate $pages.ByDate.Reverse }}
     {{ range $paginator.Pages }}
-        {{ if not .Params.hide }}
-            {{ .Render "summary" }}
-        {{ end }}
+        {{ .Render "summary" }}
     {{ end }}
+    {{ template "_internal/pagination.html" . }}
 {{ end }}   
