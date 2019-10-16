@@ -1,0 +1,38 @@
+@import "bootstrap-4.3.1/bootstrap";
+
+body > main {
+    @extend .container;
+}
+
+@media (max-width: 991.98px) {
+    body > header > nav {
+        align-content: center;
+    }
+}
+
+body > header {
+    padding-bottom:8px;
+
+    nav {
+        @extend .navbar;
+        @extend .navbar-expand-lg;
+        @extend .navbar-light;
+        @extend .bg-light;
+
+        ul {
+            @extend .navbar-nav;
+
+            li {
+                @extend .nav-item;
+
+                a {
+                    @extend .nav-link;
+                }
+            }
+        }
+    }
+}
+
+body > footer {
+    text-align: center;
+}

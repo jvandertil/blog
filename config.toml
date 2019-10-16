@@ -2,7 +2,24 @@ baseURL = "https://www.jvandertil.nl"
 languageCode = "en-us"
 
 [params]
+	author = "Jos van der Til"
+
 	useSummaryIfNoDescription = true
 
 	title = "Jos van der Til"
 	subtitle = "Software Engineer"
+
+[menu]
+
+	[[menu.main]]
+		identifier = "posts"
+		name = "This is the blog section"
+		title = "Posts"
+		url = "/posts/"
+		weight = -110
+
+	[[menu.main]]
+		identifier = "about"
+		name = "About"
+		title = "About"
+		url = "/about/"

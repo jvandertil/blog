@@ -1,8 +1,12 @@
 {{ define "main" }}
-    {{ $pages := where .Site.RegularPages "Section" "posts" }} 
+<article>
+    {{ $pages := where .Site.RegularPages "Section" "posts" }}
     {{ $paginator := .Paginate $pages.ByDate.Reverse }}
     {{ range $paginator.Pages }}
-        {{ .Render "summary" }}
+    {{ .Render "summary" }}
     {{ end }}
-    {{ template "_internal/pagination.html" . }}
-{{ end }}   
+    <nav>
+        {{ template "_internal/pagination.html" . }}
+    </nav>
+</article>
+{{ end }}
