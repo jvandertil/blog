@@ -74,35 +74,35 @@ public sealed class FdbFixture : IAsyncLifetime
 
 Then create a Collection to indicate the dependency on the fixture:
 ```cs
-    using Xunit;
+using Xunit;
 
-    [CollectionDefinition("IntegrationTest")]
-    public class IntegrationTestCollection : ICollectionFixture<FdbFixture>
-    {
-    }
+[CollectionDefinition("IntegrationTest")]
+public class IntegrationTestCollection : ICollectionFixture<FdbFixture>
+{
+}
 ```
 
 And use it in your integration tests:
 ```cs
-    using Xunit;
+using Xunit;
 
-    [Collection("IntegrationTest")]
-    public class FdbTest
+[Collection("IntegrationTest")]
+public class FdbTest
+{
+    private readonly FdbFixture _fdb;
+
+    public FdbTest(FdbFixture fdb)
     {
-        private readonly FdbFixture _fdb;
-
-        public FdbTest(FdbFixture fdb)
-        {
-            _fdb = fdb;
-        }
-
-        [Fact]
-        public void Test()
-        {
-            // Use the _fdb.ClusterFile to connect to the FoundationDB server.
-            Assert.NotNull(_fdb.ClusterFile);
-        }
+        _fdb = fdb;
     }
+
+    [Fact]
+    public void Test()
+    {
+        // Use the _fdb.ClusterFile to connect to the FoundationDB server.
+        Assert.NotNull(_fdb.ClusterFile);
+    }
+}
 ```
 
 And with that you can write integration tests for FoundationDB that should run in most places.
