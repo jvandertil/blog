@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -7,7 +7,7 @@
     {{ $style := resources.Get "css/main.scss" | resources.ToCSS }}
     <link rel="stylesheet" href="{{ $style.Permalink }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" integrity="sha256-iAmWN8uaUdN6Y9FCf8srQdrx3eVVwouJ5QtEiyuTQ6A=" crossorigin="anonymous" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
 </head>
 <body>
     <header>
@@ -29,6 +29,7 @@
         <p>&copy; {{now.Format "2006"}} <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>. Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.js" integrity="sha256-2JRzNxMJiS0aHOJjG+liqsEOuBb6++9cY4dSOyiijX4=" crossorigin="anonymous" async></script>
     {{ partial "highlightjs" }}
 </body>
 </html>

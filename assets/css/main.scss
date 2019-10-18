@@ -4,14 +4,8 @@ body > main {
     @extend .container;
 }
 
-@media (max-width: 991.98px) {
-    body > header > nav {
-        align-content: center;
-    }
-}
-
 body > header {
-    padding-bottom:8px;
+    padding-bottom: 8px;
 
     nav {
         @extend .navbar;
@@ -34,5 +28,36 @@ body > header {
 }
 
 body > footer {
+    @extend .fixed-bottom;
+
     text-align: center;
+}
+
+.post-tags {
+    ul {
+        text-align: center;
+        display: block;
+
+        li {
+            list-style: none;
+            display: inline-block;
+
+            a {
+                @extend .badge;
+                @extend .badge-secondary;
+            }
+        }
+    }
+}
+
+.post-date {
+    @extend .text-uppercase;
+    @extend .font-weight-light;
+
+    display: inline-block;
+}
+
+.single-post > header {
+    text-align: center;
+    padding-bottom: 15px;
 }
