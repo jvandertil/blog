@@ -29,7 +29,6 @@
         <p>&copy; {{now.Format "2006"}} <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>. Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.js" integrity="sha256-2JRzNxMJiS0aHOJjG+liqsEOuBb6++9cY4dSOyiijX4=" crossorigin="anonymous" async></script>
-    {{ partial "highlightjs" }}
+    {{ partial "deps/js/index" . }}
 </body>
 </html>
