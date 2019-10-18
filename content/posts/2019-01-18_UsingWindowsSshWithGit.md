@@ -13,8 +13,6 @@ unable to start ssh-agent service, error :1058
 Error connecting to agent: No such file or directory
 ```
 
-<!--more-->
-
 This is because by default the OpenSSH agent (ssh-agent) service is disabled.
 To enable it open an elevated PowerShell window and run:
 ```powershell

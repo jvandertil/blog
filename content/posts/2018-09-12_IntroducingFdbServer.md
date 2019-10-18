@@ -13,8 +13,6 @@ Also when people checkout the repository and want to run the tests, they shouldn
 
 That is why I created the [FdbServer](https://www.github.com/jvandertil/FdbServer) library. 
 
-<!--more-->
-
 ## What does it do?
 This library will download the FoundationDB server executables and mimic the installation procedure.
 It will provide you with a cluster file which you use to connect to the temporary database.

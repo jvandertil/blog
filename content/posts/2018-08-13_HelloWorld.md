@@ -9,7 +9,6 @@ This is the first post on my blog! Let's hope I can keep this up.
 
 I'll usually blog about things I've solved as a form of documentation, which I hope will help someone else as well.
 
-<!--more-->
 ## Used technology
 Since this is a technology blog, I'll list the technology that powers this blog (this is subject to change, but I'll update any changes I make).
 
