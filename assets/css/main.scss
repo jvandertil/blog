@@ -69,11 +69,23 @@ h1, h2 {
     @extend .text-uppercase;
     @extend .font-weight-light;
     display: inline-block;
-
     font-size: 18px;
 }
 
 .single-post > header {
     text-align: center;
     padding-bottom: 15px;
+}
+
+.social-icons {
+    display: inline-table;
+    font-size: 21px;
+    list-style: none;
+    
+    li {
+        float: left;
+        a {
+            padding-right: 10px;
+        }
+    }
 }

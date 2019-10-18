@@ -3,11 +3,23 @@
         &copy; <time datetime="{{now.Format "2006"}}">{{now.Format "2006"}}</time> <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>.
         Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.
     </p>
-    <ul class="social-icons" style="font-size: 21px;display:inline-table; list-style: none">
+    <ul class="social-icons">
         <li>
-            <a href="https://www.twitter.com/{{.Site.Params.twitter}}"><i class="fab fa-twitter fa-lg"></i></a>
-            <a href="https://www.github.com/{{.Site.Params.github}}"><i class="fab fa-github fa-lg"></i></a>
-            <a href="https://www.linkedin.com/in/{{.Site.Params.linkedin}}"><i class="fab fa-linkedin fa-lg"></i></a>
+            <a aria-label="Twitter" href="https://www.twitter.com/{{.Site.Params.twitter}}"><i aria-hidden="true" class="fab fa-twitter fa-lg"></i></a>
         </li>
+
+        <li>
+            <a aria-label="GitHub" href="https://www.github.com/{{.Site.Params.github}}"><i aria-hidden="true" class="fab fa-github fa-lg"></i></a>
+        </li>
+
+        <li>
+            <a aria-label="LinkedIn" href="https://www.linkedin.com/in/{{.Site.Params.linkedin}}"><i aria-hidden="true" class="fab fa-linkedin fa-lg"></i></a>
+        </li>
+
+        {{ with .OutputFormats.Get "RSS" }}
+        <li>
+            <a aria-label="RSS feed" href="{{ .Permalink }}"><i aria-hidden="true" class="fas fa-rss fa-lg"></i></a>
+        </li>
+        {{ end }}
     </ul>
 </footer>
