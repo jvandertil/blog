@@ -35,9 +35,8 @@
     <main>
         {{ block "main" . }}{{ end }}
     </main>
-    <footer>
-        <p>&copy; {{now.Format "2006"}} <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>. Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.</p>
-    </footer>
+
+    {{ partial "footer" . }}
 
     {{ partial "deps/js/index" . }}
 </body>

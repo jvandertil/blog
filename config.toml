@@ -10,8 +10,12 @@ title = "Jos van der Til - Software Engineer"
 	title = "Jos van der Til"
 	subtitle = "Software Engineer"
 
-[menu]
+	# Social media
+	twitter = "josvandertil"
+	github = "jvandertil"
+	linkedin = "jvandertil"
 
+[menu]
 	[[menu.main]]
 		identifier = "posts"
 		name = "This is the blog section"
