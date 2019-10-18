@@ -3,14 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    {{ .Hugo.Generator }}
+    {{ hugo.Generator }}
     <meta name="author" content="{{ .Site.Params.author }}" />
 
     <title>{{ .Title }}{{ if not .IsHome }} &middot; {{ .Site.Title }}{{ end }}</title>
 
-    {{ if .RSSLink }}
-    <link href="{{ .RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
-    <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
+    {{ $rssLink := .OutputFormats.Get "RSS" }}
+    {{ if $rssLink }}
+    <link href="{{ $rssLink.Permalink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
+    <link href="{{ $rssLink.Permalink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
     {{ end }}
 
     {{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed")}}
