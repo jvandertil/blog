@@ -1,9 +1,12 @@
 ﻿<!doctype html>
-<html>
+<html lang="{{.Site.LanguageCode}}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    {{ .Hugo.Generator }}
+    <meta name="author" content="{{ .Site.Params.author }}" />
 
+    <title>{{ .Title }}{{ if not .IsHome }} &middot; {{ .Site.Title }}{{ end }}</title>
     {{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed")}}
     <link rel="stylesheet" href="{{ $style.Permalink }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" integrity="sha256-iAmWN8uaUdN6Y9FCf8srQdrx3eVVwouJ5QtEiyuTQ6A=" crossorigin="anonymous" />

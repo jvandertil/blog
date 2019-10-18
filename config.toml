@@ -1,5 +1,6 @@
 baseURL = "https://www.jvandertil.nl"
 languageCode = "en-us"
+title = "Jos van der Til - Software Engineer"
 
 [params]
 	author = "Jos van der Til"
