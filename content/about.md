@@ -2,7 +2,7 @@
 title = "About"
 date  = "2018-08-03"
 url   = "about/"
-hide  =  true
+type = "page"
 +++
 
 Hi! My name is Jos and I'm a software developer specialized in .NET development.
