@@ -4,6 +4,7 @@ title = "Jos van der Til - Software Engineer"
 
 [params]
 	author = "Jos van der Til"
+	authorBio = "Hi! I'm Jos, a Software Developer from the Netherlands."
 
 	useSummaryIfNoDescription = true
 
@@ -16,6 +17,7 @@ title = "Jos van der Til - Software Engineer"
 	linkedin = "jvandertil"
 
 	oldContentWarningDays = 730
+	backToTopText = "Back to top"
 
 	githubRepoUrl = "https://www.github.com/jvandertil/blog"
 

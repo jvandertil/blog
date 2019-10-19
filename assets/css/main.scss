@@ -102,3 +102,35 @@ table {
     margin-left: auto;
     margin-right: auto;
 }
+
+.single-post {
+    footer {
+        @extend .card;
+        @extend .card-body;
+        @extend .border-left-0;
+        @extend .border-right-0;
+    }
+}
+
+#author-img {
+    background: url(/img/avatar2.jpg);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    float: left;
+    background-position: center;
+    background-size: cover;
+}
+
+.author {
+    font-size: 19px;
+
+    h4 {
+        margin-left: 99px;
+        font-weight: 500;
+    }
+
+    p {
+        margin-left: 99px;
+    }
+}

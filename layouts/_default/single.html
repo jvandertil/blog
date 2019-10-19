@@ -10,6 +10,14 @@
 
     <section class="post-content">
         {{ .Content }}
+    </section>
+
+    <footer>
+        <section class="author">
+            <div id="author-img"></div>
+            <h4>{{ $.Param "author" }}</h4>
+            <p>{{ $.Site.Params.AuthorBio }}</p>
         </section>
+    </footer>
 </article>
 {{ end }}
