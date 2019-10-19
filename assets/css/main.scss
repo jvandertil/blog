@@ -42,7 +42,7 @@ main {
     font-size: 21px;
 }
 
-h1, h2 {
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans';
 }
 
@@ -82,11 +82,23 @@ h1, h2 {
     display: inline-table;
     font-size: 21px;
     list-style: none;
-    
+
     li {
         float: left;
+
         a {
             padding-right: 10px;
         }
     }
+}
+
+.post-content {
+    padding-bottom: 30px;
+}
+
+table {
+    @extend .table;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
