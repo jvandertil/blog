@@ -29,10 +29,11 @@ body {
             }
         }
     }
+}
 
-    footer {
-        text-align: center;
-    }
+body > footer {
+    text-align: center;
+    padding: 30px;
 }
 
 main {

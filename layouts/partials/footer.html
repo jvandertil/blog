@@ -1,8 +1,4 @@
 <footer>
-    <p>
-        &copy; <time datetime="{{now.Format "2006"}}">{{now.Format "2006"}}</time> <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>.
-        Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.
-    </p>
     <ul class="social-icons">
         <li>
             <a aria-label="Twitter" href="https://www.twitter.com/{{.Site.Params.twitter}}"><i aria-hidden="true" class="fab fa-twitter fa-lg"></i></a>
@@ -22,4 +18,8 @@
         </li>
         {{ end }}
     </ul>
+    <p>
+        &copy; <time datetime="{{now.Format "2006"}}">{{now.Format "2006"}}</time> <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>.
+        Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.
+    </p>
 </footer>
