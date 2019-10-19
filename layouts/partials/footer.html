@@ -22,4 +22,9 @@
         &copy; <time datetime="{{now.Format "2006"}}">{{now.Format "2006"}}</time> <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>.
         Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.
     </p>
+    <p>
+        {{ if eq .Page.Params.Type "post" }}
+        <small>Notice an error or mistake? Suggest an <a href="{{ .Site.Params.githubRepoUrl }}/edit/master/content/{{ replace .Page.File.Path "\\" "/" }}">edit</a>.</small>
+        {{ end }}
+    </p>
 </footer>

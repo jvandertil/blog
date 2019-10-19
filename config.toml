@@ -17,6 +17,8 @@ title = "Jos van der Til - Software Engineer"
 
 	oldContentWarningDays = 730
 
+	githubRepoUrl = "https://www.github.com/jvandertil/blog"
+
 [menu]
 	[[menu.main]]
 		identifier = "posts"
