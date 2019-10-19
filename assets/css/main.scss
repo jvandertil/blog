@@ -134,3 +134,8 @@ table {
         margin-left: 99px;
     }
 }
+
+.draft-badge {
+    @extend .badge;
+    @extend .badge-primary;
+}
