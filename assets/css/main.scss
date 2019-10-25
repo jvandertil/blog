@@ -1,39 +1,17 @@
 @import "bootstrap-4.3.1/bootstrap";
 
+@import "navbar.scss";
+@import "footer.scss";
+
+@import "single.scss";
+@import "summary.scss";
+
 body > main {
     @extend .container;
 }
 
 body {
     background: #fdfdfd;
-
-    header {
-        padding-bottom: 8px;
-
-        nav {
-            @extend .navbar;
-            @extend .navbar-expand-lg;
-            @extend .navbar-light;
-            @extend .bg-light;
-
-            ul {
-                @extend .navbar-nav;
-
-                li {
-                    @extend .nav-item;
-
-                    a {
-                        @extend .nav-link;
-                    }
-                }
-            }
-        }
-    }
-}
-
-body > footer {
-    text-align: center;
-    padding: 30px;
 }
 
 main {
@@ -46,96 +24,9 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans';
 }
 
-.post-tags {
-    font-family: 'Open Sans';
-    font-size: 16px;
-
-    ul {
-        text-align: center;
-        display: block;
-
-        li {
-            list-style: none;
-            display: inline-block;
-
-            a {
-                @extend .badge;
-                @extend .badge-secondary;
-            }
-        }
-    }
-}
-
-.post-date {
-    @extend .text-uppercase;
-    @extend .font-weight-light;
-    display: inline-block;
-    font-size: 18px;
-}
-
-.single-post > header {
-    text-align: center;
-    padding-bottom: 15px;
-}
-
-.social-icons {
-    display: inline-table;
-    font-size: 21px;
-    list-style: none;
-
-    li {
-        float: left;
-
-        a {
-            padding-right: 10px;
-        }
-    }
-}
-
-.post-content {
-    padding-bottom: 30px;
-}
-
 table {
     @extend .table;
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-}
-
-.single-post {
-    footer {
-        @extend .card;
-        @extend .card-body;
-        @extend .border-left-0;
-        @extend .border-right-0;
-    }
-}
-
-#author-img {
-    background: url(/img/avatar2.jpg);
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    float: left;
-    background-position: center;
-    background-size: cover;
-}
-
-.author {
-    font-size: 19px;
-
-    h4 {
-        margin-left: 99px;
-        font-weight: 500;
-    }
-
-    p {
-        margin-left: 99px;
-    }
-}
-
-.draft-badge {
-    @extend .badge;
-    @extend .badge-primary;
 }

@@ -1,0 +1,22 @@
+body > header {
+    padding-bottom: 8px;
+
+    > nav {
+        @extend .navbar;
+        @extend .navbar-expand-lg;
+        @extend .navbar-light;
+        @extend .bg-light;
+
+        ul {
+            @extend .navbar-nav;
+
+            li {
+                @extend .nav-item;
+
+                a {
+                    @extend .nav-link;
+                }
+            }
+        }
+    }
+}

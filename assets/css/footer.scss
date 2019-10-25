@@ -1,0 +1,18 @@
+body > footer {
+    text-align: center;
+    padding: 30px;
+}
+
+.social-icons {
+    display: inline-table;
+    font-size: 21px;
+    list-style: none;
+
+    li {
+        float: left;
+
+        a {
+            padding-right: 10px;
+        }
+    }
+}

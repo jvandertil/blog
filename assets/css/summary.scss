@@ -1,0 +1,25 @@
+.post-tags {
+    font-family: 'Open Sans';
+    font-size: 16px;
+
+    ul {
+        text-align: center;
+        display: block;
+
+        li {
+            list-style: none;
+            display: inline-block;
+            padding-right: 5px;
+
+            a {
+                @extend .badge;
+                @extend .badge-secondary;
+            }
+        }
+    }
+}
+
+.draft-badge {
+    @extend .badge;
+    @extend .badge-primary;
+}
