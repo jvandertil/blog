@@ -10,6 +10,8 @@ namespace Uploader
 
         public string ZoneUrlRoot { get; }
 
+        public int MaxUrlsToPurgePerBlock => 30;
+
         public CloudFlareConfiguration(IConfiguration configuration)
         {
             ApiKey = configuration.GetValue<string>("CF_API_KEY");

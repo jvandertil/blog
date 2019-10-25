@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace Uploader
 {
     public class UrlsToPurgeContent
     {
-        public string[] Files { get; set; }
+        public IEnumerable<string> Files { get; set; }
     }
 }

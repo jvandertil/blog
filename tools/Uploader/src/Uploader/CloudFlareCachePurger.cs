@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,37 +14,50 @@ namespace Uploader
         private readonly CloudFlareConfiguration _configuration;
         private readonly ILogger<CloudFlareCachePurger> _logger;
 
+        private readonly string _uri;
+
         public CloudFlareCachePurger(HttpClient httpClient, CloudFlareConfiguration configuration, ILogger<CloudFlareCachePurger> logger)
         {
             _httpClient = httpClient;
             _configuration = configuration;
             _logger = logger;
+
+            _uri = "https://api.cloudflare.com/client/v4/zones/" + _configuration.ZoneId + "/purge_cache";
         }
 
         public async Task PurgeFilesAsync(IReadOnlyCollection<string> relativeUrls)
         {
-            var request = GetRequestMessage();
-
-            int toProcess = relativeUrls.Count;
-            int processed = 0;
-            while (processed < toProcess)
-            {
-                await PurgeUrls(relativeUrls.Skip(processed).Take(25).Select(x => ToFullUri(x).ToString()).ToArray());
-                processed += 25;
-            }
+            var locationUrls = new List<string>(relativeUrls);
 
             foreach (var url in relativeUrls)
             {
                 if (url.Contains("index.htm", StringComparison.OrdinalIgnoreCase))
                 {
-                    var path = new Uri(ToFullUri(url), ".");
+                    var path = new Uri(ToFullUri(url), ".").LocalPath;
 
-                    await PurgeUrls(new[] { path.ToString() });
+                    locationUrls.Add(path);
+
+                    _logger.LogInformation("Purging location {path} because index.html was found.", path);
                 }
+            }
+
+            await PurgeUrls(locationUrls);
+        }
+
+        private async Task PurgeUrls(IReadOnlyCollection<string> urls)
+        {
+            int toProcess = urls.Count;
+            int processed = 0;
+            int blockSize = _configuration.MaxUrlsToPurgePerBlock;
+
+            while (processed < toProcess)
+            {
+                await PurgeUrlsBlock(urls.Skip(processed).Take(blockSize).Select(x => ToFullUri(x).ToString()));
+                processed += blockSize;
             }
         }
 
-        private async Task PurgeUrls(string[] urls)
+        private async Task PurgeUrlsBlock(IEnumerable<string> urls)
         {
             _logger.LogInformation("Purging urls: {0}", string.Join(Environment.NewLine, urls));
 
@@ -60,7 +74,7 @@ namespace Uploader
 
         private HttpRequestMessage GetRequestMessage()
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, GetUrl(_configuration.ZoneId));
+            var request = new HttpRequestMessage(HttpMethod.Post, _uri);
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _configuration.ApiKey);
 
             return request;
@@ -74,11 +88,6 @@ namespace Uploader
             };
 
             return builder.Uri;
-        }
-
-        private static string GetUrl(string zoneId)
-        {
-            return $"https://api.cloudflare.com/client/v4/zones/{zoneId}/purge_cache";
         }
     }
 }
