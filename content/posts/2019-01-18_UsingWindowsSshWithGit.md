@@ -8,7 +8,7 @@ tags = [ "Git", "Windows", "Powershell" ]
 
 Starting with Windows 10 version 1803 a native version of OpenSSH is bundled and installed by default.
 If you are using [posh-git](https://github.com/dahlbyk/posh-git) you'll notice that the `Start-SshAgent` command fails with an error:
-```plaintext
+```shell
 unable to start ssh-agent service, error :1058
 Error connecting to agent: No such file or directory
 ```
