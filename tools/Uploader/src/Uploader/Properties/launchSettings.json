@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "BlogUploader": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "CF_API_KEY": "", // API key that can purge the cache for the given zone
+        "CF_ZONE_ID": "", // Zone id in CloudFlare
+        "CF_ZONE_URL_ROOT": "", // Base URL of CloudFlare zone
+        "AZURE_CONTENT_PATH": "", // Source files to sync
+        "AZURE_CONNECTIONSTRING": "" // Destination storage account connection string
+      }
+    }
+  }
+}
