@@ -16,9 +16,8 @@
 
     {{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed")}}
     <link rel="stylesheet" href="{{ $style.Permalink }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" integrity="sha256-iAmWN8uaUdN6Y9FCf8srQdrx3eVVwouJ5QtEiyuTQ6A=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mate|Open+Sans&display=swap">
+
+    {{ partial "deps/css/index" . }}
 </head>
 <body>
     <header>
