@@ -14,7 +14,7 @@ function Download-File($Url, $Destination)
     }
 }
 
-mkdir $destination -ErrorAction SilentlyContinue
+mkdir $destination -ErrorAction SilentlyContinue > $null
 
 if( (Test-Path (Join-Path $destination $hugoFilename)) -eq $false )
 {
