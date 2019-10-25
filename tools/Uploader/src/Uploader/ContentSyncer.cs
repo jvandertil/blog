@@ -50,7 +50,7 @@ namespace Uploader
                 }
                 else
                 {
-                    _logger.LogInformation("File up to date: {file}", destinationPath);
+                    _logger.LogTrace("File up to date: {file}", destinationPath);
                 }
             }
 
