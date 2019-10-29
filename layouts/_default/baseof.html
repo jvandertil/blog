@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{{ $style.Permalink }}" />
 
     {{ partial "deps/css/index" . }}
+    {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify }}
+    <script type="text/javascript" src="{{ $polyfills.Permalink }}"></script>
 </head>
 <body>
     <!-- Load the darkmode scripts as soon as possible to apply styling immediately. -->
