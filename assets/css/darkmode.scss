@@ -1,0 +1,43 @@
+.navbar-darkmode {
+    @extend .btn;
+    @extend .btn-outline-light;
+    @extend .text-dark;
+
+    margin-left: auto;
+}
+
+.dark {
+    @extend .bg-dark;
+    @extend .text-light;
+
+    table {
+        @extend .bg-dark;
+        @extend .text-light;
+    }
+
+    .single-post {
+        footer {
+            @extend .bg-dark;
+        }
+    }
+
+    > header {
+        > nav {
+            @extend .bg-dark;
+            @extend .navbar-dark;
+
+            > ul {
+                > li {
+                    > a {
+                        @extend .text-light;
+                    }
+                }
+            }
+        }
+    }
+
+    .navbar-darkmode {
+        @extend .btn-outline-dark;
+        @extend .text-light;
+    }
+}

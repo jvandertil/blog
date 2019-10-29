@@ -20,6 +20,9 @@
     {{ partial "deps/css/index" . }}
 </head>
 <body>
+    <!-- Load the darkmode scripts as soon as possible to apply styling immediately. -->
+    {{ $darkmodeJs := resources.Get "js/darkmode.js" | resources.Minify }}
+    <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}"></script>
     <header>
         <nav>
             <a class="navbar-brand" href="{{ $.Site.BaseURL }}">{{ .Site.Params.title }}</a>
@@ -30,6 +33,9 @@
                 <li><a href="{{ .URL }}">{{ .Title }}</a></li>
                 {{ end }}
             </ul>
+            <button class="navbar-darkmode" onclick="toggleDarkmode()" onkeydown="toggleDarkmodeKeyPress">
+                <i class="fas fa-adjust" title="Toggle dark mode"></i>
+            </button>
         </nav>
     </header>
     <main>

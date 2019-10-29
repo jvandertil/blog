@@ -6,6 +6,8 @@
 @import "single.scss";
 @import "summary.scss";
 
+@import "darkmode.scss";
+
 body > main {
     @extend .container;
 }
