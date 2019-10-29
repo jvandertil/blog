@@ -7,16 +7,17 @@ tags = [ "Span", "Performance", "NHibernate" ]
 draft = true
 +++
 
-Recently at work I had to implement some functionality that required the use of GUIDs that had to be stored in SQL server.
-We generated the GUID values in code, and send them off to be stored. 
-To avoid excessive index fragmentation (they are our external identifiers), we opted to use the Guid Comb pattern.
-{{% notice %}}
-The code in this blog post is derived from the [NHibernate source code](https://github.com/nhibernate/nhibernate-core/blob/ac39173567b31bcfad475ca32687c9faf0d37f87/src/NHibernate/Id/GuidCombGenerator.cs) and is LGPL licensed.
+Recently at work I had to implement some functionality that required the use of `Guid` identifiers that were stored in SQL Server.
+The `Guid`s were generated in the application and used as an alternative key / external identifier for other systems.
+To avoid excessive index fragmentation, we opted to use the Guid Comb pattern using a generator from the NHibernate project.
 
-The benchmark code is licensed under the general license of this blog.
+{{% notice %}}
+The generator code in this blog post is derived from the [NHibernate source code](https://github.com/nhibernate/nhibernate-core/blob/ac39173567b31bcfad475ca32687c9faf0d37f87/src/NHibernate/Id/GuidCombGenerator.cs) and is LGPL licensed.
 {{% /notice %}}
 
-The original version of the code looked a bit like this, using several intermediate buffers that can be replaced with the advent of `Span<T>`.
+For fun I took a look at the code to see if there were some optimizations I could make, and there were a couple fun things that I could do.
+
+The original version of the code looks like this.
 I added the inputs as parameters to make it a bit easier to verify that the optimizations are not changing the generated comb GUID later on.
 ```cs
 private static readonly long BaseDateTicks = new DateTime(1900, 1, 1).Ticks;
@@ -46,7 +47,9 @@ private static Guid GenerateComb(Guid guid, DateTime now)
 }
 ```
 
-Our benchmark setup looks like this:
+To know if the changes are helping or hurting, benchmarks of the code are required.
+Using the excellent [BenchmarkDotNet](https://benchmarkdotnet.org/) library we can be quite certain that we are measuring correctly.
+The initial benchmark code looks like this.
 ```cs
 [MemoryDiagnoser,
  ReturnValueValidator(failOnError: true)]
@@ -61,25 +64,32 @@ public class Benchmarks
         _guid = Guid.NewGuid();
         _now = DateTime.UtcNow;
     }
-}
-```
 
-And our benchmark is simply:
-```cs
-[Benchmark(Baseline = true)]
-public Guid GenerateComb()
-{
-    return GenerateComb(_guid, _now);
+    [Benchmark(Baseline = true)]
+    public Guid GenerateComb()
+    {
+        return GenerateComb(_guid, _now);
+    }
 }
 ```
 Note that we are returning the generated `Guid`, and that we added a `[ReturnValueValidator]` to the benchmarks class.
 When our optimized version is run the return values will be compared, and if they do not match then the benchmarks will fail (`failOnError = true`).
+The memory that is allocated is also interesting, which is measured using the `[MemoryDiagnoser]`.
 
-The baseline that we want to improve is as follows:
+For completeness, I ran the benchmarks in the following environment
+```shell
+BenchmarkDotNet=v0.11.5, OS=Windows 10.0.18362
+Intel Core i7-7700K CPU 4.20GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=3.0.100
+  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), 64bit RyuJIT
+  DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), 64bit RyuJIT
+```
+
+Which results in the following baseline:
 {{% table %}}
 |       Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|------------- |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
-| GenerateComb | 81.91 ns | 1.0139 ns | 0.9484 ns |  1.00 | 0.0331 |     - |     - |     104 B |
+|------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
+| GenerateComb | 43.91 ns | 0.2358 ns | 0.2206 ns |  1.00 | 0.0249 |     - |     - |     104 B |
 {{% /table %}}
 
 Looking at the code we can simplify the writing of the results by merging the writing and reversing of the `msecs` and `days` arrays.
