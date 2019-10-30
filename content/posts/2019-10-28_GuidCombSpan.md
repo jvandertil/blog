@@ -92,7 +92,9 @@ Which results in the following baseline:
 | GenerateComb | 43.91 ns | 0.2358 ns | 0.2206 ns |  1.00 | 0.0249 |     - |     - |     104 B |
 {{% /table %}}
 
-Looking at the code we can simplify the writing of the results by merging the writing and reversing of the `msecs` and `days` arrays.
+Looking at the code we can see that the `days` and `msecs` variables are moved into the end of the `Guid`.
+We also see that we are only copying 6 bytes and that the positions where these values are placed are constant.
+Instead of rearranging the bytes physically in memory using `Array.Reverse` and copying them into place using `Array.Copy` we can do both steps simultaneously manually. 
 ```cs
 private static Guid GenerateCombOptimized(Guid guid, DateTime now)
 {
@@ -120,7 +122,7 @@ private static Guid GenerateCombOptimized(Guid guid, DateTime now)
 }
 ```
 
-The benchmark is really simple:
+We add the benchmark for this optimized version.
 ```cs
 [Benchmark]
 public Guid GenerateCombOptimized()
@@ -129,7 +131,10 @@ public Guid GenerateCombOptimized()
 }
 ```
 
-These small changes have a massive impact, reducing the runtime of the method by 50%.
+And we see that this improves the runtime by 50%, and have (in my opinion) slightly more readable code as well.
+
+# TABLE RESULTS ARE OUT OF DATE
+
 {{% table %}}
 |                Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |---------------------- |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
@@ -137,11 +142,14 @@ These small changes have a massive impact, reducing the runtime of the method by
 | GenerateCombOptimized | 40.83 ns | 0.5435 ns | 0.5084 ns |  0.50 | 0.0331 |     - |     - |     104 B |
 {{% /table %}}
 
-The next step is to reduce the number of allocations we need to generate a single GUID.
+The next step is to reduce the number of allocations we need to generate a single `Guid` using the new `Span` and `MemoryMarshal` types.
 
-In unsafe code you can use the `stackalloc` keyword to allocate memory on the stack, avoiding the need for the garbage collector to manage that memory.
-However, with `Span<T>` you can use `stackalloc` in managed code to allocate it into a `Span` directly!
-We can use this technique to avoid allocating the scratch buffers.
+In unsafe code you can use the `stackalloc` keyword to allocate memory on the stack. 
+This is useful for small arrays since you avoid the need for the garbage collector (GC) to manage that memory. Once you return from the method that memory is cleaned up automatically.
+
+Since C# 7.2 you can use `stackalloc` in managed code to allocate it into a `Span` directly!
+We can use this technique to avoid allocating the scratch buffers that hold `msecs` and `days`.
+
 Since we will be using the `MemoryMarshal` class to write the values (using `ref`) into the allocated `Span<byte>` instances, we will move the fields from the `TimeSpan`s into locals.
 
 ```
@@ -185,7 +193,10 @@ public Guid GenerateCombSpanScratch()
 }
 ```
 
-This reduces the amount of allocations and improves our runtime again!
+This reduces the amount of allocations managed by the GC by 60% while slightly improving the runtime performance as well.
+# TABLE RESULTS ARE OUT OF DATE
+
+
 {{% table %}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
@@ -237,3 +248,7 @@ public Guid GenerateCombSpan()
     return GenerateCombSpan(_guid, _now);
 }
 ```
+
+These changes completely eliminate the need for heap allocations while generating a new `Guid`, but runtime performance slightly regresses.
+
+# TABLE WITH RESULTS HERE
