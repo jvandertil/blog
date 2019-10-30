@@ -1,10 +1,15 @@
-function toggleStylesheet(dark) {
+function ApplyCodeHighlightingStyle(theme) {
     var stylesheetName;
 
-    if (dark) {
-        stylesheetName = "vs.min.css";
-    } else {
-        stylesheetName = "vs2015.min.css";
+    switch (theme) {
+        case "dark": {
+            stylesheetName = "vs.min.css";
+            break;
+        }
+        case "light": {
+            stylesheetName = "vs2015.min.css";
+            break;
+        }
     }
 
     var styleSheets = document.styleSheets;
@@ -24,9 +29,26 @@ function toggleStylesheet(dark) {
     }
 }
 
-function isDarkmodeEnabled() {
+function getTheme() {
     var body = document.getElementsByTagName("body")[0];
-    var darkModeEnabled = body.classList.contains('dark');
+    var theme = body.getAttribute("data-theme");
+
+    if (!theme) {
+        theme = "light";
+    }
+
+    return theme;
+}
+
+function setTheme(theme) {
+    var body = document.getElementsByTagName("body")[0];
+    body.setAttribute("data-theme", theme);
+
+    ApplyCodeHighlightingStyle(theme);
+}
+
+function isDarkmodeEnabled() {
+    var darkModeEnabled = getTheme() === "dark";
 
     return darkModeEnabled;
 }
@@ -35,28 +57,24 @@ function saveDarkmodePreference(enabled) {
     localStorage.setItem("darkmode-enabled", enabled.toString());
 }
 
-function applyDarkmode() {
+function applyTheme() {
     var enabled = localStorage.getItem("darkmode-enabled");
-    var body = document.getElementsByTagName("body")[0];
 
     if (enabled == null) {
         enabled = isDarkmodeEnabled().toString();
     }
 
     if (enabled === "true") {
-        body.classList.remove('light');
-        body.classList.add('dark');
-        toggleStylesheet(true);
+        setTheme("dark");
     } else {
-        body.classList.replace('dark', 'light');
-        toggleStylesheet(false);
+        setTheme("light");
     }
 }
 
 function toggleDarkmode() {
     saveDarkmodePreference(!isDarkmodeEnabled());
 
-    applyDarkmode();
+    applyTheme();
 }
 
 function toggleDarkmodeKeyPress(event) {
@@ -71,4 +89,6 @@ function toggleDarkmodeKeyPress(event) {
     }
 }
 
-applyDarkmode();
+function initializeTheme() {
+    applyTheme();
+}

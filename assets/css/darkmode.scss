@@ -6,11 +6,11 @@
     margin-left: auto;
 }
 
-.light{
+[data-theme="light"] {
     transition: all 0.3s;
 }
 
-.dark {
+[data-theme="dark"] {
     @extend .bg-dark;
     @extend .text-light;
     transition: all 0.3s;
