@@ -14,18 +14,18 @@
     <link href="{{ $rssLink.Permalink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
     {{ end }}
 
-    {{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed")}}
-    <link rel="stylesheet" href="{{ $style.Permalink }}" />
+    {{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed") | resources.Fingerprint }}
+    <link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
 
     {{ partial "deps/css/index" . }}
 
     <!-- Load polyfills for old browsers (IE). -->
-    {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify }}
-    <script type="text/javascript" src="{{ $polyfills.Permalink }}"></script>
+    {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify | resources.Fingerprint }}
+    <script type="text/javascript" src="{{ $polyfills.Permalink }}" integrity="{{ $polyfills.Data.Integrity }}"></script>
 
     <!-- Darkmode scripts are needed first thing in the body. -->
-    {{ $darkmodeJs := resources.Get "js/darkmode.js" | resources.Minify }}
-    <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}"></script>
+    {{ $darkmodeJs := resources.Get "js/darkmode.js" | resources.Minify | resources.Fingerprint }}
+    <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}" integrity="{{ $darkmodeJs.Data.Integrity }}"></script>
 </head>
 <body>
     <!-- Initialize the theme here to avoid a flash of unthemed content. -->
