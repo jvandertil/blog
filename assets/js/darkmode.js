@@ -44,10 +44,11 @@ function applyDarkmode() {
     }
 
     if (enabled === "true") {
+        body.classList.remove('light');
         body.classList.add('dark');
         toggleStylesheet(true);
     } else {
-        body.classList.remove('dark');
+        body.classList.replace('dark', 'light');
         toggleStylesheet(false);
     }
 }
