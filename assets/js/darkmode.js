@@ -1,13 +1,13 @@
-function ApplyCodeHighlightingStyle(theme) {
+function ToggleThemeStylesheets(theme) {
     var styleSheets = document.styleSheets;
 
     for (var i = 0; i < styleSheets.length; ++i) {
         var ss = styleSheets[i];
 
         if (ss.href) {
-            if (ss.href.indexOf("highlight") >= 0) {
-                var themeTag = ss.ownerNode.getAttribute("data-theme")
+            var themeTag = ss.ownerNode.getAttribute("data-theme")
 
+            if (themeTag) {
                 if (themeTag === theme) {
                     ss.disabled = false;
                 } else {
@@ -33,7 +33,7 @@ function setTheme(theme) {
     var body = document.getElementsByTagName("body")[0];
     body.setAttribute("data-theme", theme);
 
-    ApplyCodeHighlightingStyle(theme);
+    ToggleThemeStylesheets(theme);
 }
 
 function isDarkmodeEnabled() {
