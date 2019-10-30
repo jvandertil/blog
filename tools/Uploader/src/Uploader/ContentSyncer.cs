@@ -60,6 +60,7 @@ namespace Uploader
                 if (!_source.HasFile(file.Path))
                 {
                     await _destination.DeleteFileAsync(file.Path);
+                    processedFiles.Add(file.Path);
                 }
             }
 

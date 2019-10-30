@@ -58,6 +58,23 @@ namespace Uploader.Tests
             ShouldBeDeleted(path);
         }
 
+        [Fact]
+        public async Task SynchronizeFilesAsync_ReturnsAllModifiedFiles()
+        {
+            _source.AddFile("folder/not_on_destination");
+            _source.AddFile("folder/on_destination_no_match");
+
+            _destination.AddFile("folder/not_on_source", "");
+            _destination.AddFile("folder/on_destination_no_match", "");
+
+            var result = await _syncer.SynchronizeFilesAsync();
+
+            Assert.Contains("folder/not_on_destination", result);
+            Assert.Contains("folder/on_destination_no_match", result);
+            Assert.Contains("folder/not_on_source", result);
+            Assert.Equal(3, result.Count);
+        }
+
         private void ShouldBeOverwritten(string fileName)
             => AssertState(fileName, FileState.Overwritten);
 
