@@ -18,8 +18,21 @@
     <link rel="stylesheet" href="{{ $style.Permalink }}" />
 
     {{ partial "deps/css/index" . }}
+
+    <!-- Load polyfills for old browsers (IE). -->
+    {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify }}
+    <script type="text/javascript" src="{{ $polyfills.Permalink }}"></script>
+
+    <!-- Darkmode scripts are needed first thing in the body. -->
+    {{ $darkmodeJs := resources.Get "js/darkmode.js" | resources.Minify }}
+    <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}"></script>
 </head>
 <body>
+    <!-- Initialize the theme here to avoid a flash of unthemed content. -->
+    <script type="text/javascript">
+        initializeTheme();
+    </script>
+
     <header>
         <nav>
             <a class="navbar-brand" href="{{ $.Site.BaseURL }}">{{ .Site.Params.title }}</a>
@@ -30,8 +43,13 @@
                 <li><a href="{{ .URL }}">{{ .Title }}</a></li>
                 {{ end }}
             </ul>
+
+            <button class="navbar-darkmode" onclick="toggleDarkmode()" onkeydown="toggleDarkmodeKeyPress">
+                <i class="fas fa-adjust" title="Toggle dark mode"></i>
+            </button>
         </nav>
     </header>
+
     <main>
         {{ block "main" . }}{{ end }}
     </main>
