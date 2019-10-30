@@ -1,17 +1,4 @@
 function ApplyCodeHighlightingStyle(theme) {
-    var stylesheetName;
-
-    switch (theme) {
-        case "dark": {
-            stylesheetName = "vs.min.css";
-            break;
-        }
-        case "light": {
-            stylesheetName = "vs2015.min.css";
-            break;
-        }
-    }
-
     var styleSheets = document.styleSheets;
 
     for (var i = 0; i < styleSheets.length; ++i) {
@@ -19,10 +6,12 @@ function ApplyCodeHighlightingStyle(theme) {
 
         if (ss.href) {
             if (ss.href.indexOf("highlight") >= 0) {
-                if (ss.href.endsWith(stylesheetName)) {
-                    ss.disabled = true;
-                } else {
+                var themeTag = ss.ownerNode.getAttribute("data-theme")
+
+                if (themeTag === theme) {
                     ss.disabled = false;
+                } else {
+                    ss.disabled = true;
                 }
             }
         }
