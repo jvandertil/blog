@@ -282,6 +282,6 @@ The mean runtime has regressed slightly, but since the GC is no longer doing any
 
 All in all, I am quite satisfied with the results. 
 Even though the generator was quite fast already (44 nanoseconds / invocation), the most important part is that I could reduce the amount of memory allocated per call.
-As you saw, `Span<T>` makes it a lot easier to manipulate memory in a safe way. Before you would have to introduce `unsafe` code, and you probably wouldn't be able to eliminate all of them.
+As you saw, `Span<T>` makes it a lot easier to manipulate memory in a safe way. Before you would have to introduce `unsafe` code, and you probably wouldn't be able to eliminate all of the allocations.
 
 If you are deploying code that is invoked millions of times a day, these small savings can quickly add up.
