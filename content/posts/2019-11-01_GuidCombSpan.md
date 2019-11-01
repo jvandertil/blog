@@ -17,7 +17,7 @@ The `GuidCombGenerator` generates `Guid` values that have a timestamp embedded i
 82c9da6c-fdd0-4fc8-970a-aaf8013db1df
 ```
 
-These `Guid` values are optimized for SQL Server, using this same implementation with other database servers is not guaranteed to work.
+These `Guid` values are optimized for SQL Server, using this same implementation with other database servers is not guaranteed to give the same benefits.
 But for SQL Server this method significantly reduces index fragmentation when you index the `Guid` values.
 
 {{% notice %}}
