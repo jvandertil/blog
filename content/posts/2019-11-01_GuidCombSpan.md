@@ -269,7 +269,7 @@ public Guid GenerateCombSpan()
 ```
 
 These changes completely eliminate the need for heap allocations while generating a new `Guid`.
-The mean runtime has regressed slightly, but since the GC is no longer doing any work the method runs a lot for consistently (StdDev is improved significantly).
+The mean runtime has regressed slightly, but since the GC is no longer doing any work the method runs a lot more consistently (StdDev is improved significantly).
 
 {{% table %}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
