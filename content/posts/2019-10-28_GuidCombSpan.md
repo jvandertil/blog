@@ -9,7 +9,8 @@ draft = true
 
 Recently at work I had to implement some functionality that required the use of `Guid` identifiers that were stored in SQL Server.
 The `Guid`s were generated in the application and used as an alternative key / external identifier for other systems.
-To avoid excessive index fragmentation, we opted to use the Guid Comb pattern using a generator from the NHibernate project.
+To avoid excessive index fragmentation, we opted to use the GuidComb variant using a generator from the NHibernate project.
+
 
 {{% notice %}}
 The generator code in this blog post is derived from the [NHibernate source code](https://github.com/nhibernate/nhibernate-core/blob/ac39173567b31bcfad475ca32687c9faf0d37f87/src/NHibernate/Id/GuidCombGenerator.cs) and is LGPL licensed.
@@ -18,7 +19,7 @@ The generator code in this blog post is derived from the [NHibernate source code
 For fun I took a look at the code to see if there were some optimizations I could make, and there were a couple fun things that I could do.
 
 The original version of the code looks like this.
-I added the inputs as parameters to make it a bit easier to verify that the optimizations are not changing the generated comb GUID later on.
+I added the inputs as parameters to make it a bit easier to verify that the optimizations are not changing the generated `Guid` later on.
 ```cs
 private static readonly long BaseDateTicks = new DateTime(1900, 1, 1).Ticks;
 
@@ -72,12 +73,12 @@ public class Benchmarks
     }
 }
 ```
-Note that we are returning the generated `Guid`, and that we added a `[ReturnValueValidator]` to the benchmarks class.
+Note that we are returning the generated `Guid` (as is recommended), but we added a `[ReturnValueValidator]` to the benchmarks class.
 When our optimized version is run the return values will be compared, and if they do not match then the benchmarks will fail (`failOnError = true`).
 The memory that is allocated is also interesting, which is measured using the `[MemoryDiagnoser]`.
 
 For completeness, I ran the benchmarks in the following environment
-```shell
+```ini
 BenchmarkDotNet=v0.11.5, OS=Windows 10.0.18362
 Intel Core i7-7700K CPU 4.20GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
 .NET Core SDK=3.0.100
@@ -87,9 +88,9 @@ Intel Core i7-7700K CPU 4.20GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cor
 
 Which results in the following baseline:
 {{% table %}}
-|       Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
-| GenerateComb | 43.91 ns | 0.2358 ns | 0.2206 ns |  1.00 | 0.0249 |     - |     - |     104 B |
+|            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
 {{% /table %}}
 
 Looking at the code we can see that the `days` and `msecs` variables are moved into the end of the `Guid`.
@@ -133,13 +134,11 @@ public Guid GenerateCombOptimized()
 
 And we see that this improves the runtime by 50%, and have (in my opinion) slightly more readable code as well.
 
-# TABLE RESULTS ARE OUT OF DATE
-
 {{% table %}}
-|                Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|---------------------- |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
-|          GenerateComb | 81.91 ns | 1.0139 ns | 0.9484 ns |  1.00 | 0.0331 |     - |     - |     104 B |
-| GenerateCombOptimized | 40.83 ns | 0.5435 ns | 0.5084 ns |  0.50 | 0.0331 |     - |     - |     104 B |
+|                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
+|            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
+|   GenerateCombOptimized | 23.63 ns | 0.1767 ns | 0.1653 ns |  0.54 | 0.0249 |     - |     - |     104 B |
 {{% /table %}}
 
 The next step is to reduce the number of allocations we need to generate a single `Guid` using the new `Span` and `MemoryMarshal` types.
@@ -152,7 +151,7 @@ We can use this technique to avoid allocating the scratch buffers that hold `mse
 
 Since we will be using the `MemoryMarshal` class to write the values (using `ref`) into the allocated `Span<byte>` instances, we will move the fields from the `TimeSpan`s into locals.
 
-```
+```cs
 private static Guid GenerateCombSpanScratch(Guid guid, DateTime now)
 {
     byte[] guidArray = guid.ToByteArray();
@@ -194,15 +193,21 @@ public Guid GenerateCombSpanScratch()
 ```
 
 This reduces the amount of allocations managed by the GC by 60% while slightly improving the runtime performance as well.
-# TABLE RESULTS ARE OUT OF DATE
+If you are wondering how we reduced the total memory usage by 60 bytes, while the arrays are only allocating 12 bytes in total 
+it is because an array is an object, and objects have some overhead associated with them. 
 
+Namely, the object header, the method table pointer, and the length of the array. These are all the size of a pointer.
+Since the benchmarks are run in a x64 environment, the pointer size is 8 bytes. 
+Thus each array carries an overhead of 3 &times; 8 = 24 bytes. This totals up to 60 bytes (24 + 8 + 24 + 4)
+
+This leaves 4 bytes unaccounted for, which is because the .NET runtime tries to align memory when allocating, so at a minimum it will allocate an array no smaller the native pointer size (4 bytes on 32 bit, and 8 bytes on 64 bit).
 
 {{% table %}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
-|            GenerateComb | 84.73 ns | 0.8703 ns | 0.7715 ns |  1.00 | 0.0331 |     - |     - |     104 B |
-|   GenerateCombOptimized | 40.87 ns | 0.3838 ns | 0.3205 ns |  0.48 | 0.0331 |     - |     - |     104 B |
-| GenerateCombSpanScratch | 31.02 ns | 0.4770 ns | 0.4229 ns |  0.37 | 0.0127 |     - |     - |      40 B |
+|            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
+|   GenerateCombOptimized | 23.63 ns | 0.1767 ns | 0.1653 ns |  0.54 | 0.0249 |     - |     - |     104 B |
+| GenerateCombSpanScratch | 16.87 ns | 0.0834 ns | 0.0780 ns |  0.38 | 0.0095 |     - |     - |      40 B |
 {{% /table %}}
 
 To remove the final allocations we will use the new API's introduced in .NET Core 3.0 (and .NET Standard 2.1) for the `Guid` type.
@@ -251,4 +256,11 @@ public Guid GenerateCombSpan()
 
 These changes completely eliminate the need for heap allocations while generating a new `Guid`, but runtime performance slightly regresses.
 
-# TABLE WITH RESULTS HERE
+{{% table %}}
+|                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
+|            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
+|   GenerateCombOptimized | 23.63 ns | 0.1767 ns | 0.1653 ns |  0.54 | 0.0249 |     - |     - |     104 B |
+| GenerateCombSpanScratch | 16.87 ns | 0.0834 ns | 0.0780 ns |  0.38 | 0.0095 |     - |     - |      40 B |
+|        GenerateCombSpan | 18.12 ns | 0.0052 ns | 0.0049 ns |  0.41 |      - |     - |     - |         - |
+{{% /table %}}
