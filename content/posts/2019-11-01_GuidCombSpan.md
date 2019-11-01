@@ -3,7 +3,7 @@ author = "Jos van der Til"
 title = "Reducing GuidCombGenerator allocations"
 date  = 2019-11-01T19:00:00+01:00
 type = "post"
-tags = [ "C#", ".NET", "Span", "Performance", "NHibernate" ]
+tags = [ "CSharp", ".NET", "Span", "Performance", "NHibernate" ]
 +++
 
 Recently at work I had to implement some functionality that required the use of `Guid` identifiers that were stored in SQL Server.

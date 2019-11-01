@@ -3,7 +3,7 @@ author = "Jos van der Til"
 title = "Introducing FdbServer"
 date  = 2018-09-12T21:00:00+02:00
 type = "post"
-tags = [ "FoundationDB", "FdbServer" ]
+tags = [ "CSharp", ".NET", "FoundationDB", "FdbServer" ]
 +++
 
 As a side project I've been working on my own implementation of a FoundationDB client for .NET.
