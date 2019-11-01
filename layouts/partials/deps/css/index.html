@@ -7,3 +7,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
 
 {{ partial "deps/css/prismjs" . }}
+
+{{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
