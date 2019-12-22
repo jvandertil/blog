@@ -11,7 +11,7 @@ The `Guid`s were generated in the application and used as an alternative key / e
 To avoid excessive index fragmentation, we opted to use the GuidComb variant using a generator from the NHibernate project.
 
 The `GuidCombGenerator` generates `Guid` values that have a timestamp embedded into the last 6 bytes. For example:
-```plaintext
+```markup
 6c5fd568-c982-4bc3-8c06-aaf8013db1a1
 10c6a438-2afa-4bf7-90ce-aaf8013db1c1
 82c9da6c-fdd0-4fc8-970a-aaf8013db1df

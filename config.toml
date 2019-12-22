@@ -2,6 +2,10 @@ baseURL = "https://www.jvandertil.nl"
 languageCode = "en-us"
 title = "Jos van der Til - Software Engineer"
 
+
+# Highlighting should output classes
+pygmentsUseClasses = true
+
 [params]
 	author = "Jos van der Til"
 	authorBio = "Hi! I'm Jos, a Software Developer from the Netherlands."
