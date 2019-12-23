@@ -67,4 +67,14 @@ az sql server firewall-rule delete --name $(SqlServerFirewallRuleName) `
 ```
 This is set to run 'Even if a previous task has failed, even if the deployment was canceled', so that it should always run.
 
+To check the permissions for the identity you can use the following query:
+```sql
+SELECT [member].[name] as username, [role].[name] as rolename
+  FROM [sys].[database_role_members]
+  JOIN [sys].[database_principals] [role] ON [role_principal_id] = [role].principal_id
+  JOIN [sys].[database_principals] [member] ON [member_principal_id] = [member].principal_id
+  WHERE [member].[name] = '<identity name>'
+```
+
 I hope this saves someone from going through the SqlCmd pain I went through before giving up and writing something myself.
+
