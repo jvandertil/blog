@@ -20,9 +20,9 @@ The `GuidCombGenerator` generates `Guid` values that have a timestamp embedded i
 These `Guid` values are optimized for SQL Server, using this same implementation with other database servers is not guaranteed to give the same benefits.
 But for SQL Server this method significantly reduces index fragmentation when you index the `Guid` values.
 
-{{% notice %}}
+{{< notice >}}
 The generator code in this blog post is derived from the [NHibernate source code](https://github.com/nhibernate/nhibernate-core/blob/ac39173567b31bcfad475ca32687c9faf0d37f87/src/NHibernate/Id/GuidCombGenerator.cs) and is LGPL licensed.
-{{% /notice %}}
+{{< /notice >}}
 
 For fun I took a look at the code to see if there were some optimizations I could make, and there were a couple fun things that I could do.
 
@@ -97,11 +97,11 @@ Intel Core i7-7700K CPU 4.20GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cor
 ```
 
 The baseline of the generator is shown below, and looking at the code some improvements are possible.
-{{% table %}}
+{{< table >}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
 |            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
-{{% /table %}}
+{{< /table >}}
 
 You can see that the `days` and `msecs` variables are converted into `byte[]`, the contents are reversed and then copied into the `guidArray`.
 Also only 6 bytes are copied and the positions where these values are placed are constant.
@@ -148,12 +148,12 @@ public Guid GenerateCombOptimized()
 This simply change results in a significant improvement of the performance of this method.
 I also think the new version is slightly more understandable as well. So I'd consider this a win-win.
 
-{{% table %}}
+{{< table >}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
 |            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
 |   GenerateCombOptimized | 23.63 ns | 0.1767 ns | 0.1653 ns |  0.54 | 0.0249 |     - |     - |     104 B |
-{{% /table %}}
+{{< /table >}}
 
 The next step is to reduce the number of allocations needed to generate a single `Guid` using the new `Span` and `MemoryMarshal` types.
 
@@ -216,13 +216,13 @@ Thus each array carries an overhead of 3 &times; 8 = 24 bytes. This totals up to
 
 This leaves 4 bytes unaccounted for. This is because the .NET runtime tries to align memory when allocating, so at a minimum it will allocate an array no smaller than the native pointer size (4 bytes on 32 bit, and 8 bytes on 64 bit).
 
-{{% table %}}
+{{< table >}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
 |            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
 |   GenerateCombOptimized | 23.63 ns | 0.1767 ns | 0.1653 ns |  0.54 | 0.0249 |     - |     - |     104 B |
 | GenerateCombSpanScratch | 16.87 ns | 0.0834 ns | 0.0780 ns |  0.38 | 0.0095 |     - |     - |      40 B |
-{{% /table %}}
+{{< /table >}}
 
 To remove the final allocations I will use the new API's introduced in .NET Core 3.0 (and .NET Standard 2.1) for the `Guid` type.
 The constructor `Guid(ReadOnlySpan<byte>)` and `TryWriteBytes(Span<byte>)`, which looks like this.
@@ -271,14 +271,14 @@ public Guid GenerateCombSpan()
 These changes completely eliminate the need for heap allocations while generating a new `Guid`.
 The mean runtime has regressed slightly, but since the GC is no longer doing any work the method runs a lot more consistently (StdDev is improved significantly).
 
-{{% table %}}
+{{< table >}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------------ |---------:|----------:|----------:|------:|-------:|------:|------:|----------:|
 |            GenerateComb | 43.98 ns | 0.1643 ns | 0.1536 ns |  1.00 | 0.0249 |     - |     - |     104 B |
 |   GenerateCombOptimized | 23.63 ns | 0.1767 ns | 0.1653 ns |  0.54 | 0.0249 |     - |     - |     104 B |
 | GenerateCombSpanScratch | 16.87 ns | 0.0834 ns | 0.0780 ns |  0.38 | 0.0095 |     - |     - |      40 B |
 |        GenerateCombSpan | 18.12 ns | 0.0052 ns | 0.0049 ns |  0.41 |      - |     - |     - |         - |
-{{% /table %}}
+{{< /table >}}
 
 All in all, I am quite satisfied with the results. 
 Even though the generator was quite fast already (44 nanoseconds / invocation), the most important part is that I could reduce the amount of memory allocated per call.
