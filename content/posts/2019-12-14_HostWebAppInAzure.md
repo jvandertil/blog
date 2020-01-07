@@ -1,20 +1,15 @@
 +++
 author = "Jos van der Til"
 title = "Hosting an ASP.NET Core web application in Azure"
-date  = 2019-12-14T15:00:00+01:00
+date  = 2020-01-07T19:00:00+01:00
 type = "post"
 tags = [ "ASP.NET Core", "Azure", "CSharp" ]
 draft = true
 +++
 
 As a side project I am working on a web application, which I want to host in Azure eventually.
-There is a ton of documentation available around Azure but I am not sure who they are targetting.
-
-I can agree that they will get you started quickly, but I am not looking for the quickest way to get things running.
-I want to get things running the 'right' way, and usually that is not done by right clicking 'publish' in Visual Studio.
-
-Eventually all the deployment and build steps should be automated in Azure DevOps, and then these tutorials are not helping at all.
-So I have documented the steps I needed to run a web application in Azure.
+There is a ton of documentation available around Azure but instructions vary by product.
+I have documented the steps I needed to run a web application in Azure.
 
 To make it easier to automate the deployment steps I am avoiding the Azure portal.
 I want to script these steps later so that I can automate my deployments.
@@ -60,7 +55,7 @@ However, eventually I want to deploy from Azure DevOps, and for now I think the 
 
 I will use some powershell to create a zip file containing the published application.
 ```powershell
-Compress-Archive -Path $OutputDir/* -DestinationPath $ApplicationZip -CompressionLevel Optimal
+Compress-Archive -Path $OutputDir/* -DestinationPath $ApplicationZip
 ```
 
 And then the following Azure CLI command to deploy the application to the WebApp.
@@ -73,7 +68,8 @@ az webapp deployment source config-zip --name $WebAppName \
 And with that you have your ASP.NET Core application running in Azure.
 
 By default, the application will detect the environment is running in as 'Production'.
-You can change this using an application setting on the WebApp.
+You can change this, and other application settings using the `config appsettings` command.
+For example, to switch the ASP.NET environment to 'Development'.
 ```shell
 az webapp config appsettings set --name $WebAppName \
                                  --resource-group $ResourceGroupName \
