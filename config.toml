@@ -38,3 +38,9 @@ pygmentsUseClasses = true
 		name = "About"
 		title = "About"
 		url = "/about/"
+
+	[[menu.footer]]
+		identifier = "cookiestatement"
+		name = "Cookie statement"
+		title = "Cookie statement"
+		url = "/cookie-statement/"

@@ -1,30 +1,40 @@
-<footer>
-    <ul class="social-icons">
-        <li>
-            <a aria-label="Twitter" href="https://www.twitter.com/{{.Site.Params.twitter}}"><i aria-hidden="true" class="fab fa-twitter fa-lg"></i></a>
-        </li>
+<ul class="social-icons">
+    <li>
+        <a aria-label="Twitter" href="https://www.twitter.com/{{.Site.Params.twitter}}"><i aria-hidden="true" class="fab fa-twitter fa-lg"></i></a>
+    </li>
 
-        <li>
-            <a aria-label="GitHub" href="https://www.github.com/{{.Site.Params.github}}"><i aria-hidden="true" class="fab fa-github fa-lg"></i></a>
-        </li>
+    <li>
+        <a aria-label="GitHub" href="https://www.github.com/{{.Site.Params.github}}"><i aria-hidden="true" class="fab fa-github fa-lg"></i></a>
+    </li>
 
-        <li>
-            <a aria-label="LinkedIn" href="https://www.linkedin.com/in/{{.Site.Params.linkedin}}"><i aria-hidden="true" class="fab fa-linkedin fa-lg"></i></a>
-        </li>
+    <li>
+        <a aria-label="LinkedIn" href="https://www.linkedin.com/in/{{.Site.Params.linkedin}}"><i aria-hidden="true" class="fab fa-linkedin fa-lg"></i></a>
+    </li>
 
-        {{ with .OutputFormats.Get "RSS" }}
-        <li>
-            <a aria-label="RSS feed" href="{{ .Permalink }}"><i aria-hidden="true" class="fas fa-rss fa-lg"></i></a>
-        </li>
+    {{ with .OutputFormats.Get "RSS" }}
+    <li>
+        <a aria-label="RSS feed" href="{{ .Permalink }}"><i aria-hidden="true" class="fas fa-rss fa-lg"></i></a>
+    </li>
+    {{ end }}
+</ul>
+<p>
+    {{ if eq .Page.Params.Type "post" }}
+    <small>Notice an error or mistake? Suggest an <a href="{{ .Site.Params.githubRepoUrl }}/edit/master/content/{{ replace .Page.File.Path "\\" "/" }}">edit</a>.</small>
+    {{ end }}
+</p>
+
+
+<p>
+    &copy; <time datetime="{{now.Format "2006"}}">{{now.Format "2006"}}</time> <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>.
+    Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license unless otherwise specified.
+</p>
+
+
+<nav id="footer-nav">
+    {{ $pages := .Site.Menus.footer }}
+    <ul>
+        {{ range $pages }}
+        <li><a href="{{ .URL }}">{{ .Title }}</a></li>
         {{ end }}
     </ul>
-    <p>
-        &copy; <time datetime="{{now.Format "2006"}}">{{now.Format "2006"}}</time> <a href="{{ $.Site.BaseURL }}">{{ .Site.Params.Author }}</a>.
-        Released under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> license.
-    </p>
-    <p>
-        {{ if eq .Page.Params.Type "post" }}
-        <small>Notice an error or mistake? Suggest an <a href="{{ .Site.Params.githubRepoUrl }}/edit/master/content/{{ replace .Page.File.Path "\\" "/" }}">edit</a>.</small>
-        {{ end }}
-    </p>
-</footer>
+</nav>
