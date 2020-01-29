@@ -1,6 +1,6 @@
 .post-tags {
     font-family: 'Open Sans';
-    font-size: 16px;
+    font-size: 14px;
 
     ul {
         text-align: center;
@@ -13,10 +13,20 @@
 
             a {
                 @extend .badge;
-                @extend .badge-secondary;
+                @extend .badge-light;
             }
         }
     }
+}
+
+h2.post-title {
+    text-align: center;
+}
+
+.post-meta {
+    text-align: center;
+    font-weight: 300;
+    /*margin-top: -5px;*/
 }
 
 .draft-badge {
