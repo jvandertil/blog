@@ -1,7 +1,7 @@
 +++
 author = "Jos van der Til"
 title = "Hosting an ASP.NET Core web application in Azure"
-date  = 2020-01-07T19:00:00+01:00
+date  = 2020-01-29T11:00:00+01:00
 type = "post"
 tags = [ "ASP.NET Core", "Azure", "CSharp" ]
 draft = true
