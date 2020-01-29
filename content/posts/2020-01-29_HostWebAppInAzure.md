@@ -28,7 +28,7 @@ az group create --name $ResourceGroupName --location westeurope
 ```
 
 To host a WebApp an AppService plan is required, think of it as the webserver or web farm that will host the website.
-```shell
+```powershell
 az appservice plan create --name $AppServicePlanName `
                           --resource-group $ResourceGroupName `
                           --location westeurope `
@@ -58,7 +58,7 @@ Compress-Archive -Path $OutputDir/* -DestinationPath $ApplicationZip
 ```
 
 And then the following Azure CLI command to deploy the application to the WebApp.
-```shell
+```powershell
 az webapp deployment source config-zip --name $WebAppName `
                                        --resource-group $ResourceGroupName `
                                        --src $ApplicationZip
