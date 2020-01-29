@@ -30,9 +30,9 @@ az group create --name $ResourceGroupName --location westeurope
 
 To host a WebApp an AppService plan is required, think of it as the webserver or web farm that will host the website.
 ```shell
-az appservice plan create --name $AppServicePlanName \
-                          --resource-group $ResourceGroupName \
-                          --location westeurope \
+az appservice plan create --name $AppServicePlanName `
+                          --resource-group $ResourceGroupName `
+                          --location westeurope `
                           --sku FREE
 ```
 
@@ -60,8 +60,8 @@ Compress-Archive -Path $OutputDir/* -DestinationPath $ApplicationZip
 
 And then the following Azure CLI command to deploy the application to the WebApp.
 ```shell
-az webapp deployment source config-zip --name $WebAppName \
-                                       --resource-group $ResourceGroupName \
+az webapp deployment source config-zip --name $WebAppName `
+                                       --resource-group $ResourceGroupName `
                                        --src $ApplicationZip
 ```
 
@@ -70,8 +70,8 @@ And with that you have your ASP.NET Core application running in Azure.
 By default, the application will detect the environment is running in as 'Production'.
 You can change this, and other application settings using the `config appsettings` command.
 For example, to switch the ASP.NET environment to 'Development'.
-```shell
-az webapp config appsettings set --name $WebAppName \
-                                 --resource-group $ResourceGroupName \
+```powershell
+az webapp config appsettings set --name $WebAppName `
+                                 --resource-group $ResourceGroupName `
                                  --settings ASPNETCORE_ENVIRONMENT=Development
 ```
