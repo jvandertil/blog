@@ -36,4 +36,4 @@ If you end up in vim and are unfamilar how to exit, use ESC to go to the command
 
 Now Git will switch to the Windows supplied OpenSSH implementation, and everything works together nicely.
 
-**Update 29-01-2020**: Removed quotes from Git config as these are not needed; added git config instructions.
+*Update 29-01-2020: Removed quotes from Git config as these are not needed; added git config instructions.*
