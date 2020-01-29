@@ -25,7 +25,15 @@ This means that you are now running an ssh-agent that Git will not use.
 To fix this add the following to the Git config:
 ```properties
 [core]
-    sshCommand = \"C:/Windows/System32/OpenSSH/ssh.exe\"
+    sshCommand = C:/WINDOWS/System32/OpenSSH/ssh.exe
 ```
 
+I generally use this command to edit the global Git config: `git config --global -e`.
+
+{{< notice >}}
+If you end up in vim and are unfamilar how to exit, use ESC to go to the command bar, and type ':wq' to save and exit, or ':q!' to exit without saving.
+{{< /notice >}}
+
 Now Git will switch to the Windows supplied OpenSSH implementation, and everything works together nicely.
+
+**Update 29-01-2020**: Removed quotes from Git config as these are not needed; added git config instructions.
