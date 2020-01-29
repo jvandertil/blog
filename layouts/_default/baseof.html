@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="{{.Site.LanguageCode}}">
 <head>
     <meta charset="utf-8" />
@@ -51,7 +51,9 @@
         {{ block "main" . }}{{ end }}
     </main>
 
-    {{ partial "footer" . }}
+    <footer>
+        {{ partial "footer" . }}
+    </footer>
 
     {{ partial "deps/js/index" . }}
 </body>
