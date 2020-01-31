@@ -61,8 +61,8 @@ Using the excellent [BenchmarkDotNet](https://benchmarkdotnet.org/) library you 
 
 The initial benchmark code looks like this.
 ```cs
-[MemoryDiagnoser,
- ReturnValueValidator(failOnError: true)]
+[MemoryDiagnoser]
+[ReturnValueValidator(failOnError: true)]
 public class Benchmarks
 {
     private Guid _guid;
