@@ -1,9 +1,20 @@
 .highlight {
-    font-size: 14px;
     -webkit-overflow-scrolling: touch;
 }
 
 .highlight > pre > code {
     display: inline-block;
     word-wrap: normal;
+}
+
+pre[class*="language-"],
+code[class*="language-"] {
+    font-size: 13px;
+    line-height: 1.2em;
+}
+
+[data-theme="dark"] {
+    pre[class*="language-"] {
+        border: 1px solid #1e1e1e;
+    }
 }
