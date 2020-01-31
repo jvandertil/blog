@@ -2,7 +2,6 @@
     @extend .btn;
     @extend .btn-outline-light;
     @extend .text-dark;
-
     margin-left: auto;
 }
 
@@ -46,7 +45,8 @@
         @extend .text-light;
     }
 
-    p > code {
+    p code,
+    ol code {
         color: #ff6a00;
     }
 }
