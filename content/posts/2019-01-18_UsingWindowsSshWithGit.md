@@ -14,7 +14,7 @@ Error connecting to agent: No such file or directory
 ```
 
 This is because by default the OpenSSH agent (ssh-agent) service is disabled.
-To enable it open an elevated PowerShell window and run:
+To enable it, open an elevated PowerShell window and run:
 ```powershell
 Set-Service -StartupType Manual ssh-agent
 ```

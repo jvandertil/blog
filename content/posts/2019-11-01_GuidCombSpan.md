@@ -6,7 +6,7 @@ type = "post"
 tags = [ "CSharp", ".NET", "Span", "Performance" ]
 +++
 
-Recently at work I had to implement some functionality that required the use of `Guid` identifiers that were stored in SQL Server.
+Recently at work, I had to implement some functionality that required the use of `Guid` identifiers that were stored in SQL Server.
 The `Guid`s were generated in the application and used as an alternative key / external identifier for other systems.
 To avoid excessive index fragmentation, we opted to use the GuidComb variant using a generator from the NHibernate project.
 
@@ -24,7 +24,7 @@ But for SQL Server this method significantly reduces index fragmentation when yo
 The generator code in this blog post is derived from the [NHibernate source code](https://github.com/nhibernate/nhibernate-core/blob/ac39173567b31bcfad475ca32687c9faf0d37f87/src/NHibernate/Id/GuidCombGenerator.cs) and is LGPL licensed.
 {{< /notice >}}
 
-For fun I took a look at the code to see if there were some optimizations I could make, and there were a couple fun things that I could do.
+For fun, I took a look at the code to see if there were some optimizations I could make, and there were a couple of fun things that I could do.
 
 The original version of the code looks like this.
 I added the parameters to make it a bit easier to verify that the optimizations are not changing the generated `Guid` later on.
@@ -104,7 +104,7 @@ The baseline of the generator is shown below, and looking at the code some impro
 {{< /table >}}
 
 You can see that the `days` and `msecs` variables are converted into `byte[]`, the contents are reversed and then copied into the `guidArray`.
-Also only 6 bytes are copied and the positions where these values are placed are constant.
+Also, only 6 bytes are copied and the positions where these values are placed are constant.
 Instead of rearranging the bytes physically in memory using `Array.Reverse` and copying them into place using `Array.Copy`, you can do both steps simultaneously manually. 
 
 Note that both the original code, as well as the optimized code assume a little-endian system. 
@@ -145,7 +145,7 @@ public Guid GenerateCombOptimized()
 }
 ```
 
-This simply change results in a significant improvement of the performance of this method.
+This simple change results in a significant improvement in the performance of this method.
 I also think the new version is slightly more understandable as well. So I'd consider this a win-win.
 
 {{< table >}}
@@ -159,9 +159,9 @@ The next step is to reduce the number of allocations needed to generate a single
 
 In unsafe code there is a trick to allocate memory on the stack, which is not managed by the garbage collector (GC), using the `stackalloc` keyword.
 While stack space is limited, it is useful for small arrays (say < 256 bytes) since you avoid the need for the garbage collector (GC) to clean up the memory once you are done.
-Stack based memory is cleaned up automatically once you return from the method in which you allocated it.
+Stack-based memory is cleaned up automatically once you return from the method in which you allocated it.
 
-Since C# 7.2 you can use `stackalloc` in managed code aswell, with the limitation that you have to allocate it into a `Span<T>`.
+Since C# 7.2 you can use `stackalloc` in managed code as well, with the limitation that you have to allocate it into a `Span<T>`.
 I will use this technique to avoid allocating the scratch buffers that hold `msecs` and `days`.
 
 Since I will be using the `MemoryMarshal` class to write the values (using `ref`) into the allocated `Span<byte>` instances, I need to move the fields I used from the `TimeSpan`s into local variables.
@@ -206,15 +206,15 @@ public Guid GenerateCombSpanScratch()
 }
 ```
 
-This reduces the amount of allocations managed by the GC by 60% while slightly improving the runtime performance as well.
+This reduces the number of allocations managed by the GC by 60% while slightly improving the runtime performance as well.
 If you are wondering why the total memory usage is reduced by 64 bytes, while the arrays are only allocating 12 bytes in total (`int` is 4 bytes, and `long` is 8 bytes),
 it is because an array is an object, and objects have some overhead associated with them. 
 
 Each array has an object header, a method table pointer, and the length variable. These are all the size of a pointer.
-Since the benchmarks are run in a x64 environment, the pointer size is 8 bytes. 
+Since the benchmarks are run in an x64 environment, the pointer size is 8 bytes. 
 Thus each array carries an overhead of 3 &times; 8 = 24 bytes. This totals up to 60 bytes (24 + 8 + 24 + 4).
 
-This leaves 4 bytes unaccounted for. This is because the .NET runtime tries to align memory when allocating, so at a minimum it will allocate an array no smaller than the native pointer size (4 bytes on 32 bit, and 8 bytes on 64 bit).
+This leaves 4 bytes unaccounted for. This is because the .NET runtime tries to align memory when allocating, so at a minimum, it will allocate an array no smaller than the native pointer size (4 bytes on 32 bit, and 8 bytes on 64 bit).
 
 {{< table >}}
 |                  Method |     Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
@@ -224,7 +224,7 @@ This leaves 4 bytes unaccounted for. This is because the .NET runtime tries to a
 | GenerateCombSpanScratch | 16.87 ns | 0.0834 ns | 0.0780 ns |  0.38 | 0.0095 |     - |     - |      40 B |
 {{< /table >}}
 
-To remove the final allocations I will use the new API's introduced in .NET Core 3.0 (and .NET Standard 2.1) for the `Guid` type.
+To remove the final allocations I will use the new APIs introduced in .NET Core 3.0 (and .NET Standard 2.1) for the `Guid` type.
 The constructor `Guid(ReadOnlySpan<byte>)` and `TryWriteBytes(Span<byte>)`, which looks like this.
 
 ```cs
@@ -268,7 +268,7 @@ public Guid GenerateCombSpan()
 }
 ```
 
-These changes completely eliminate the need for heap allocations while generating a new `Guid`.
+These changes eliminate the need for heap allocations while generating a new `Guid`.
 The mean runtime has regressed slightly, but since the GC is no longer doing any work the method runs a lot more consistently (StdDev is improved significantly).
 
 {{< table >}}
@@ -281,7 +281,7 @@ The mean runtime has regressed slightly, but since the GC is no longer doing any
 {{< /table >}}
 
 All in all, I am quite satisfied with the results. 
-Even though the generator was quite fast already (44 nanoseconds / invocation), the most important part is that I could reduce the amount of memory allocated per call.
-As you saw, `Span<T>` makes it a lot easier to manipulate memory in a safe way. Before you would have to introduce `unsafe` code, and you probably wouldn't be able to eliminate all of the allocations.
+Even though the generator was quite fast already (44 nanoseconds/invocation), the most important part is that I could reduce the amount of memory allocated per call.
+As you saw, `Span<T>` makes it a lot easier to manipulate memory safely. Before you would have to introduce `unsafe` code, and you probably wouldn't be able to eliminate all of the allocations.
 
 If you are deploying code that is invoked millions of times a day, these small savings can quickly add up.

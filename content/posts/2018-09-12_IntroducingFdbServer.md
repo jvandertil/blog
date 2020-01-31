@@ -6,37 +6,37 @@ type = "post"
 tags = [ "CSharp", ".NET", "FoundationDB", "FdbServer" ]
 +++
 
-As a side project I've been working on my own implementation of a FoundationDB client for .NET.
-Obviously I want to have tests to verify things are working properly, and for local development that isn't such a problem since I usually have a FoundationDB server installed.
+As a side project, I've been working on my implementation of a FoundationDB client for .NET.
+I want to have tests to verify things are working properly, and for local development that isn't such a problem since I usually have a FoundationDB server installed.
 However, when I want to run these tests on a build server I do not want to enforce installing FoundationDB in the build environment, things should just work.
-Also when people checkout the repository and want to run the tests, they shouldn't strictly need to have FoundationDB installed.
+Also when people check out the repository and want to run the tests, they shouldn't strictly need to have FoundationDB installed.
 
 That is why I created the [FdbServer](https://www.github.com/jvandertil/FdbServer) library. 
 
 ## What does it do?
 This library will download the FoundationDB server executables and mimic the installation procedure.
-It will provide you with a cluster file which you use to connect to the temporary database.
+It will provide you with a cluster file that you use to connect to the temporary database.
 After running all the tests you can call the Destroy method to clean up the FoundationDB instance.
 
 At the time of writing you can't specify where it will install it, nor can you continue a session that you left previously.
-For my use case I don't need this anyway.
+For my use case, I don't need this anyway.
 
 ## How does it work?
 
-The library will download the FoundationDB executable from GitHub (which I had to repackage unfortunately), and place these in a temporary folder.
-It will then create a cluster file, and some additional folders for data and logging.
+The library will download the FoundationDB executable from GitHub (which I had to repackage, unfortunately), and place these in a temporary folder.
+It will then create a cluster file and some additional folders for data and logging.
 The last step is starting the database and initializing it so that it will accept writes.
 
-Unfortunately the executables are not distributed by Apple as a ZIP file or other easy extractable format but only as an installer.
+Unfortunately, the executables are not distributed by Apple as a ZIP file or other easy extractable format but only as an installer.
 Thus I have to repackage the executables I need into a ZIP file and host these somewhere.
-To ensure atleast some protection the SHA512 hashes are hardcoded into the library, but it still requires trusting me and my machine.
+To ensure at least some protection the SHA512 hashes are hardcoded into the library, but it still requires trusting me and my machine.
 
 ## How do I use it?
 
 You should create an instance of the database using the FdbServerBuilder and store this somewhere globally for the tests.
 The builder will download and unpack everything so it should not be called multiple times if you want your tests to execute quickly.
 
-If you use XUnit the easiest way would be to create Fixture that holds the instance and pass that to the tests that require it.
+If you use XUnit the easiest way would be to create a Fixture that holds the instance and pass that to the tests that require it.
 For example:
 ```cs
 using System;

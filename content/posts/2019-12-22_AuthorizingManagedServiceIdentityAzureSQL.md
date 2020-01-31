@@ -16,7 +16,7 @@ ALTER ROLE db_datawriter ADD MEMBER [<identity-name>];
 ALTER ROLE db_ddladmin ADD MEMBER [<identity-name>];
 ```
 
-I was having a lot of trouble getting the Azure SqlCmd task to work, while the error(s) it was showing were not helpful at all.
+I was having a lot of trouble getting the Azure SqlCmd task to work, while the error(s) it was showing was not helpful at all.
 For example:
 ```powershell
 Failed to reach SQL server <server-address>,1433. One or more errors occurred.
@@ -36,7 +36,7 @@ So, I created a small tool (available on [GitHub](https://github.com/jvandertil/
 
 ## Running from Azure DevOps
 Since the database is protected by a firewall, I have to add the Azure DevOps agent IP address to the firewall rules temporarily.
-The easiest way I could think of was running a powershell script to set variable.
+The easiest way I could think of was running a PowerShell script to set a variable.
 ```powershell
 $clientIp = (curl https://icanhazip.com).Content
 
@@ -59,13 +59,13 @@ Then I can run my authorization tool to get the database set up.
                                   --no-ddladmin
 ```
 
-Obviously I do not want to allow the agent IP address forever, so I added an Azure CLI step to clean it up after I am done.
+I do not want to allow the agent IP address forever, so I added an Azure CLI step to clean it up after I am done.
 ```powershell
 az sql server firewall-rule delete --name $(SqlServerFirewallRuleName) `
                                    --resource-group $(ResourceGroupName) `
                                    --server $(SqlServerName)
 ```
-This is set to run 'Even if a previous task has failed, even if the deployment was canceled', so that it should always run.
+This is set to run 'Even if a previous task has failed, even if the deployment was canceled' so that it should always run.
 
 To check the permissions for the identity you can use the following query:
 ```sql

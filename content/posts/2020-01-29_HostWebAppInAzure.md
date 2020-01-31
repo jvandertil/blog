@@ -6,13 +6,13 @@ type = "post"
 tags = [ ".NET", "ASP.NET", "Azure" ]
 +++
 
-As a side project I am working on a web application, which I want to host in Azure eventually.
+As a side project, I am working on a web application that I want to host in Azure eventually.
 There is a ton of documentation available around Azure but instructions vary by product.
 I have documented the steps I needed to run a web application in Azure.
 
 To make it easier to automate the deployment steps I am avoiding the Azure portal.
 I want to script these steps later so that I can automate my deployments.
-Everything I want to do can be done using the Azure CLI, so for now I will be using that.
+Everything I want to do can be done using the Azure CLI so, for now, I will be using that.
 
 ## Creating the Azure infrastructure
 If you are following along, do not forget to authenticate the Azure CLI.
@@ -27,7 +27,7 @@ All the resources in a resource group should share the same lifecycle.
 az group create --name $ResourceGroupName --location westeurope 
 ```
 
-To host a WebApp an AppService plan is required, think of it as the webserver or web farm that will host the website.
+To host a WebApp an AppService plan is required, think of it as the web server or web farm that will host the website.
 ```powershell
 az appservice plan create --name $AppServicePlanName `
                           --resource-group $ResourceGroupName `
@@ -35,7 +35,7 @@ az appservice plan create --name $AppServicePlanName `
                           --sku FREE
 ```
 
-And obviously the Azure WebApp itself, assigned to the AppService plan.
+And the Azure WebApp itself, assigned to the AppService plan.
 ```shell
 az webapp create --name $WebAppName --plan $AppServicePlanName --resource-group $ResourceGroupName
 ```
@@ -50,9 +50,9 @@ dotnet publish $ProjectPath --output $OutputDir
 ```
 
 The Azure CLI has support for several different deployment methods.
-However, eventually I want to deploy from Azure DevOps, and for now I think the easiest way to facilitate this is the ZIP file method.
+However eventually I want to deploy from Azure DevOps, and for now, I think the easiest way to facilitate this is the ZIP file method.
 
-I will use some powershell to create a zip file containing the published application.
+I will use some PowerShell to create a zip file containing the published application.
 ```powershell
 Compress-Archive -Path $OutputDir/* -DestinationPath $ApplicationZip
 ```

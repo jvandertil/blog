@@ -5,11 +5,11 @@ url   = "cookie-statement/"
 type = "page"
 +++
 
-When you visit this website we use cookies which are stored on your computer, phone, or tablet.
+When you visit this website we use cookies that are stored on your computer, phone, or tablet.
 
 ## What are cookies?
 Cookies are simple, small computer files that are transmitted from a website to your browser when you open a page. 
-Your browser stores them on your device, such as a computer, tablet or smartphone. Their main purpose is to identify individual users.
+Your browser stores them on your devices, such as a computer, tablet or smartphone. Their main purpose is to identify individual users.
 
 In addition to cookies, there are other technologies we use that allow us to store and read information on your PC, tablet or mobile. 
 One example of this is local storage, which essentially works the same as cookies, and which we will refer to as ‘cookies’ for the sake of convenience.

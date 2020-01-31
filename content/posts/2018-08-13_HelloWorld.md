@@ -19,10 +19,10 @@ It is really fast, and building this small blog at the moment takes roughly 100 
 
 ### GitHub 
 The source code for this blog is hosted on [GitHub](https://www.github.com/jvandertil/blog).
-Feel free to open an issue if you have found a typo or some other error, or if it is just a small thing which is easily fixed, I'm happy to accept Pull Requests!
+Feel free to open an issue if you have found a typo or some other error, or if it is just a small thing that is easily fixed, I'm happy to accept Pull Requests!
 
 ### TeamCity
-This blog is automatically deployed on each checkin to master using [TeamCity](https://www.jetbrains.com/teamcity).
+This blog is automatically deployed on each check-in to master using [TeamCity](https://www.jetbrains.com/teamcity).
 Automating everything involved should make it easier for me to update things in the blog, as I don't have to worry about uploading or publishing anything.
 Each commit will be automatically deployed.
 
