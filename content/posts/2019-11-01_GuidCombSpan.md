@@ -87,7 +87,7 @@ If any benchmark returns a different value the benchmarks will fail (`failOnErro
 Since the value of the `Guid` is partially random, and partially a timestamp, you can see why adding the inputs as parameters is required.
 The memory that is allocated is also interesting, so I added the `[MemoryDiagnoser]` as well.
 
-For completeness, I ran the benchmarks in the following environment. So your result may differ depending on runtime, CPU, and other factors.
+For completeness, I ran the benchmarks in the following environment. So your results may differ depending on runtime, CPU, and other factors.
 ```ini
 BenchmarkDotNet=v0.11.5, OS=Windows 10.0.18362
 Intel Core i7-7700K CPU 4.20GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
