@@ -3,7 +3,7 @@ author = "Jos van der Til"
 title = "Authorizing Managed Service Identity in Azure SQL Database"
 date  = 2019-12-22T14:00:00+01:00
 type = "post"
-tags = [ "CSharp", ".NET", "Azure", "SQL Server" ]
+tags = [ ".NET", "Azure", "SqlServer" ]
 +++
 
 When trying to deploy a simple web application and Azure SQL database through Azure DevOps pipelines,

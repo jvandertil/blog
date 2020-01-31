@@ -3,7 +3,7 @@ author = "Jos van der Til"
 title = "Hosting a Hugo blog on Azure"
 date  = 2019-10-19T15:00:00+01:00
 type = "post"
-tags = [ "Azure", "Azure DevOps", "Powershell" ]
+tags = [ "Azure", "AzureDevOps", "Powershell" ]
 draft = true
 +++
 

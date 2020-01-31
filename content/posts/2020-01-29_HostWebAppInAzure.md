@@ -3,7 +3,7 @@ author = "Jos van der Til"
 title = "Hosting an ASP.NET Core web application in Azure"
 date  = 2020-01-29T11:00:00+01:00
 type = "post"
-tags = [ "ASP.NET Core", "Azure", "CSharp" ]
+tags = [ ".NET", "ASP.NET", "Azure" ]
 +++
 
 As a side project I am working on a web application, which I want to host in Azure eventually.
