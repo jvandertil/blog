@@ -45,4 +45,8 @@
         @extend .btn-outline-dark;
         @extend .text-light;
     }
+
+    p > code {
+        color: #ff6a00;
+    }
 }
