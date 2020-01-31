@@ -20,12 +20,3 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
 }
-
-table {
-    @extend .table;
-    @extend .table-striped;
-
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-}

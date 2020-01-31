@@ -7,21 +7,17 @@
     }
 }
 
-
 .single-post > header {
     text-align: center;
     padding-bottom: 15px;
 }
 
-
 .post-date {
     @extend .text-uppercase;
     @extend .font-weight-light;
-
     display: inline-block;
     font-size: 18px;
 }
-
 
 .post-content {
     padding-bottom: 30px;
@@ -46,4 +42,12 @@
     p {
         margin-left: 99px;
     }
+}
+
+table {
+    @extend .table;
+    @extend .table-striped;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
