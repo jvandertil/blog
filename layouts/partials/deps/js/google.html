@@ -1,4 +1,12 @@
 {{ if not .Site.IsServer }}
+<script type="text/javascript">
+    // TODO: Implement consent for ads (opt-in?)
+    (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
+
+    // TODO: Implement consent for tracking (opt-out because analytics is 'AVG proofed')
+    window['ga-disable-UA-112868844-1'] = false;
+</script>
+
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112868844-1"></script>
 <script>
