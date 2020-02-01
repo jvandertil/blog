@@ -28,3 +28,10 @@ This website uses the following cookies:
 ## How can I delete cookies?
 
 Check your browser’s Help feature for details on how to activate, deactivate and delete cookies.
+
+## Google Analytics
+This website uses Google Analytics for analytical tracking, this is configured to comply with the General Data Protection Regulation (GDPR).
+This means that we have a data processing agreement with Google and that no consent for data sharing with other Google services has been given.
+Also, the last octet of your IP address is masked when analytics are processed by Google.
+
+We are working on providing an opt-out for any analytics processing on this website.

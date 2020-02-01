@@ -24,9 +24,7 @@
     {{ $darkmodeJs := resources.Get "js/darkmode.js" | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}" integrity="{{ $darkmodeJs.Data.Integrity }}"></script>
 
-    <script data-ad-client="ca-pub-1829499003166451"
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-            async></script>
+    {{ partial "deps/js/google" . }}
 </head>
 <body>
     <!-- Initialize the theme here to avoid a flash of unthemed content. -->
