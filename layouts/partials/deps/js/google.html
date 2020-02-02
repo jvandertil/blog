@@ -1,8 +1,5 @@
 {{ if not .Site.IsServer }}
 <script type="text/javascript">
-    // TODO: Implement consent for ads (opt-in?)
-    (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
-
     // TODO: Implement consent for tracking (opt-out because analytics is 'AVG proofed')
     window['ga-disable-UA-112868844-1'] = false;
 </script>
@@ -16,8 +13,4 @@
 
     gtag('config', 'UA-112868844-1', { 'anonymize_ip': true });
 </script>
-
-<script data-ad-client="ca-pub-1829499003166451"
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-        async></script>
 {{ end }}
