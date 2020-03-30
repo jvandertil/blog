@@ -21,7 +21,6 @@ namespace Uploader.Tests
             _syncer = new ContentSyncer(_source, _destination, _logger);
         }
 
-
         [Fact]
         public async Task SynchronizeFilesAsync_UploadsFileFromSource_IfItDoesNotExistOnDestination()
         {
