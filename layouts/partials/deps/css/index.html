@@ -1,13 +1,13 @@
+{{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" />
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"
       integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ="
-      crossorigin="anonymous">
-
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap">
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+      crossorigin="anonymous" />
 
 {{ partial "deps/css/prismjs" . }}
-
-{{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
-<link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
