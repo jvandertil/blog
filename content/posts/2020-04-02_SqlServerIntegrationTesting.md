@@ -1,6 +1,6 @@
 +++
 author = "Jos van der Til"
-title = "SQL Server integration testing"
+title = "SQL Server integration testing using xUnit"
 date  = 2020-04-02T11:00:00+02:00
 type = "post"
 tags = [ ".NET", "ASP.NET", "CSharp", "SqlServer", "Testing" ]
