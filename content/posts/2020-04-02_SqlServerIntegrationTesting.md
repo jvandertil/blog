@@ -12,7 +12,7 @@ I wanted to answer these questions:
 2. Does the schema in my migration scripts match the expected schema in my code? (follows from 1)
 3. Can my migration scripts be applied to the database correctly?
 
-Since I was using SQL Server I could utilize SQL Server [LocalDb](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb) 
+Since I was using SQL Server I could utilize SQL Server [LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb) 
 that comes with Visual Studio.
 To keep performance acceptable I do not want to create and destroy a database for each test, so I need a way to reset the database after a test has run.
 
