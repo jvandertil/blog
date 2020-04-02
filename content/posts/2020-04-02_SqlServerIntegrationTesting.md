@@ -4,30 +4,29 @@ title = "SQL Server integration testing"
 date  = 2020-04-02T11:00:00+02:00
 type = "post"
 tags = [ ".NET", "ASP.NET", "CSharp", "SqlServer", "Testing" ]
-draft = true
 +++
 
 Recently I wanted to verify that my data access layer could properly read and write to a SQL Server database, and I wanted to have these tests automated.
 I wanted to answer these questions:
 1. Can my `DbContext` roundtrip entities to the database and back?
-2. Can my migration scripts be applied to the database correctly?
-3. Does the schema in my migration scripts match the expected schema in my code?
+2. Does the schema in my migration scripts match the expected schema in my code? (follows from 1)
+3. Can my migration scripts be applied to the database correctly?
 
 Since I was using SQL Server I could utilize SQL Server [LocalDb](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb) 
 that comes with Visual Studio.
 To keep performance acceptable I do not want to create and destroy a database for each test, so I need a way to reset the database after a test has run.
 
-Let us first try to create a new database at the start of a test, and destroy it afterwards. For the tests in this post I will be using [xUnit](https://github.com/xunit/xunit).
+In this post I will demonstrate how to use SQL Server LocalDB to automate database integration tests using [xUnit](https://github.com/xunit/xunit).
 
 ## Creating and destroying a LocalDB database
 
-Lets start with a simple fixture that will create a database, and clean it up when it is disposed.
-For the database name I use the application name suffixed with a `Guid` value for uniqueness.
+Let's start with a simple fixture that will create a database and clean it up when it is disposed.
+For the database name, I use the application name suffixed with a `Guid` value for uniqueness.
 While not strictly necessary I used `async` methods to initialize and dispose of the database.
 
 {{< notice >}}
 I am using string interpolation (`$""`) to format the database name into the query. 
-Do not use this to put user input in queries!
+Do not use this to put user input into queries!
 {{< /notice >}}
 
 ```cs
@@ -90,7 +89,7 @@ When this fixture is injected you can use it to create a connection to the datab
 As an example, you can use an `IClassFixture<T>` to share the database in a test class.
 
 {{< notice >}}
-Due to the long time it takes to initialize and destroy databases you are generally better off using a [collection fixture](https://xunit.net/docs/shared-context#collection-fixture) instead of an `IClassFixture<T>`. 
+Due to the time it takes to initialize and destroy databases you are generally better off using a [collection fixture](https://xunit.net/docs/shared-context#collection-fixture) instead of an `IClassFixture<T>`. 
 These will share the database fixture across all tests in the collection, but this does limit the amount of parallelization xUnit can do.
 Be sure to read the documentation!
 {{< /notice >}}
@@ -138,9 +137,9 @@ Now that we can create, connect to, and destroy a database lets get a schema dep
 
 ## Deploying database schema with DbUp
 When deploying database I greatly prefer migration scripts over a 'desired state' like approach such as DACPAC.
-Generally, the 'desired state' approach has either perceived (does your DBA trust automatic database state migration?) or real issues when data has to be migrated, requiring a manual migration script.
+For that, I am using [DbUp](https://dbup.github.io/) to run SQL scripts embedded into a console application.
+The DbUp code lives in its own project as it is a separate deployable.
 
-In any case, I am using [DbUp](https://dbup.github.io/) to run SQL scripts embedded into a console application.
 I created the following class to wrap the DbUp logic, and I generally call this from a console application `Main` method.
 
 ```cs
@@ -170,7 +169,7 @@ public class SqlServerMigrationRunner
 
 Let's add a call to this to the initialization logic of the `DatabaseFixture`. 
 If you are using another form of database schema migration, adjust as necessary.
-Although doing this when using something like DACPAC might give you considerable pain.
+Although doing this when using something like DACPAC might not be as easy.
 
 ```cs
 public class DatabaseFixture : IAsyncLifetime
@@ -204,14 +203,14 @@ This gives me the greatest confidence that everything will work as expected when
 ## Resetting database state
 To ensure that tests do not influence each other you should give each test a clean database as a starting point.
 Creating a new empty database for each test will increase the time your test suite needs to run considerably.
-Generally I would advise to have all tests run against a single database instance and clean the database after each test.
+Generally, I would advise having all tests run against a single database instance and clean the database after each test.
 
 I used the [Respawn](https://github.com/jbogard/Respawn) library created by [Jimmy Bogard](https://jimmybogard.com/) that intelligently deletes data from the database. 
 It follows the relationships defined in your model and deletes from the 'leaf' tables inwards.
 The `Checkpoint` class provides methods that you can use to delete all the data from the database.
 There are a couple of options when you want to avoid clearing out certain tables or schemas, everything else will be deleted.
 
-If you are dependent on seed data that is in tables that are also modified by tests, then you will have to reseed everytime you reset the database using Respawn.
+If you are dependent on seed data that is in tables that are also modified by tests, then you will have to reseed every time you reset the database using Respawn.
 (I am not sure if I would consider that test design as a 'test smell' since the test depends on things outside of its control.)
 
 I placed the method to reset the database on the fixture as well, as it is convenient to have all the database fixture control in 1 place as a consumer.
@@ -249,7 +248,11 @@ public class DatabaseFixture : IAsyncLifetime
 ```
 
 From the test's `InitializeAsync` method you should call the `ResetDatabaseAsync` method on the fixture.
-Now you are ready to write your own integration tests.
+This should give you a good starting point for writing your integration tests.
+
+{{< notice >}}
+Cleaning the database before/after each test might be a bit to rigorous for your tests. Adjust to your situation.
+{{< /notice >}}
 
 ## Copy and paste example code
 
@@ -333,12 +336,10 @@ public abstract class DatabaseFixture : IAsyncLifetime
 }
 ```
 
-## Running in Azure DevOps
-I am using the code shown here successfully in Azure DevOps on a Microsoft hosted agent using the `windows-latest` image.
-You should add the following command to your pipeline before running the tests.
+## Conclusion
+That should be enough to get you started with testing your SQL Server integration points. 
+It works really well when testing your `DbContext` or repository implementations.
 
-```none
-sqllocaldb start MSSQLLocalDB
-```
-
-This will ensure that the database engine is started before the tests are run, this is not always the case.
+This approach also works on Microsoft hosted agents in Azure DevOps using the `windows-latest` image.
+Be sure to run `sqllocaldb start MSSQLLocalDB` before running the actual tests. 
+The database engine is not always started and it can take rougly 20 seconds to start it, resulting in timeouts or test failures.
