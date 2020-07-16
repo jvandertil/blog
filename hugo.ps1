@@ -18,6 +18,8 @@ mkdir $destination -ErrorAction SilentlyContinue > $null
 
 if( (Test-Path (Join-Path $destination $hugoFilename)) -eq $false )
 {
+    Write-Host "Downloading new hugo binary"
+
     Download-File -Url $hugoRelease -Destination (Join-Path $destination $hugoFilename)
     Expand-Archive -Path (Join-Path $destination $hugoFilename) -Destination $destination -Force
 }
