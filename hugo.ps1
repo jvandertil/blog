@@ -5,13 +5,8 @@ $destination = Join-Path $PSScriptRoot ".bin"
 
 function Download-File($Url, $Destination)
 {
-    try
-    {
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($Url, $Destination)
-    } finally {
-        $wc.Dispose()
-    }
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+    Invoke-WebRequest -Uri $Url -OutFile $Destination
 }
 
 mkdir $destination -ErrorAction SilentlyContinue > $null
