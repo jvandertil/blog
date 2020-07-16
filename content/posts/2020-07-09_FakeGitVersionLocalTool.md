@@ -38,6 +38,12 @@ let run () =
 ```
 
 I put this script next to the `build.fsx` script I already had, and named it `gitVersion.fsx` (note the capitalization).
+To include the script in my build script I added a reference like this:
+```fsharp
+#load "./gitVersion.fsx"
+```
+and added the dependencies to the `#r` block.
+
 Then I could call it using `GitVersion.run()` like so:
 
 ```fsharp
@@ -49,3 +55,5 @@ let getVersion() =
 ```
 
 I hope this helps someone trying to do the same.
+
+*Update 16-07-2020: Added how to load script in main build script*
