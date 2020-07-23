@@ -1,7 +1,7 @@
 version: 2
 updates:
 - package-ecosystem: npm
-  directory: "/"
+  directory: "/src/blog"
   schedule:
     interval: daily
     time: "04:00"
@@ -9,7 +9,7 @@ updates:
   assignees:
   - jvandertil
 - package-ecosystem: nuget
-  directory: "/tools/Uploader"
+  directory: "/src/Uploader"
   schedule:
     interval: daily
     time: "04:00"
