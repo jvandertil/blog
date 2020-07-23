@@ -22,6 +22,11 @@
                 <p>{{ $.Site.Params.AuthorBio }}</p>
             </section>
         </div>
+
+        <div class="comments">
+            {{ template "_internal/disqus.html" . }}
+        </div>
+
     </footer>
 </article>
 {{ end }}
