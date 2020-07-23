@@ -1,10 +1,8 @@
-.single-post {
-    footer {
-        @extend .card;
-        @extend .card-body;
-        @extend .border-left-0;
-        @extend .border-right-0;
-    }
+.author-card {
+    @extend .card;
+    @extend .card-body;
+    @extend .border-left-0;
+    @extend .border-right-0;
 }
 
 .single-post > header {

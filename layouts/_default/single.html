@@ -15,11 +15,13 @@
     </section>
 
     <footer>
-        <section class="author">
-            <div id="author-img"></div>
-            <h4>{{ $.Param "author" }}</h4>
-            <p>{{ $.Site.Params.AuthorBio }}</p>
-        </section>
+        <div class="author-card">
+            <section class="author">
+                <div id="author-img"></div>
+                <h4>{{ $.Param "author" }}</h4>
+                <p>{{ $.Site.Params.AuthorBio }}</p>
+            </section>
+        </div>
     </footer>
 </article>
 {{ end }}
