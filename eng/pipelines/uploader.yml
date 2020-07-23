@@ -1,0 +1,27 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+   include:
+     - master
+  paths:
+    include:
+      - src/Uploader/*
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: PowerShell@2
+  displayName: 'Run build script'
+  inputs:
+    filePath: '.\eng\build-uploader.ps1'
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish uploader'
+  inputs:
+    targetPath: 'artifacts\uploader'
+    artifact: 'bin'
+    publishLocation: 'pipeline'

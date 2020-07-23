@@ -8,21 +8,20 @@ trigger:
    include:
      - master
   paths:
-    exclude:
-      - tools/Uploader/*
+    include:
+      - src/blog/*
 
 pool:
   vmImage: 'windows-latest'
 
 steps:
 - task: PowerShell@2
-  displayName: 'Run hugo'
+  displayName: 'Run build script'
   inputs:
-    filePath: '.\hugo.ps1'
-    arguments: '--destination $(Build.ArtifactStagingDirectory) --minify'
+    filePath: '.\eng\build-blog.ps1'
 - task: PublishPipelineArtifact@1
   displayName: 'Publish website'
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)'
+    targetPath: 'artifacts\blog'
     artifact: 'content'
     publishLocation: 'pipeline'

@@ -1,5 +1,1 @@
-.bin/
-.vs/
-public/
-resources/
-node_modules/
+artifacts/
