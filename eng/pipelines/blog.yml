@@ -11,17 +11,18 @@ trigger:
     include:
       - src/blog/*
 
-pool:
-  vmImage: 'windows-latest'
-
-steps:
-- task: PowerShell@2
-  displayName: 'Run build script'
-  inputs:
-    filePath: '.\eng\build-blog.ps1'
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish website'
-  inputs:
-    targetPath: 'artifacts\blog'
-    artifact: 'content'
-    publishLocation: 'pipeline'
+jobs:
+- job: Build
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+    - task: PowerShell@2
+      displayName: 'Run build script'
+      inputs:
+        filePath: '.\eng\build-blog.ps1'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish website'
+      inputs:
+        targetPath: 'artifacts\blog'
+        artifact: 'content'
+        publishLocation: 'pipeline'

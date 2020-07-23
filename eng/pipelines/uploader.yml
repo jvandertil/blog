@@ -11,17 +11,18 @@ trigger:
     include:
       - src/Uploader/*
 
-pool:
-  vmImage: 'windows-latest'
-
-steps:
-- task: PowerShell@2
-  displayName: 'Run build script'
-  inputs:
-    filePath: '.\eng\build-uploader.ps1'
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish uploader'
-  inputs:
-    targetPath: 'artifacts\uploader'
-    artifact: 'bin'
-    publishLocation: 'pipeline'
+jobs:
+- job: Build
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+    - task: PowerShell@2
+      displayName: 'Run build script'
+      inputs:
+        filePath: '.\eng\build-uploader.ps1'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish uploader'
+      inputs:
+        targetPath: 'artifacts\uploader'
+        artifact: 'bin'
+        publishLocation: 'pipeline'
