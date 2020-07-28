@@ -1,4 +1,4 @@
-$hugoVersion = "0.74.2"
+$hugoVersion = "0.74.3"
 $hugoFilename = "hugo_extended_$hugoVersion`_Windows-64bit.zip"
 $hugoRelease = "https://github.com/gohugoio/hugo/releases/download/v$hugoVersion/$hugoFilename"
 $destination = Join-Path $PSScriptRoot ".bin"
