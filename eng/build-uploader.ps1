@@ -7,5 +7,5 @@ $uploaderArtifact = Join-Path $artifacts "uploader"
 $uploaderSolution = Join-Path $source "Uploader" | Join-Path -ChildPath "Uploader.sln"
 
 dotnet build -c Release $uploaderSolution
-dotnet test -c Release --no-build $uploaderSolution
-dotnet publish -c Release -o $uploaderArtifact $uploaderSolution
+dotnet test --no-build -c Release  $uploaderSolution
+dotnet publish --no-build -c Release -o $uploaderArtifact $uploaderSolution
