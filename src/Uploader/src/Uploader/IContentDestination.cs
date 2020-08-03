@@ -8,7 +8,7 @@ namespace Uploader
     {
         IEnumerable<CloudFileInfo> GetFiles();
 
-        CloudFileInfo GetFile(string path);
+        CloudFileInfo? GetFile(string path);
 
         Task WriteFileAsync(string path, Stream file);
 

@@ -36,7 +36,7 @@ namespace Uploader
             }
         }
 
-        public CloudFileInfo GetFile(string path)
+        public CloudFileInfo? GetFile(string path)
         {
             var blob = _container.GetBlockBlobReference(path.Replace('\\', '/'));
 

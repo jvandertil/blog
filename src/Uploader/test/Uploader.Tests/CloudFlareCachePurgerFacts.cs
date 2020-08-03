@@ -26,6 +26,7 @@ namespace Uploader.Tests
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
+                    ["CF_PURGE_ENABLED"] = bool.TrueString,
                     ["CF_API_KEY"] = ApiKey,
                     ["CF_ZONE_ID"] = ZoneId,
                     ["CF_ZONE_URL_ROOT"] = UrlRoot.ToString(),

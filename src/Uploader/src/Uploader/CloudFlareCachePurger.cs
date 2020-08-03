@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,6 +26,11 @@ namespace Uploader
 
         public async Task PurgeFilesAsync(IReadOnlyCollection<string> relativeUrls)
         {
+            if (!_configuration.CachePurgeEnabled)
+            {
+                return;
+            }
+
             var locationUrls = new List<string>(relativeUrls);
 
             foreach (var url in relativeUrls)
@@ -62,7 +66,7 @@ namespace Uploader
             _logger.LogInformation("Purging urls: {0}", string.Join(Environment.NewLine, urls));
 
             using var request = GetRequestMessage();
-            request.Content = new JsonHttpContent(new UrlsToPurgeContent { Files = urls });
+            request.Content = new JsonHttpContent(new UrlsToPurgeContent(urls));
 
             using var result = await _httpClient.SendAsync(request);
 
@@ -82,7 +86,7 @@ namespace Uploader
 
         private Uri ToFullUri(string relativePath)
         {
-            var builder = new UriBuilder(_configuration.ZoneUrlRoot)
+            var builder = new UriBuilder(_configuration.ZoneUrlRoot!)
             {
                 Path = relativePath
             };
