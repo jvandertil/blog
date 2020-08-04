@@ -13,11 +13,9 @@ namespace Uploader
     {
         private readonly CloudBlobContainer _container;
         private readonly ILogger _logger;
-        private readonly bool _whatIfMode;
 
         public AzureContentDestination(AzureConfiguration config, ILogger<AzureContentDestination> logger)
         {
-            _whatIfMode = false;
             _logger = logger;
 
             CloudStorageAccount account = CloudStorageAccount.Parse(config.ConnectionString);
@@ -30,10 +28,7 @@ namespace Uploader
         {
             _logger.LogInformation("Deleting file: " + path);
 
-            if (!_whatIfMode)
-            {
-                await _container.GetBlobReference(path).DeleteAsync();
-            }
+            await _container.GetBlobReference(path).DeleteAsync();
         }
 
         public CloudFileInfo? GetFile(string path)
@@ -62,14 +57,11 @@ namespace Uploader
             _logger.LogInformation("Writing file: " + path);
             string mimeType = MimeTypeMap.GetMimeType(Path.GetExtension(path));
 
-            if (!_whatIfMode)
-            {
-                var blob = _container.GetBlockBlobReference(path);
-                await blob.UploadFromStreamAsync(file);
+            var blob = _container.GetBlockBlobReference(path);
+            await blob.UploadFromStreamAsync(file);
 
-                blob.Properties.ContentType = mimeType;
-                await blob.SetPropertiesAsync();
-            }
+            blob.Properties.ContentType = mimeType;
+            await blob.SetPropertiesAsync();
 
             _logger.LogInformation("{file} saved as {contentType}", path, mimeType);
 
