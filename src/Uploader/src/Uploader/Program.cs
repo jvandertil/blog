@@ -92,14 +92,16 @@ namespace Uploader
             var configuration = BuildConfiguration(args);
 
             using var serviceProvider = ConfigureServices(configuration);
-            using var scope = serviceProvider.CreateScope();
+            using (var scope = serviceProvider.CreateScope())
+            {
 
-            var syncer = scope.ServiceProvider.GetRequiredService<ContentSyncer>();
-            var cachePurger = scope.ServiceProvider.GetRequiredService<CloudFlareCachePurger>();
+                var syncer = scope.ServiceProvider.GetRequiredService<ContentSyncer>();
+                var cachePurger = scope.ServiceProvider.GetRequiredService<CloudFlareCachePurger>();
 
-            var processedFiles = await syncer.SynchronizeFilesAsync();
+                var processedFiles = await syncer.SynchronizeFilesAsync();
 
-            await cachePurger.PurgeFilesAsync(processedFiles);
+                await cachePurger.PurgeFilesAsync(processedFiles);
+            }
 
             return 0;
         }
