@@ -1,0 +1,11 @@
+config:
+  azure:location: WestEurope
+  blog:azure.resourceGroupName: jvandertil.nl-t-we-rg
+  blog:azure.storageAccountName: jvandertilnltwesa
+  blog:cloudflare.zoneId:
+    secure: AAABALJpx63QmFZaiWH7fAIrcsq5Zt1+XokeaqHql+bwx4EEgUL0iPKVnpu5eQ6h494JnD0nTKikUG/2t8j0Hw==
+  blog:domainName: jvandertil.nl
+  blog:subDomainName: draft
+  cloudflare:apiToken:
+    secure: AAABAGiPOYZOYKxtnAzxZYB9os1BYtkPadh0IlM2cUSOPkoT4SVzNbWAtUUR9a/nYKTjujh7fNRPgEgk9wLqLvM9t/l3WwXI
+  pulumi:template: azure-csharp
