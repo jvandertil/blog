@@ -4,9 +4,6 @@
 # https://aka.ms/yaml
 
 trigger:
-  branches:
-   include:
-     - master
   paths:
     include:
       - src/Uploader/*
