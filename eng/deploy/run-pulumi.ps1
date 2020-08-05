@@ -5,7 +5,11 @@ param(
 
 . $PSScriptRoot\helpers.ps1
 
-Exec { & pulumi plugin install resource azure v3.14.0 | Write-Host } "Error installing azure plugin"
+$azurePluginVersion = "v3.14.0"
+$cloudFlarePluginVersion = "v2.4.0"
+
+Exec { & pulumi plugin install resource azure $azurePluginVersion | Write-Host } "Error installing azure plugin"
+Exec { & pulumi plugin install resource cloudflare $cloudFlarePluginVersion | Write-Host } "Error installing cloudflare plugin"
 
 Exec { & pulumi -C $PulumiArtifact stack select $PulumiStack | Write-Host } "Error selecting pulumi stack"
 Exec { & pulumi -C $PulumiArtifact up --stack $PulumiStack --yes | Write-Host } "Error running pulumi up"
