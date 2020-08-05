@@ -1,25 +1,20 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
   paths:
     include:
       - infra/*
+      - .ci/azure-pipelines/BlogInfraCI.yml
+      - eng/build-infra.sh
 
 jobs:
 - job: Build
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
-    - task: PowerShell@2
+    - bash: eng/build-infra.sh
       displayName: 'Run build script'
-      inputs:
-        filePath: '.\eng\build-infra.ps1'
     - task: PublishPipelineArtifact@1
       displayName: 'Publish infra'
       inputs:
-        targetPath: 'artifacts\infra'
+        targetPath: 'artifacts/infra'
         artifact: 'pulumi'
         publishLocation: 'pipeline'
