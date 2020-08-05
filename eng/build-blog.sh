@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Update the version in src/blog/hugo.ps1 as well
 HUGO_VERSION="0.74.3"
 HUGO_URL="https://github.com/gohugoio/hugo/releases/download/v$HUGO_VERSION/hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz"
 
