@@ -4,7 +4,6 @@ param(
     [string]$PulumiArtifact = "",
     [string]$PulumiStack = "tst", 
     [string]$CloudFlareZoneId = "",
-    [string]$CloudFlareZoneUrlRoot = "https://www.jvandertil.nl/",
     [string]$CloudFlareApiKey = ""
 )
 
@@ -24,6 +23,7 @@ $pulumiOutput = & $PSScriptRoot\run-pulumi.ps1 -PulumiArtifact $pulumiArtifact -
 
 $storageAccountName = $pulumiOutput.StorageAccountName
 $azureConnectionString = $pulumiOutput.AzureConnectionString
+$cloudFlareZoneUrlRoot = $pulumiOutput.FullDomainName
 
 Write-Host "Authorizing client ip address"
 & $PSScriptRoot\add-current-client-authorization.ps1 -StorageAccountName $storageAccountName
@@ -34,7 +34,7 @@ sleep -Seconds 15
 try {
 
     Write-Host "Invoking uploader"
-    Exec { & $uploaderBin --source $blogArtifact --destination $azureConnectionString --cf-apikey $CloudFlareApiKey --cf-zoneid $CloudFlareZoneId --cf-urlroot $CloudFlareZoneUrlRoot | Write-Host }
+    Exec { & $uploaderBin --source $blogArtifact --destination $azureConnectionString --cf-apikey $CloudFlareApiKey --cf-zoneid $CloudFlareZoneId --cf-urlroot $cloudFlareZoneUrlRoot | Write-Host }
 
 } finally {
     Write-Host "Removing client ip address authorization"

@@ -6,6 +6,15 @@ using Pulumi.Cloudflare;
 
 public class BlogStack : Stack
 {
+    [Output]
+    public Output<string> ConnectionString { get; set; }
+
+    [Output]
+    public Output<string> StorageAccountName { get; set; }
+
+    [Output]
+    public Output<string> FullDomainName { get; set; }
+
     public BlogStack()
     {
         var config = new Configuration();
@@ -42,6 +51,8 @@ public class BlogStack : Stack
             Name = config.ResourceGroupName,
         });
 
+        var fullDomainName = config.SubdomainName + "." + config.DomainName;
+
         // Create an Azure Storage Account
         var storageAccount = new Account("storage-account", new AccountArgs
         {
@@ -61,7 +72,7 @@ public class BlogStack : Stack
 
             CustomDomain = new AccountCustomDomainArgs
             {
-                Name = config.SubdomainName + "." + config.DomainName,
+                Name = fullDomainName,
                 UseSubdomain = verificationIsIndirect,
             },
 
@@ -76,11 +87,6 @@ public class BlogStack : Stack
 
         ConnectionString = storageAccount.PrimaryConnectionString.Apply(Output.CreateSecret);
         StorageAccountName = storageAccountName;
+        FullDomainName = Output.Create(fullDomainName);
     }
-
-    [Output]
-    public Output<string> ConnectionString { get; set; }
-
-    [Output]
-    public Output<string> StorageAccountName { get; set; }
 }

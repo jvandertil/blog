@@ -12,8 +12,10 @@ Exec { & pulumi -C $PulumiArtifact up --stack $PulumiStack --yes | Write-Host } 
 
 $azureConnectionString = Exec { & pulumi -C $PulumiArtifact stack output ConnectionString --show-secrets }
 $storageAccountName = Exec { & pulumi -C $PulumiArtifact stack output StorageAccountName --show-secrets }
+$fullDomainName = Exec { & pulumi -C $PulumiArtifact stack output FullDomainName --show-secrets }
 
 @{
     AzureConnectionString = "$azureConnectionString"
     StorageAccountName = "$storageAccountName"
+    FullDomainName = "https://$fullDomainName"
 }
