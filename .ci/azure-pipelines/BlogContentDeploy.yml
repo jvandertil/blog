@@ -1,12 +1,5 @@
 trigger: none
-pr:
-  branches:
-    include:
-    - master
-  paths:
-    include:
-    - eng/deploy/*
-    - .ci/azure-pipelines/BlogContentDeploy.yml
+pr: none
 
 variables:
   uploaderArtifact: '$(Pipeline.Workspace)/BlogUploaderCI/bin'
