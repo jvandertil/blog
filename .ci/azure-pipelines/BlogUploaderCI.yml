@@ -10,19 +10,19 @@ trigger:
   paths:
     include:
       - src/Uploader/*
+      - .ci/azure-pipelines/BlogUploaderCI.yml
+      - eng/build-uploader.sh
 
 jobs:
 - job: Build
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
-    - task: PowerShell@2
+    - bash: eng/build-uploader.sh
       displayName: 'Run build script'
-      inputs:
-        filePath: '.\eng\build-uploader.ps1'
     - task: PublishPipelineArtifact@1
       displayName: 'Publish uploader'
       inputs:
-        targetPath: 'artifacts\uploader'
+        targetPath: 'artifacts/uploader'
         artifact: 'bin'
         publishLocation: 'pipeline'
