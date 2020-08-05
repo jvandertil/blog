@@ -5,8 +5,8 @@ variables:
   pulumiArtifact: '$(Pipeline.Workspace)/BlogInfraCI/pulumi'
   blogArtifact: '$(Pipeline.Workspace)/BlogContentCI/content'
   deploymentScriptsArtifact: '$(Pipeline.Workspace)/BlogDeployScriptsCI/scripts'
-  pulumiStack: tst
-  system.debug: true
+  pulumiStack: prd
+  system.debug: false
 
 resources:
   pipelines:
@@ -22,13 +22,13 @@ resources:
       - master
   - pipeline: BlogInfraCI
     source: Blog.Infra.CI
-    branch: feature/deploy-pipeline
+    branch: master
     trigger:
       branches:
       - master
   - pipeline: BlogDeployScriptsCI
     source: Blog.DeployScripts.CI
-    branch: feature/deploy-pipeline
+    branch: master
     trigger:
       branches:
       - master
