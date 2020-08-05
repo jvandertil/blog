@@ -1,0 +1,6 @@
+name: blog
+runtime: 
+  name: dotnet
+  options:
+    binary: blog.dll
+description: Infrastructure for jvandertil.nl
