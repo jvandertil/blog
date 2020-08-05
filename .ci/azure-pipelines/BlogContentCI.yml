@@ -10,19 +10,19 @@ trigger:
   paths:
     include:
       - src/blog/*
+      - .ci/azure-pipelines/BlogContentCI.yml
+      - eng/build-blog.sh
 
 jobs:
 - job: Build
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
-    - task: PowerShell@2
+    - bash: eng/build-blog.sh
       displayName: 'Run build script'
-      inputs:
-        filePath: '.\eng\build-blog.ps1'
     - task: PublishPipelineArtifact@1
       displayName: 'Publish website'
       inputs:
-        targetPath: 'artifacts\blog'
+        targetPath: 'artifacts/blog'
         artifact: 'content'
         publishLocation: 'pipeline'
