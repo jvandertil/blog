@@ -12,10 +12,15 @@ namespace Uploader
     public class AzureContentDestination : IContentDestination
     {
         private readonly CloudBlobContainer _container;
+        private readonly IMimeTypeMap _mimeTypes;
         private readonly ILogger _logger;
 
-        public AzureContentDestination(AzureConfiguration config, ILogger<AzureContentDestination> logger)
+        public AzureContentDestination(
+            AzureConfiguration config,
+            IMimeTypeMap mimeTypeMap,
+            ILogger<AzureContentDestination> logger)
         {
+            _mimeTypes = mimeTypeMap;
             _logger = logger;
 
             CloudStorageAccount account = CloudStorageAccount.Parse(config.ConnectionString);
@@ -55,7 +60,7 @@ namespace Uploader
         public async Task WriteFileAsync(string path, Stream file)
         {
             _logger.LogInformation("Writing file: " + path);
-            string mimeType = MimeTypeMap.GetMimeType(Path.GetExtension(path));
+            string mimeType = _mimeTypes.GetMimeType(Path.GetExtension(path));
 
             var blob = _container.GetBlockBlobReference(path);
             await blob.UploadFromStreamAsync(file);

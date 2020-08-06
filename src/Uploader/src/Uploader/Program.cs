@@ -76,6 +76,7 @@ namespace Uploader
                     x.SetMinimumLevel(LogLevel.Debug);
                 })
                 .AddSingleton(configuration)
+                .AddSingleton<IMimeTypeMap, SamuellNeffMimeTypeMap>()
                 .AddTransient<CloudFlareConfiguration>()
                 .AddTransient<AzureConfiguration>()
                 .AddTransient<DiskContentSourceConfiguration>()
