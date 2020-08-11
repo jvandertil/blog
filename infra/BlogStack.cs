@@ -22,7 +22,7 @@ public class BlogStack : Stack
         var cloudflareIpRanges = Output.Create(GetIpRanges.InvokeAsync()).Apply(x => x.Ipv4CidrBlocks);
 
         var storageAccountName = config.StorageAccountName;
-        var storageAccountHost = storageAccountName.Apply(x => x + ".z6.web.core.windows.net");
+        var storageAccountHost = storageAccountName + ".z6.web.core.windows.net";
 
         var verificationDnsRecord = new Record(
             "static-site-verification-dns-record",
@@ -31,7 +31,7 @@ public class BlogStack : Stack
                 ZoneId = config.CloudFlareZoneId,
                 Type = "CNAME",
                 Name = "asverify." + config.SubdomainName,
-                Value = storageAccountHost.Apply(x => "asverify." + x),
+                Value = "asverify." + storageAccountHost,
             });
 
         var verificationIsIndirect = verificationDnsRecord.Name.Apply(x => x.StartsWith("asverify"));
@@ -86,7 +86,7 @@ public class BlogStack : Stack
         });
 
         ConnectionString = storageAccount.PrimaryConnectionString.Apply(Output.CreateSecret);
-        StorageAccountName = storageAccountName;
+        StorageAccountName = Output.Create(storageAccountName);
         FullDomainName = Output.Create(fullDomainName);
     }
 }

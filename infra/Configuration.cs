@@ -10,9 +10,9 @@ internal class Configuration
         _config = new Config();
     }
 
-    public Output<string> ResourceGroupName => _config.RequireSecret("azure.resourceGroupName");
+    public string ResourceGroupName => _config.Require("azure.resourceGroupName");
 
-    public Output<string> StorageAccountName => _config.RequireSecret("azure.storageAccountName");
+    public string StorageAccountName => _config.Require("azure.storageAccountName");
 
     public Output<string> CloudFlareZoneId => _config.RequireSecret("cloudflare.zoneId");
 
