@@ -1,7 +1,7 @@
 config:
   azure:location: WestEurope
   blog:azure.resourceGroupName: jvandertil.nl-p-we-rg
-  blog:azure.storageAccountName: jvandertilnlpwesa
+  blog:azure.contentStorageAccountName: jvandertilnlpwesa
   blog:cloudflare.zoneId:
     secure: AAABANctFnGTVMwgSQerXkTajkDaxIq6KoO1qmuaLihOChBR8Om6BKvyvL4LNlR56Vx5uoF44ipL1ZPw+KHVQA==
   blog:domainName: jvandertil.nl

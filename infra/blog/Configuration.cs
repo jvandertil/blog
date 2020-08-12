@@ -12,7 +12,15 @@ internal class Configuration
 
     public string ResourceGroupName => _config.Require("azure.resourceGroupName");
 
-    public string StorageAccountName => _config.Require("azure.storageAccountName");
+    public Output<string> ContentStorageAccountName => _config.RequireSecret("azure.contentStorageAccountName");
+
+    public string LoggingStorageAccountName => _config.Require("azure.loggingStorageAccountName");
+
+    public string FunctionAppName => _config.Require("azure.functionAppName");
+
+    public string FunctionAppServiceName => _config.Require("azure.functionAppServiceName");
+
+    public string KeyVaultName => _config.Require("azure.keyvaultName");
 
     public Output<string> CloudFlareZoneId => _config.RequireSecret("cloudflare.zoneId");
 
@@ -20,3 +28,4 @@ internal class Configuration
 
     public string SubdomainName => _config.Require("subDomainName");
 }
+

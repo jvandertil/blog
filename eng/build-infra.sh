@@ -9,7 +9,7 @@ ARTIFACTS="$ROOT/artifacts"
 INFRA_ARTIFACT="$ARTIFACTS/infra"
 
 INFRA_SOURCE="$ROOT/infra"
-INFRA_PROJECT="$INFRA_SOURCE/blog.csproj"
+INFRA_PROJECT="$INFRA_SOURCE/blog/blog.csproj"
 
 mkdir -p $INFRA_ARTIFACT
 
