@@ -2,8 +2,6 @@ baseURL = "https://www.jvandertil.nl"
 languageCode = "en-us"
 title = "Jos van der Til - Software Engineer"
 
-disqusShortname = "jvandertil"
-
 # Highlighting should output classes
 pygmentsUseClasses = true
 
