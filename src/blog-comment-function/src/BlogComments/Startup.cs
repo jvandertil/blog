@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
@@ -36,6 +36,15 @@ namespace BlogComments
                 var key = keyClient.GetKey(settings.KeyName);
 
                 return new CryptographyClient(key.Value.Id, new DefaultAzureCredential());
+            });
+
+            services.AddSingleton<PostExistenceChecker>();
+            services.AddSingleton<IPostExistenceChecker>(x =>
+            {
+                var inner = x.GetRequiredService<PostExistenceChecker>();
+                var decorated = new CachingPostExistenceCheckerDecorator(inner);
+
+                return decorated;
             });
 
             services.AddSingleton<AppClientTokenGenerator>();

@@ -18,25 +18,39 @@ namespace BlogComments
     public class SubmitPostComment
     {
         private const int HTTP_NOTFOUND = 404;
+        private const int HTTP_OK = 200;
 
         private const string COMMENT_DATA_BASEPATH = "src/blog/data/comments/posts";
-        private const string POSTS_BASEPATH = "src/blog/content/posts/";
 
         private readonly GitHubClientFactory _githubFactory;
         private readonly IOptionsMonitor<GitHubOptions> _options;
+        private readonly IPostExistenceChecker _postExistenceChecker;
 
-        public SubmitPostComment(GitHubClientFactory githubFactory, IOptionsMonitor<GitHubOptions> optionsMonitor)
+        public SubmitPostComment(
+            GitHubClientFactory githubFactory,
+            IOptionsMonitor<GitHubOptions> optionsMonitor,
+            IPostExistenceChecker postExistenceChecker)
         {
             _githubFactory = githubFactory;
             _options = optionsMonitor;
+            _postExistenceChecker = postExistenceChecker;
         }
 
         [FunctionName("SubmitPostComment")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/posts/{postName}/comment")] HttpRequest req,
-            string postName,
+            [FromRoute] string postName,
             ILogger log)
         {
+            var repositoryPostName = await _postExistenceChecker.TryGetPostFileNameFromRepositoryAsync(postName);
+
+            if (repositoryPostName is null)
+            {
+                return new StatusCodeResult(HTTP_NOTFOUND);
+            }
+
+            postName = repositoryPostName;
+
             var settings = _options.CurrentValue;
 
             var username = settings.Username;
@@ -46,16 +60,6 @@ namespace BlogComments
 
             var github = await _githubFactory.CreateClientAsync(username, repositoryName);
             var repository = await github.Repository.Get(username, repositoryName);
-
-            // Verify postName
-            var repositoryPostName = await FindPostNameInRepository(github, repository, postName);
-
-            if (repositoryPostName is null)
-            {
-                return new StatusCodeResult(HTTP_NOTFOUND);
-            }
-
-            postName = repositoryPostName;
 
             var form = await req.ReadFormAsync();
 
@@ -81,23 +85,7 @@ namespace BlogComments
                 await github.Repository.PullRequest.Create(username, repositoryName, new NewPullRequest(file.Message, branchRef.Ref, repository.DefaultBranch));
             }
 
-            return new OkObjectResult("OK!");
-        }
-
-        private static async Task<string?> FindPostNameInRepository(GitHubClient github, Repository repository, string postName)
-        {
-            var tree = await github.Git.Tree.GetRecursive(repository.Id, repository.DefaultBranch);
-
-            var postFileRef = tree.Tree
-                .Where(x => x.Path.StartsWith(POSTS_BASEPATH, StringComparison.OrdinalIgnoreCase))
-                .FirstOrDefault(x => x.Path.Contains(postName, StringComparison.OrdinalIgnoreCase));
-
-            if (postFileRef is null)
-            {
-                return null;
-            }
-
-            return Path.GetFileNameWithoutExtension(postFileRef.Path);
+            return new StatusCodeResult(HTTP_OK);
         }
 
         private static string SerializeComment(object comment)
