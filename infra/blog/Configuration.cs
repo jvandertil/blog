@@ -29,5 +29,7 @@ internal class Configuration
     public string DomainName => _config.Require("domainName");
 
     public string SubdomainName => _config.Require("subDomainName");
+
+    public bool EnableCommentPullRequest => _config.RequireBoolean("github.enablePullRequestCreation");
 }
 

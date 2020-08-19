@@ -173,7 +173,7 @@ public class BlogStack : Stack
                 ["GitHub__ApplicationId"] = "76324",
                 ["GitHub__Username"] = "jvandertil",
                 ["GitHub__Repository"] = "blog",
-                ["GitHub__EnablePullRequestCreation"] = "false",
+                ["GitHub__EnablePullRequestCreation"] = config.EnableCommentPullRequest.ToString(),
 
                 ["KeyVault__Url"] = keyVault.VaultUri,
                 ["KeyVault__KeyName"] = "jvandertil-blog-bot",
