@@ -1,5 +1,7 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -63,22 +65,23 @@ namespace BlogComments
 
             var form = await req.ReadFormAsync();
 
-            var userDisplayName = form["name"].Single();
-            var commentContent = form["content"].Single();
-            var commentId = Ulid.NewUlid().ToString();
+            if (!TryBindBody(form, out var comment, out var errors))
+            {
+                return new BadRequestObjectResult(errors);
+            }
 
             // Create branch
-            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + commentId);
+            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + comment.Id);
 
-            string content = SerializeComment(new CommentDto(commentId.ToString(), userDisplayName, DateTimeOffset.UtcNow, commentContent));
+            string content = SerializeComment(comment);
 
             // Create file
-            var file = new CreateFileRequest($"Add comment by {userDisplayName} on {postName}", content, branchRef.Ref)
+            var file = new CreateFileRequest($"Add comment by {comment.DisplayName} on {postName}", content, branchRef.Ref)
             {
                 Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", DateTimeOffset.UtcNow),
             };
 
-            await github.Repository.Content.CreateFile(username, repositoryName, COMMENT_DATA_BASEPATH + $"/{postName}/{commentId}.json", file);
+            await github.Repository.Content.CreateFile(username, repositoryName, COMMENT_DATA_BASEPATH + $"/{postName}/{comment.Id}.json", file);
 
             if (settings.EnablePullRequestCreation)
             {
@@ -97,17 +100,48 @@ namespace BlogComments
             });
         }
 
-        private class CommentDto
+        private static bool TryBindBody(IFormCollection form,
+            [NotNullWhen(true)] out CommentModel? model,
+            [NotNullWhen(false)] out IEnumerable<ValidationResult>? errors)
+        {
+            var userDisplayName = form["DisplayName"].FirstOrDefault();
+            var commentContent = form["Content"].FirstOrDefault();
+
+            var commentId = Ulid.NewUlid().ToString();
+            var date = DateTimeOffset.UtcNow;
+
+            var boundModel = new CommentModel(commentId.ToString(), userDisplayName, date, commentContent);
+            var errorList = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(boundModel, new ValidationContext(boundModel, null, null), errorList, true))
+            {
+                model = boundModel;
+                errors = null;
+
+                return true;
+            }
+            else
+            {
+                model = null;
+                errors = errorList;
+
+                return false;
+            }
+        }
+
+        private class CommentModel
         {
             public string Id { get; set; }
 
+            [Required]
             public string DisplayName { get; set; }
 
             public DateTimeOffset PostedDate { get; set; }
 
+            [Required]
             public string Content { get; set; }
 
-            public CommentDto(string id, string displayName, DateTimeOffset postedDate, string content)
+            public CommentModel(string id, string displayName, DateTimeOffset postedDate, string content)
             {
                 Id = id;
                 DisplayName = displayName;
