@@ -50,8 +50,11 @@
             </div>
 
             {{ $allComments := index .Site.Data "comments" }}
+            {{ if $allComments }}
             {{ $postComments := index $allComments "posts" }}
+            {{ if $postComments }}
             {{ $commentsForThisPost := index $postComments $postName }}
+            {{ if $commentsForThisPost }}
 
             <div class="post-comments">
                 {{ with $commentsForThisPost }}
@@ -67,6 +70,9 @@
                 {{ end }}
                 {{ end }}
             </div>
+            {{ end }}
+            {{ end }}
+            {{ end }}
         </div>
 
     </footer>
