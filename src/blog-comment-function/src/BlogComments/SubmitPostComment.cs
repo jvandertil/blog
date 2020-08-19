@@ -38,7 +38,7 @@ namespace BlogComments
             _postExistenceChecker = postExistenceChecker;
         }
 
-        [FunctionName("SubmitPostComment")]
+        [FunctionName(nameof(SubmitPostComment))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/posts/{postName}/comment")] HttpRequest req,
             [FromRoute] string postName,
