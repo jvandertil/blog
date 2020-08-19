@@ -152,6 +152,19 @@ public class BlogStack : Stack
 
             HttpsOnly = true,
 
+            SiteConfig = new Azure.AppService.Inputs.FunctionAppSiteConfigArgs
+            {
+                FtpsState = "Disabled",
+                Http2Enabled = true,
+                Cors = new Azure.AppService.Inputs.FunctionAppSiteConfigCorsArgs
+                {
+                    AllowedOrigins = new InputList<string>
+                    {
+                        "https://" + fullDomainName,
+                    }
+                }
+            },
+
             AppSettings = new InputMap<string>
             {
                 ["runtime"] = "dotnet",
