@@ -163,6 +163,7 @@ public class BlogStack : Stack
                 ["GitHub__EnablePullRequestCreation"] = "false",
 
                 ["KeyVault__Url"] = keyVault.VaultUri,
+                ["KeyVault__KeyName"] = "jvandertil-blog-bot",
 
                 ["APPINSIGHTS_INSTRUMENTATIONKEY"] = applicationInsights.InstrumentationKey,
             },
@@ -177,7 +178,7 @@ public class BlogStack : Stack
 
             // Workaround for https://github.com/pulumi/pulumi-azure/issues/192
             ObjectId = azureFunctionApp.Identity.Apply(x => x.PrincipalId ?? "11111111-1111-1111-1111-111111111111"), // Is not null if managed service identity
-            KeyPermissions = new InputList<string> { "sign" },
+            KeyPermissions = new InputList<string> { "get", "sign" },
             TenantId = clientConfig.Apply(x => x.TenantId),
         });
 
