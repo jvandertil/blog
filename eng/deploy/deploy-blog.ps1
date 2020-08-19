@@ -16,7 +16,7 @@ $artifacts = Join-Path $root "artifacts"
 $blogArtifact = if ( $BlogArtifact -eq "" ) { Join-Path $artifacts "blog" } else { $BlogArtifact }
 $uploaderArtifact = if ( $UploaderArtifact -eq "" ) { Join-Path $artifacts "uploader" } else { $UploaderArtifact }
 $pulumiArtifact = if ( $PulumiArtifact -eq "" ) { Join-Path $artifacts "infra" } else { $PulumiArtifact }
-$blogCommentArtifact = if ( $BlogCommentArtifact -eq "" ) { Join-Path $artifacts "blog-comment-function.zip" }
+$blogCommentArtifact = if ( $BlogCommentArtifact -eq "" ) { Join-Path $artifacts "blog-comment-function.zip" } else { $BlogCommentArtifact }
 
 $uploaderBin = Join-Path $UploaderArtifact "Uploader.exe"
 
