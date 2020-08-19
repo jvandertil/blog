@@ -167,6 +167,8 @@ public class BlogStack : Stack
 
                 ["APPINSIGHTS_INSTRUMENTATIONKEY"] = applicationInsights.InstrumentationKey,
             },
+
+            Version = "~3",
         }, new CustomResourceOptions
         {
             Parent = functionAppPlan,
