@@ -21,8 +21,63 @@
     padding-bottom: 30px;
 }
 
+.post-comments-block {
+    h2 {
+        padding-top: 20px;
+        padding-bottom: 10px;
+    }
+}
+
 .post-comments {
     padding-top: 30px;
+}
+
+.post-add-comment-form {
+    .form-field {
+        @extend .form-group;
+
+        input {
+            @extend .form-control;
+        }
+
+        textarea {
+            @extend .form-control;
+        }
+    }
+
+    button {
+        @extend .btn;
+        @extend .btn-primary;
+    }
+}
+
+.post-comment {
+    @extend .card;
+    @extend .card-body;
+    display: block;
+    margin-top: 15px;
+
+    .comment-id {
+        display: none;
+    }
+
+    .comment-author {
+        display: inline;
+    }
+
+    .comment-date {
+        @extend .small;
+
+        display: inline;
+    }
+
+    .comment-date::before {
+        content: " commented on "
+    }
+
+    .comment-content {
+        padding-top: 5px;
+    }
 }
 
 #author-img {

@@ -8,3 +8,9 @@
 {{ partial "deps/js/bootstrap" . }}
 
 {{ partial "deps/js/prismjs" . }}
+
+{{ if eq .Params.Type "post" }}
+    <!-- For posts include scripts for comment form -->
+    {{ $commentFormJs := resources.Get "js/comment-form.js" | resources.Minify | resources.Fingerprint }}
+    <script type="text/javascript" src="{{ $commentFormJs.Permalink }}" integrity="{{ $commentFormJs.Data.Integrity }}"></script>
+{{ end }}

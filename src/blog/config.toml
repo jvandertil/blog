@@ -24,6 +24,8 @@ pygmentsUseClasses = true
 
 	githubRepoUrl = "https://www.github.com/jvandertil/blog"
 
+	commentHookUrl = "http://localhost:7071/"
+
 [menu]
 	[[menu.main]]
 		identifier = "posts"

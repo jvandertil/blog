@@ -24,7 +24,49 @@
             </section>
         </div>
 
-        <div class="post-comments">
+        <div class="post-comments-block">
+            {{ $postName := .Page.File.ContentBaseName }}
+            <h2>Comments</h2>
+
+            <div id="comment-success-alert" class="alert alert-success fade show d-none" aria-hidden="true">
+                <p>Thank you! Your comment has been submitted. </p>
+                <b>NOTE:</b> It may take a while to appear because comments are moderated.
+            </div>
+
+            <div class="post-add-comment-form">
+                <form id="comment-form" method="post" action="{{ strings.TrimSuffix "/" .Site.Params.CommentHookUrl }}/api/v1/posts/{{ $postName }}/comment">
+                    <div class="form-field">
+                        <label for="displayName">Display name:</label>
+                        <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="content">Your comment:</label>
+                        <textarea id="content" name="Content" placeholder="Join the discussion" rows="3"></textarea>
+                    </div>
+
+                    <button id="submitComment" type="submit">Submit comment</button>
+                </form>
+            </div>
+
+            {{ $allComments := index .Site.Data "comments" }}
+            {{ $postComments := index $allComments "posts" }}
+            {{ $commentsForThisPost := index $postComments $postName }}
+
+            <div class="post-comments">
+                {{ with $commentsForThisPost }}
+                <h3> {{ len . }} responses</h3>
+
+                {{ range (sort .) }}
+                {{ $commentDate := time .postedDate }}
+                <blockquote id="{{ .id }}" class="post-comment">
+                    <div class="comment-author">{{ .displayName }}</div>
+                    <div class="comment-date"><a href="#{{.id}}">{{ dateFormat "2 January 2006" $commentDate }}</a></div>
+                    <div class="comment-content">{{ .content }}</div>
+                </blockquote>
+                {{ end }}
+                {{ end }}
+            </div>
         </div>
 
     </footer>
