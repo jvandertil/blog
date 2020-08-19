@@ -6,6 +6,7 @@ variables:
   pulumiArtifact: '$(Pipeline.Workspace)/BlogInfraCI/pulumi'
   blogArtifact: '$(Pipeline.Workspace)/BlogContentCI/content'
   deploymentScriptsArtifact: '$(Pipeline.Workspace)/BlogDeployScriptsCI/scripts'
+  functionAppArtifact: '$(Pipeline.Workspace)/BlogCommentFunctionCI/bin/blog-comment-function.zip'
   pulumiStack: prd
   system.debug: false
 
@@ -29,6 +30,12 @@ resources:
       - master
   - pipeline: BlogDeployScriptsCI
     source: Blog.DeployScripts.CI
+    branch: master
+    trigger:
+      branches:
+      - master
+  - pipeline: BlogCommentFunctionCI
+    source: Blog.CommentFunction.CI
     branch: master
     trigger:
       branches:
@@ -73,7 +80,7 @@ jobs:
                 $env:ARM_TENANT_ID = $env:tenantId
                 $env:ARM_SUBSCRIPTION_ID = '$(Azure.SubscriptionId)'
                 
-                $(deploymentScriptsArtifact)/deploy-blog.ps1 -BlogArtifact "$(blogArtifact)" -UploaderArtifact "$(uploaderArtifact)" -PulumiArtifact "$(pulumiArtifact)" -PulumiStack "$(pulumiStack)" -CloudFlareZoneId "$(CloudFlare.ZoneId)" -CloudFlareApiKey "$(CloudFlare.ApiKey)"
+                $(deploymentScriptsArtifact)/deploy-blog.ps1 -BlogArtifact "$(blogArtifact)" -UploaderArtifact "$(uploaderArtifact)" -BlogCommentArtifact "$(functionAppArtifact)" -PulumiArtifact "$(pulumiArtifact)" -PulumiStack "$(pulumiStack)" -CloudFlareZoneId "$(CloudFlare.ZoneId)" -CloudFlareApiKey "$(CloudFlare.ApiKey)"
               addSpnToEnvironment: true
             env:
               PULUMI_ACCESS_TOKEN: $(Pulumi.AccessToken)

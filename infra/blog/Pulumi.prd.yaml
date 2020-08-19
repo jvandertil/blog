@@ -1,10 +1,16 @@
 config:
   azure:location: WestEurope
   blog:azure.resourceGroupName: jvandertil.nl-p-we-rg
-  blog:azure.storageAccountName: jvandertilnlpwesa
+  blog:azure.loggingStorageAccountName: jvandertilnllogpwesa
+  blog:azure.contentStorageAccountName: jvandertilnlpwesa
+  blog:azure.functionAppName: jvandertilnl-p-we-fa
+  blog:azure.functionAppServiceName: jvandertilnl-p-we-asp
+  blog:azure.keyvaultName: jvandertilnl-p-we-kv
+  blog:azure.appInsightsName: jvandertilnl-p-we-ai
   blog:cloudflare.zoneId:
     secure: AAABANctFnGTVMwgSQerXkTajkDaxIq6KoO1qmuaLihOChBR8Om6BKvyvL4LNlR56Vx5uoF44ipL1ZPw+KHVQA==
   blog:domainName: jvandertil.nl
+  blog:github.enablePullRequestCreation: true
   blog:subDomainName: www
   cloudflare:apiToken:
     secure: AAABAETJ6t9ZaLp2GuZtEaVcVsXErfYV9W2fSAArtoRSMh0268ccmjdUdmDQg3shcdtt98AuhA1Vjxkr7EyNs3quctGunH54

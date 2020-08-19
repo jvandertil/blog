@@ -2,8 +2,6 @@ baseURL = "https://www.jvandertil.nl"
 languageCode = "en-us"
 title = "Jos van der Til - Software Engineer"
 
-disqusShortname = "jvandertil"
-
 # Highlighting should output classes
 pygmentsUseClasses = true
 
@@ -25,6 +23,8 @@ pygmentsUseClasses = true
 	backToTopText = "Back to top"
 
 	githubRepoUrl = "https://www.github.com/jvandertil/blog"
+
+	commentHookUrl = "https://jvandertilnl-p-we-fa.azurewebsites.net/"
 
 [menu]
 	[[menu.main]]

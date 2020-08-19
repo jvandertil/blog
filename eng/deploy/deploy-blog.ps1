@@ -2,6 +2,7 @@ param(
     [string]$BlogArtifact = "",
     [string]$UploaderArtifact = "",
     [string]$PulumiArtifact = "",
+    [string]$BlogCommentArtifact = "",
     [string]$PulumiStack = "tst", 
     [string]$CloudFlareZoneId = "",
     [string]$CloudFlareApiKey = ""
@@ -15,6 +16,7 @@ $artifacts = Join-Path $root "artifacts"
 $blogArtifact = if ( $BlogArtifact -eq "" ) { Join-Path $artifacts "blog" } else { $BlogArtifact }
 $uploaderArtifact = if ( $UploaderArtifact -eq "" ) { Join-Path $artifacts "uploader" } else { $UploaderArtifact }
 $pulumiArtifact = if ( $PulumiArtifact -eq "" ) { Join-Path $artifacts "infra" } else { $PulumiArtifact }
+$blogCommentArtifact = if ( $BlogCommentArtifact -eq "" ) { Join-Path $artifacts "blog-comment-function.zip" }
 
 $uploaderBin = Join-Path $UploaderArtifact "Uploader.exe"
 
@@ -24,6 +26,9 @@ $pulumiOutput = & $PSScriptRoot\run-pulumi.ps1 -PulumiArtifact $pulumiArtifact -
 $storageAccountName = $pulumiOutput.StorageAccountName
 $azureConnectionString = $pulumiOutput.AzureConnectionString
 $cloudFlareZoneUrlRoot = $pulumiOutput.FullDomainName
+
+Write-Host "Deploying Azure Function"
+Exec { & az functionapp deployment source config-zip --src $blogCommentArtifact --resource-group $pulumiOutput.ResourceGroup --name $pulumiOutput.FunctionApp }
 
 Write-Host "Authorizing client ip address"
 & $PSScriptRoot\add-current-client-authorization.ps1 -StorageAccountName $storageAccountName
