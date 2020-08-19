@@ -125,6 +125,16 @@ public class BlogStack : Stack
             TenantId = clientConfig.Apply(x => x.TenantId),
         });
 
+        var applicationInsights = new Azure.AppInsights.Insights("function-app-insights", new Azure.AppInsights.InsightsArgs
+        {
+            Name = config.AppInsightsName,
+            ResourceGroupName = resourceGroup.Name,
+            
+            DailyDataCapInGb = 1,
+            ApplicationType = "web",
+            DailyDataCapNotificationsDisabled = true,
+        });
+
         var azureFunctionApp = new Azure.AppService.FunctionApp("function-app", new Azure.AppService.FunctionAppArgs
         {
             Name = config.FunctionAppName,
@@ -153,6 +163,8 @@ public class BlogStack : Stack
                 ["GitHub__EnablePullRequestCreation"] = "false",
 
                 ["KeyVault__Url"] = keyVault.VaultUri,
+
+                ["APPINSIGHTS_INSTRUMENTATIONKEY"] = applicationInsights.InstrumentationKey,
             },
         }, new CustomResourceOptions
         {

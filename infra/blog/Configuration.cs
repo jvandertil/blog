@@ -22,6 +22,8 @@ internal class Configuration
 
     public string KeyVaultName => _config.Require("azure.keyvaultName");
 
+    public string AppInsightsName => _config.Require("azure.appInsightsName");
+
     public Output<string> CloudFlareZoneId => _config.RequireSecret("cloudflare.zoneId");
 
     public string DomainName => _config.Require("domainName");
