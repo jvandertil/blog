@@ -58,6 +58,8 @@ jobs:
             displayName: 'Download blog infrastructure artifact'
           - download: BlogDeployScriptsCI
             displayName: 'Download deployment scripts artifact'
+          - download: BlogCommentFunctionCI
+            displayName: 'Download blog comment function app artifact'
 
           - task: PowerShell@2
             displayName: Install Pulumi
