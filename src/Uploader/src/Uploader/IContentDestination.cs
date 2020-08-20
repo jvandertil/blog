@@ -6,9 +6,9 @@ namespace Uploader
 {
     public interface IContentDestination
     {
-        IEnumerable<CloudFileInfo> GetFiles();
+        Task<IEnumerable<CloudFileInfo>> GetFilesAsync();
 
-        CloudFileInfo? GetFile(string path);
+        Task<CloudFileInfo?> GetFileAsync(string path);
 
         Task WriteFileAsync(string path, Stream file);
 

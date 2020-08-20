@@ -27,7 +27,7 @@ namespace Uploader
             foreach (var file in sourceFiles)
             {
                 var destinationPath = file.RelativePath.Replace('\\', '/');
-                var fileOnDestination = _destination.GetFile(destinationPath);
+                var fileOnDestination = await _destination.GetFileAsync(destinationPath);
 
                 if (fileOnDestination is null)
                 {
@@ -54,7 +54,7 @@ namespace Uploader
                 }
             }
 
-            var destinationFiles = _destination.GetFiles();
+            var destinationFiles = await _destination.GetFilesAsync();
             foreach (var file in destinationFiles)
             {
                 if (!_source.HasFile(file.Path))

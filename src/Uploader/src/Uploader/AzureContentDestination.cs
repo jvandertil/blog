@@ -1,17 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using MimeTypes;
 
 namespace Uploader
 {
     public class AzureContentDestination : IContentDestination
     {
-        private readonly CloudBlobContainer _container;
+        private readonly BlobContainerClient _container;
         private readonly IMimeTypeMap _mimeTypes;
         private readonly ILogger _logger;
 
@@ -23,38 +23,41 @@ namespace Uploader
             _mimeTypes = mimeTypeMap;
             _logger = logger;
 
-            CloudStorageAccount account = CloudStorageAccount.Parse(config.ConnectionString);
-            CloudBlobClient serviceClient = account.CreateCloudBlobClient();
-
-            _container = serviceClient.GetContainerReference("$web");
+            _container = new BlobContainerClient(config.ConnectionString, "$web");
         }
 
         public async Task DeleteFileAsync(string path)
         {
             _logger.LogInformation("Deleting file: " + path);
 
-            await _container.GetBlobReference(path).DeleteAsync();
+            await _container.GetBlobClient(path).DeleteAsync();
         }
 
-        public CloudFileInfo? GetFile(string path)
+        public async Task<CloudFileInfo?> GetFileAsync(string path)
         {
-            var blob = _container.GetBlockBlobReference(path.Replace('\\', '/'));
+            var blob = _container.GetBlobClient(path.Replace('\\', '/'));
 
-            if (!blob.Exists())
+            bool exists = await blob.ExistsAsync();
+
+            if (!exists)
             {
                 return null;
             }
+            var properties = await blob.GetPropertiesAsync();
 
-            return new CloudFileInfo(blob.Name, blob.Properties.ContentMD5);
+            return new CloudFileInfo(blob.Name, Convert.ToBase64String(properties.Value.ContentHash));
         }
 
-        public IEnumerable<CloudFileInfo> GetFiles()
+        public async Task<IEnumerable<CloudFileInfo>> GetFilesAsync()
         {
-            var blobs = _container.ListBlobs(useFlatBlobListing: true);
+            var blobs = _container.GetBlobsAsync();
 
-            return blobs
-                .OfType<CloudBlockBlob>()
-                .Select(x => new CloudFileInfo(x.Name, x.Properties.ContentMD5));
+            var mapping = blobs
+                .SelectAwait(x => new ValueTask<CloudFileInfo>(new CloudFileInfo(x.Name, Convert.ToBase64String(x.Properties.ContentHash))));
+
+            var result = await mapping.ToListAsync();
+
+            return result;
         }
 
         public async Task WriteFileAsync(string path, Stream file)
@@ -62,14 +65,10 @@ namespace Uploader
             _logger.LogInformation("Writing file: " + path);
             string mimeType = _mimeTypes.GetMimeType(Path.GetExtension(path));
 
-            var blob = _container.GetBlockBlobReference(path);
-            await blob.UploadFromStreamAsync(file);
-
-            blob.Properties.ContentType = mimeType;
-            await blob.SetPropertiesAsync();
+            var blob = _container.GetBlobClient(path);
+            await blob.UploadAsync(file, new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType = mimeType } });
 
             _logger.LogInformation("{file} saved as {contentType}", path, mimeType);
-
         }
     }
 }
