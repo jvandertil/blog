@@ -48,16 +48,14 @@ namespace Uploader
             return new CloudFileInfo(blob.Name, Convert.ToBase64String(properties.Value.ContentHash));
         }
 
-        public async Task<IEnumerable<CloudFileInfo>> GetFilesAsync()
+        public IAsyncEnumerable<CloudFileInfo> GetFilesAsync()
         {
             var blobs = _container.GetBlobsAsync();
 
             var mapping = blobs
                 .SelectAwait(x => new ValueTask<CloudFileInfo>(new CloudFileInfo(x.Name, Convert.ToBase64String(x.Properties.ContentHash))));
 
-            var result = await mapping.ToListAsync();
-
-            return result;
+            return mapping;
         }
 
         public async Task WriteFileAsync(string path, Stream file)

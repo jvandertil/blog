@@ -95,7 +95,6 @@ namespace Uploader
             using var serviceProvider = ConfigureServices(configuration);
             using (var scope = serviceProvider.CreateScope())
             {
-
                 var syncer = scope.ServiceProvider.GetRequiredService<ContentSyncer>();
                 var cachePurger = scope.ServiceProvider.GetRequiredService<CloudFlareCachePurger>();
 

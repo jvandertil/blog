@@ -54,8 +54,8 @@ namespace Uploader
                 }
             }
 
-            var destinationFiles = await _destination.GetFilesAsync();
-            foreach (var file in destinationFiles)
+            var destinationFiles = _destination.GetFilesAsync();
+            await foreach (var file in destinationFiles)
             {
                 if (!_source.HasFile(file.Path))
                 {

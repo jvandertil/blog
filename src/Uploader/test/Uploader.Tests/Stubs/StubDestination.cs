@@ -46,9 +46,9 @@ namespace Uploader.Tests.Stubs
             return Task.FromResult(_content.SingleOrDefault(x => x.Path == path));
         }
 
-        public Task<IEnumerable<CloudFileInfo>> GetFilesAsync()
+        public IAsyncEnumerable<CloudFileInfo> GetFilesAsync()
         {
-            return Task.FromResult<IEnumerable<CloudFileInfo>>(_content.ToList());
+            return _content.ToList().ToAsyncEnumerable();
         }
 
         public Task WriteFileAsync(string path, Stream file)
