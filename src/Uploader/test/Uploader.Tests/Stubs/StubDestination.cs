@@ -41,14 +41,14 @@ namespace Uploader.Tests.Stubs
             return Task.CompletedTask;
         }
 
-        public CloudFileInfo GetFile(string path)
+        public Task<CloudFileInfo> GetFileAsync(string path)
         {
-            return _content.SingleOrDefault(x => x.Path == path);
+            return Task.FromResult(_content.SingleOrDefault(x => x.Path == path));
         }
 
-        public IEnumerable<CloudFileInfo> GetFiles()
+        public IAsyncEnumerable<CloudFileInfo> GetFilesAsync()
         {
-            return _content.ToList();
+            return _content.ToList().ToAsyncEnumerable();
         }
 
         public Task WriteFileAsync(string path, Stream file)
