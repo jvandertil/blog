@@ -5,8 +5,8 @@ param(
 
 . $PSScriptRoot\helpers.ps1
 
-$azurePluginVersion = "v3.16.0"
-$cloudFlarePluginVersion = "v2.4.0"
+$azurePluginVersion = "v3.19.0"
+$cloudFlarePluginVersion = "v2.5.0"
 
 Exec { & pulumi plugin install resource azure $azurePluginVersion | Write-Host } "Error installing azure plugin"
 Exec { & pulumi plugin install resource cloudflare $cloudFlarePluginVersion | Write-Host } "Error installing cloudflare plugin"
