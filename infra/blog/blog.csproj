@@ -9,7 +9,7 @@
   <ItemGroup>
     <!-- Be sure to update the version in the run-pulumi.ps1 script when updating these. -->
     <PackageReference Include="Pulumi.Azure" Version="3.19.0" />
-    <PackageReference Include="Pulumi.CloudFlare" Version="2.5.0" />
+    <PackageReference Include="Pulumi.CloudFlare" Version="2.6.0" />
   </ItemGroup>
 
   <ItemGroup>
