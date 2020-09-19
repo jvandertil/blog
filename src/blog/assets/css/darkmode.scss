@@ -22,6 +22,12 @@
     .single-post {
         .author-card {
             @extend .bg-dark;
+            border-color: grey;
+        }
+
+        .post-comment {
+            @extend .bg-dark;
+            border-color: grey;
         }
     }
 
