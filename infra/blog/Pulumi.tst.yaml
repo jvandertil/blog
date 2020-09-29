@@ -5,7 +5,7 @@ config:
   blog:azure.contentStorageAccountName: jvandertilnltwesa
   blog:azure.functionAppName: jvandertilnl-t-we-fa
   blog:azure.functionAppServiceName: jvandertilnl-t-we-asp
-  blog:azure.keyvaultName: jvandertilnl-t-we-kv
+  blog:azure.keyvaultName: jvandertilnl2-t-we-kv
   blog:azure.appInsightsName: jvandertilnl-t-we-ai
   blog:cloudflare.zoneId:
     secure: AAABALJpx63QmFZaiWH7fAIrcsq5Zt1+XokeaqHql+bwx4EEgUL0iPKVnpu5eQ6h494JnD0nTKikUG/2t8j0Hw==
