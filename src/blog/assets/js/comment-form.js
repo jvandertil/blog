@@ -31,6 +31,14 @@ function hideSuccessAlert() {
     $("#comment-success-alert").attr("aria-hidden", "true").addClass("d-none");
 }
 
+function showBusySpinner() {
+    $("#submitSpinner").removeClass("d-none");
+}
+
+function hideBusySpinner() {
+    $("#submitSpinner").addClass("d-none");
+}
+
 function handleSuccess(form) {
     $(form).find("input[type=text], textarea").val("");
 
@@ -48,6 +56,7 @@ $('form[method=post]').not('.no-ajax').on('submit', function () {
 
     $this.find('.is-invalid').removeClass('is-invalid');
     hideSuccessAlert();
+    showBusySpinner();
 
     $.ajax({
         url: $this.attr('action'),
@@ -57,7 +66,10 @@ $('form[method=post]').not('.no-ajax').on('submit', function () {
         //dataType: 'json',
     }).fail(highlightErrors)
         .done(function () { handleSuccess($this); })
-        .always(function () { submitBtn.prop('disabled', false); })
+        .always(function () {
+            submitBtn.prop('disabled', false);
+            hideBusySpinner();
+        })
 
     return false;
 });
