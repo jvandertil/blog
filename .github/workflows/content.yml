@@ -1,0 +1,28 @@
+name: Blog Content
+
+on:
+  push:
+    branches: [ master ] 
+    paths:
+      - src/blog/**
+      - .github/workflows/content.yml
+      - eng/build-blog.sh
+  pull_request:
+    branches: [ master ]
+    paths:
+      - src/blog/**
+      - .github/workflows
+      - eng/build-blog.sh
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: eng/build-blog.sh
+      - name: Upload web Content
+        uses: actions/upload-artifact@v2
+        with:
+          name: content
+          path: artifacts/blog
