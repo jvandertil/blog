@@ -14,7 +14,7 @@
 
             a {
                 @extend .badge;
-                @extend .badge-light;
+                @extend .bg-light;
             }
         }
     }
@@ -31,5 +31,5 @@ h2.post-title {
 
 .draft-badge {
     @extend .badge;
-    @extend .badge-primary;
+    @extend .bg-primary;
 }
