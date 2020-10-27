@@ -15,6 +15,7 @@
             a {
                 @extend .badge;
                 @extend .bg-light;
+                @extend .text-dark;
             }
         }
     }
