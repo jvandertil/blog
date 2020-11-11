@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -93,17 +94,37 @@ namespace Uploader
             var configuration = BuildConfiguration(args);
 
             using var serviceProvider = ConfigureServices(configuration);
-            using (var scope = serviceProvider.CreateScope())
+
+            const int MAX_ATTEMPTS = 5;
+            int attempts = 0;
+            bool done = false;
+            while (attempts < MAX_ATTEMPTS && !done)
             {
-                var syncer = scope.ServiceProvider.GetRequiredService<ContentSyncer>();
-                var cachePurger = scope.ServiceProvider.GetRequiredService<CloudFlareCachePurger>();
+                try
+                {
+                    using (var scope = serviceProvider.CreateScope())
+                    {
+                        var syncer = scope.ServiceProvider.GetRequiredService<ContentSyncer>();
+                        var cachePurger = scope.ServiceProvider.GetRequiredService<CloudFlareCachePurger>();
 
-                var processedFiles = await syncer.SynchronizeFilesAsync();
+                        var processedFiles = await syncer.SynchronizeFilesAsync();
 
-                await cachePurger.PurgeFilesAsync(processedFiles);
+                        await cachePurger.PurgeFilesAsync(processedFiles);
+
+                        done = true;
+                    }
+                }
+                catch (Azure.RequestFailedException e)
+                {
+                    attempts++;
+                    Console.WriteLine("Error while syncing content. Retry attempt {0} of {1}.", attempts, MAX_ATTEMPTS);
+                    Console.WriteLine(e);
+
+                    await Task.Delay(1000 * (int)Math.Pow(2, attempts));
+                }
             }
 
-            return 0;
+            return done ? 0 : 1;
         }
     }
 }
