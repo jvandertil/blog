@@ -1,0 +1,6 @@
+{
+  "id": "01EPVDAN1VFZGJXS407DMG8XXW",
+  "displayName": "Nico",
+  "postedDate": "2020-11-11T10:23:55.4622251+00:00",
+  "content": "Hi,\r\n\r\nI stumbled upon your article while searching how the hell we should create a user in an Azure SQL database via DevOps. As none of the options seem to work. \u0027Authenticate\u0027 property unsupported in powershell 5 and up. Integrated security uses agent identity instead of service connection and a sql user just isn\u0027t allowed to run the \u0027from external provider\u0027\r\nI see you use an EXE for this. Is this EXE part of your build and you run it from the azure agent if I read it correctly? "
+}
