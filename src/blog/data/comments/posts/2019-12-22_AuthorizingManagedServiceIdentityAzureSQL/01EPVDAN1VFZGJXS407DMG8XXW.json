@@ -2,5 +2,16 @@
   "id": "01EPVDAN1VFZGJXS407DMG8XXW",
   "displayName": "Nico",
   "postedDate": "2020-11-11T10:23:55.4622251+00:00",
-  "content": "Hi,\r\n\r\nI stumbled upon your article while searching how the hell we should create a user in an Azure SQL database via DevOps. As none of the options seem to work. \u0027Authenticate\u0027 property unsupported in powershell 5 and up. Integrated security uses agent identity instead of service connection and a sql user just isn\u0027t allowed to run the \u0027from external provider\u0027\r\nI see you use an EXE for this. Is this EXE part of your build and you run it from the azure agent if I read it correctly? "
+  "content": "Hi,\r\n\r\nI stumbled upon your article while searching how the hell we should create a user in an Azure SQL database via DevOps. As none of the options seem to work. \u0027Authenticate\u0027 property unsupported in powershell 5 and up. Integrated security uses agent identity instead of service connection and a sql user just isn\u0027t allowed to run the \u0027from external provider\u0027\r\nI see you use an EXE for this. Is this EXE part of your build and you run it from the azure agent if I read it correctly? ",
+  "authorComment": false,
+  "replies": [
+    {
+      "id": "01EPWRZN034FXFQ0GX37N3E68D",
+      "displayName": "Jos van der Til",
+      "postedDate": "2020-11-11T23:06:52.3092262+00:00",
+      "content": "Hi Nico,\r\n\r\nYou understand correctly, I am running the EXE from the Azure DevOps agent. Unfortunately, I don\u0027t think it is possible to use the service connection as an authentication mechanism towards Azure SQL. I believe I researched that a little bit, but it breaks down when trying to access the AzureSQL itself. Have you checked out the GitHub repository I linked in the post: https://github.com/jvandertil/AzureSqlAppIdentityAuthTool ? There is a README in the repository that might shed some light on how it actually works, plus it includes the source code for the EXE I mention in the post.\r\n\r\nI hope this helps you out, if not feel free to reach out again.\r\n ",
+      "authorComment": true,
+      "replies": []
+    }
+  ]
 }
