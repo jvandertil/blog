@@ -1,0 +1,72 @@
+.post-add-comment-form, .post-reply-comment-form {
+    .form-field {
+        @extend .form-group;
+
+        input {
+            @extend .form-control;
+        }
+
+        textarea {
+            @extend .form-control;
+        }
+    }
+
+    button {
+        @extend .btn;
+        @extend .btn-primary;
+    }
+}
+
+.post-comment {
+    @extend .card;
+    @extend .card-body;
+    display: block;
+    margin-top: 15px;
+
+    .comment-id {
+        display: none;
+    }
+
+    .comment-author {
+        display: inline;
+    }
+
+    .comment-date {
+        @extend .small;
+        display: inline;
+    }
+
+    .comment-date::before {
+        content: " commented on "
+    }
+
+    .comment-content {
+        padding-top: 5px;
+    }
+
+    .reply-button {
+        @extend .btn;
+        @extend .btn-link;
+        padding: 0 0 5px 0;
+    }
+}
+
+.post-comment.author-comment {
+    @extend .border;
+    @extend .border-primary;
+
+    .comment-author::after {
+        @extend .text-success;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: " \f14a ";
+    }
+}
+
+$indent: 1rem;
+
+@for $i from 1 through 5 {
+    .post-comment.indent-#{$i} {
+        margin-left: $indent * $i;
+    }
+}

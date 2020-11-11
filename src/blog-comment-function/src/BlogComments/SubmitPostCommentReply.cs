@@ -17,7 +17,7 @@ using Octokit.Helpers;
 
 namespace BlogComments
 {
-    public class SubmitPostComment
+    public class SubmitPostCommentReply
     {
         private const int HTTP_NOTFOUND = 404;
         private const int HTTP_OK = 200;
@@ -28,7 +28,7 @@ namespace BlogComments
         private readonly IOptionsMonitor<GitHubOptions> _options;
         private readonly IPostExistenceChecker _postExistenceChecker;
 
-        public SubmitPostComment(
+        public SubmitPostCommentReply(
             GitHubClientFactory githubFactory,
             IOptionsMonitor<GitHubOptions> optionsMonitor,
             IPostExistenceChecker postExistenceChecker)
@@ -38,10 +38,12 @@ namespace BlogComments
             _postExistenceChecker = postExistenceChecker;
         }
 
-        [FunctionName(nameof(SubmitPostComment))]
+        [FunctionName(nameof(SubmitPostCommentReply))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/posts/{postName}/comment")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/posts/{postName}/comment/{threadId}/reply/{commentId}")] HttpRequest req,
             [FromRoute] string postName,
+            [FromRoute] string threadId,
+            [FromRoute] string commentId,
             ILogger log)
         {
             var repositoryPostName = await _postExistenceChecker.TryGetPostFileNameFromRepositoryAsync(postName);
@@ -65,23 +67,39 @@ namespace BlogComments
 
             var form = await req.ReadFormAsync();
 
-            if (!TryBindBody(form, out var comment, out var errors))
+            if (!TryBindBody(form, out var reply, out var errors))
             {
                 return new BadRequestObjectResult(errors);
             }
 
-            // Create branch
-            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + comment.Id);
+            // Find thread in comments
+            var targetFile = COMMENT_DATA_BASEPATH + $"/{postName}/{threadId}.json";
 
-            string content = SerializeComment(comment);
+            // Load and deserialize comment
+            var existingFile = (await github.Repository.Content.GetAllContentsByRef(username, repositoryName, targetFile, repository.DefaultBranch)).Single();
+            var content = await github.Repository.Content.GetRawContent(username, repositoryName, targetFile);
+            var comment = JsonSerializer.Deserialize<CommentModel>(content, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            });
 
-            // Create file
-            var file = new CreateFileRequest($"Add comment by {comment.DisplayName} on {postName}", content, branchRef.Ref)
+            // Find comment in thread
+            // Add reply to replies array
+            if (!AddReplyToCommentRecursive(comment, commentId, reply))
+            {
+                return new StatusCodeResult(HTTP_NOTFOUND);
+            }
+
+            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + threadId + "/" + reply.Id);
+
+            var fileContent = SerializeComment(comment);
+            var file = new UpdateFileRequest($"Add reply by {reply.DisplayName} on {postName}, thread {threadId}", fileContent, existingFile.Sha, branchRef.Ref)
             {
                 Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", DateTimeOffset.UtcNow),
             };
 
-            await github.Repository.Content.CreateFile(username, repositoryName, COMMENT_DATA_BASEPATH + $"/{postName}/{comment.Id}.json", file);
+            await github.Repository.Content.UpdateFile(username, repositoryName, targetFile, file);
 
             if (settings.EnablePullRequestCreation)
             {
@@ -89,6 +107,25 @@ namespace BlogComments
             }
 
             return new StatusCodeResult(HTTP_OK);
+        }
+
+        private static bool AddReplyToCommentRecursive(CommentModel comment, string commentId, CommentModel reply)
+        {
+            if (comment.Id == commentId)
+            {
+                comment.Replies.Add(reply);
+                return true;
+            }
+
+            foreach (var entry in comment.Replies)
+            {
+                if (AddReplyToCommentRecursive(entry, commentId, reply))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static string SerializeComment(object comment)
@@ -141,16 +178,24 @@ namespace BlogComments
             [Required]
             public string Content { get; set; }
 
+            public bool AuthorComment { get; set; }
+
             public IList<CommentModel> Replies { get; set; }
 
+            private CommentModel()
+            {
+                Replies = new List<CommentModel>();
+            }
+
             public CommentModel(string id, string displayName, DateTimeOffset postedDate, string content)
+                : this()
             {
                 Id = id;
                 DisplayName = displayName;
                 PostedDate = postedDate;
                 Content = content;
 
-                Replies = new List<CommentModel>();
+                AuthorComment = false;
             }
         }
     }
