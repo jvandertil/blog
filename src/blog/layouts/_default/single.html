@@ -47,7 +47,7 @@
 
                     <button id="submitComment" type="submit">
                         Submit comment
-                        <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="submitSpinner spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     </button>
                 </form>
             </div>
@@ -64,12 +64,10 @@
                 <h3> {{ len . }} responses</h3>
 
                 {{ range (sort .) }}
-                {{ $commentDate := time .postedDate }}
-                <blockquote id="{{ .id }}" class="post-comment">
-                    <div class="comment-author">{{ .displayName }}</div>
-                    <div class="comment-date"><a href="#{{.id}}">{{ dateFormat "2 January 2006" $commentDate }}</a></div>
-                    <div class="comment-content">{{ .content }}</div>
-                </blockquote>
+                
+                <div id="thread-{{ .id }}">
+                    {{ partial "blog-comment" (dict "level" 0 "data" . "thread" .id "postName" $postName) }}
+                </div>
                 {{ end }}
                 {{ end }}
             </div>

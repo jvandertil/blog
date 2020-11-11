@@ -9,6 +9,8 @@
 @import "darkmode.scss";
 @import "prismjs.scss";
 
+@import "comments.scss";
+
 body > main {
     @extend .container;
 }

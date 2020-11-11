@@ -1,0 +1,49 @@
+{{ $level := .level }}
+{{ $thread := .thread }}
+{{ $postName := .postName }}
+
+{{ with .data }}
+
+{{ $authorComment :=  true }}
+{{ $commentDate := time .postedDate }}
+{{/* if .authorComment is not null and is true, then the reply is author */}}
+{{ $isAuthor := (and (ne .authorComment nil) .authorComment) }}
+<blockquote id="{{ .id }}" class="post-comment indent-{{ $level }} {{ cond $isAuthor "author-comment" "" }}">
+    <div class="comment-author">{{ .displayName }}</div>
+    <div class="comment-date">
+        <a href="#{{.id}}" title="{{ dateFormat "2006-01-02T15:04:05-0700" $commentDate }}">
+            {{ dateFormat "2 January 2006" $commentDate }}
+        </a>
+    </div>
+    <div class="comment-content">{{ .content | markdownify }}</div>
+    <div class="comment-footer">
+        <button title="Reply" class="reply-button" onclick="toggleForm('form-reply-{{.id}}')"><small>Reply</small></button>
+        <div class="post-reply-comment-form">
+            <form id="form-reply-{{.id}}" method="post" action="{{ strings.TrimSuffix "/" site.Params.CommentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
+                <div class="form-field">
+                    <label for="displayName">Display name:</label>
+                    <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" />
+                </div>
+
+                <div class="form-field">
+                    <label for="content">Your comment:</label>
+                    <textarea id="content" name="Content" placeholder="Join the discussion" rows="3"></textarea>
+                </div>
+
+                <button type="submit">
+                    Post reply
+                    <span class="submitSpinner spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</blockquote>
+
+{{ with .replies }}
+{{ range (sort .) }}
+{{ $nextLevel := add $level 1 }}
+{{ partial "blog-comment" (dict "level" $nextLevel "data" . "thread" $thread "postName" $postName) }}
+{{ end }}
+{{ end }}
+
+{{ end }}
