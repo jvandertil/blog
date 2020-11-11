@@ -1,7 +1,7 @@
 trigger:
   paths:
     include:
-      - src/BlogComments/*
+      - src/blog-comment-function/*
       - .ci/azure-pipelines/BlogCommentFunctionCI.yml
       - eng/build-comment-function.sh
 
