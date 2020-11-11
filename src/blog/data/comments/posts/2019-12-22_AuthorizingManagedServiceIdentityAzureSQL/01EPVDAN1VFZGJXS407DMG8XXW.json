@@ -10,7 +10,7 @@
       "displayName": "Jos van der Til",
       "postedDate": "2020-11-11T23:06:52.3092262+00:00",
       "content": "Hi Nico,\r\n\r\nYou understand correctly, I am running the EXE from the Azure DevOps agent. Unfortunately, I don\u0027t think it is possible to use the service connection as an authentication mechanism towards Azure SQL. I believe I researched that a little bit, but it breaks down when trying to access the AzureSQL itself. Have you checked out the GitHub repository I linked in the post: https://github.com/jvandertil/AzureSqlAppIdentityAuthTool ? There is a README in the repository that might shed some light on how it actually works, plus it includes the source code for the EXE I mention in the post.\r\n\r\nI hope this helps you out, if not feel free to reach out again.\r\n ",
-      "authorComment": false,
+      "authorComment": true,
       "replies": []
     }
   ]
