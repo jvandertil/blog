@@ -7,7 +7,7 @@ This repository contains the source code and content for my blog located at [www
 Feel free to open an issue or a pull request if you notice something missing, wrong, misspelled, or any other reason.
 
 ## Contents
-This repository contains the following parts:ME
+This repository contains the following parts:
 
 * eng/
   * Contains scripts for deploying and building the blog components
