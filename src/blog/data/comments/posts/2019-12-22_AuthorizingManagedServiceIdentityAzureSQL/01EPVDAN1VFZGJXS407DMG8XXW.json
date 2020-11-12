@@ -24,7 +24,7 @@
               "displayName": "Jos van der Til",
               "postedDate": "2020-11-12T12:48:31.8419396+00:00",
               "content": "It sounds like you are running the retrieving of the IP address and adding the firewall rule in 1 step. As it is presented here you will have to use 2 steps, or adjust the code to use a PowerShell variable instead of a Azure DevOps variable (slightly different syntax).\r\n\r\nSince you are getting errors indicating that \u0027az\u0027 is not logged in, it sounds like you are running the \u0060az\u0060 command in something else than a Azure CLI step (see the [Microsoft Docs](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-cli?view=azure-devops) for more). Make sure that you use the Azure CLI step, then Azure DevOps will use the service connection to log you in to Azure, and then the \u0027az\u0027 command will work.\r\n\r\nI\u0027ll see if I can find some time to add an example Azure DevOps pipeline, either here or in the repository.",
-              "authorComment": false,
+              "authorComment": true,
               "replies": []
             }
           ]
