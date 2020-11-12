@@ -28,16 +28,17 @@ namespace BlogComments.Functions
 
         private readonly GitHubClientFactory _githubFactory;
         private readonly IOptionsMonitor<GitHubOptions> _options;
-        private readonly IPostExistenceChecker _postExistenceChecker;
+        private readonly IPostExistenceValidator _postExistenceValidator;
 
         public SubmitPostCommentReply(
             GitHubClientFactory githubFactory,
             IOptionsMonitor<GitHubOptions> optionsMonitor,
-            IPostExistenceChecker postExistenceChecker)
+            IPostExistenceValidator postExistenceChecker)
+            IPostExistenceValidator postExistenceValidator)
         {
             _githubFactory = githubFactory;
             _options = optionsMonitor;
-            _postExistenceChecker = postExistenceChecker;
+            _postExistenceValidator = postExistenceValidator;
         }
 
         [FunctionName(nameof(SubmitPostCommentReply))]
@@ -48,8 +49,7 @@ namespace BlogComments.Functions
             [FromRoute] string commentId,
             ILogger log)
         {
-            var repositoryPostName = await _postExistenceChecker.TryGetPostFileNameFromRepositoryAsync(postName);
-
+            var repositoryPostName = await _postExistenceValidator.TryGetPostFileNameFromRepositoryAsync(postName);
             if (repositoryPostName is null)
             {
                 return new StatusCodeResult(HTTP_NOTFOUND);

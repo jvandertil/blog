@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 
 namespace BlogComments.Functions.Validation
 {
-    public class CachingPostExistenceCheckerDecorator : IPostExistenceChecker
+    public class CachingPostExistenceValidatorDecorator : IPostExistenceValidator
     {
         private readonly ConcurrentDictionary<string, string?> _cache;
-        private readonly IPostExistenceChecker _decorated;
+        private readonly IPostExistenceValidator _decorated;
 
-        public CachingPostExistenceCheckerDecorator(IPostExistenceChecker decorated)
+        public CachingPostExistenceValidatorDecorator(IPostExistenceValidator decorated)
         {
             _cache = new ConcurrentDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 

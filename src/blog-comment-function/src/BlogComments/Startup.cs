@@ -40,11 +40,11 @@ namespace BlogComments
                 return new CryptographyClient(key.Value.Id, new AzureCliCredential());
             });
 
-            services.AddSingleton<PostExistenceChecker>();
-            services.AddSingleton<IPostExistenceChecker>(x =>
+            services.AddSingleton<GitHubPostExistenceValidator>();
+            services.AddSingleton<IPostExistenceValidator>(x =>
             {
-                var inner = x.GetRequiredService<PostExistenceChecker>();
-                var decorated = new CachingPostExistenceCheckerDecorator(inner);
+                var inner = x.GetRequiredService<GitHubPostExistenceValidator>();
+                var decorated = new CachingPostExistenceValidatorDecorator(inner);
 
                 return decorated;
             });

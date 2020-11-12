@@ -21,14 +21,14 @@ namespace BlogComments.Functions
         private const int HTTP_OK = 200;
 
         private readonly CommentRepository _repository;
-        private readonly IPostExistenceChecker _postExistenceChecker;
+        private readonly IPostExistenceValidator _postExistenceValidator;
 
         public SubmitPostComment(
             CommentRepository repository,
-            IPostExistenceChecker postExistenceChecker)
+            IPostExistenceValidator postExistenceChecker)
         {
             _repository = repository;
-            _postExistenceChecker = postExistenceChecker;
+            _postExistenceValidator = postExistenceChecker;
         }
 
         [FunctionName(nameof(SubmitPostComment))]
@@ -38,7 +38,7 @@ namespace BlogComments.Functions
             ILogger log)
         {
             // Check if the post actually exists.
-            var repositoryPostName = await _postExistenceChecker.TryGetPostFileNameFromRepositoryAsync(postName);
+            var repositoryPostName = await _postExistenceValidator.TryGetPostFileNameFromRepositoryAsync(postName);
             if (repositoryPostName is null)
             {
                 log.LogWarning("Requested post {postName} not found.", postName);

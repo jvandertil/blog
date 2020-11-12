@@ -7,14 +7,14 @@ using Microsoft.Extensions.Options;
 
 namespace BlogComments.Functions.Validation
 {
-    public class PostExistenceChecker : IPostExistenceChecker
+    public class GitHubPostExistenceValidator : IPostExistenceValidator
     {
         private const string POSTS_BASEPATH = "src/blog/content/posts/";
 
         private readonly GitHubClientFactory _githubFactory;
         private readonly IOptionsMonitor<GitHubOptions> _options;
 
-        public PostExistenceChecker(GitHubClientFactory githubFactory, IOptionsMonitor<GitHubOptions> options)
+        public GitHubPostExistenceValidator(GitHubClientFactory githubFactory, IOptionsMonitor<GitHubOptions> options)
         {
             _githubFactory = githubFactory;
             _options = options;
