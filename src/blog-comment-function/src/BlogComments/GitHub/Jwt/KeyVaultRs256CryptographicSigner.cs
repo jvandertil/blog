@@ -1,6 +1,6 @@
-﻿using Azure.Security.KeyVault.Keys.Cryptography;
+using Azure.Security.KeyVault.Keys.Cryptography;
 
-namespace BlogComments.GitHub
+namespace BlogComments.GitHub.Jwt
 {
     public sealed class KeyVaultRs256CryptographicSigner : ICryptographicSigner
     {

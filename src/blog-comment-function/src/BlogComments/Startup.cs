@@ -3,7 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
+using BlogComments.Functions.Validation;
 using BlogComments.GitHub;
+using BlogComments.GitHub.Jwt;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,10 +34,10 @@ namespace BlogComments
                 var settingsMonitor = x.GetRequiredService<IOptionsMonitor<KeyVaultOptions>>();
                 var settings = settingsMonitor.CurrentValue;
 
-                var keyClient = new KeyClient(settings.Url, new DefaultAzureCredential());
+                var keyClient = new KeyClient(settings.Url, new AzureCliCredential());
                 var key = keyClient.GetKey(settings.KeyName);
 
-                return new CryptographyClient(key.Value.Id, new DefaultAzureCredential());
+                return new CryptographyClient(key.Value.Id, new AzureCliCredential());
             });
 
             services.AddSingleton<PostExistenceChecker>();

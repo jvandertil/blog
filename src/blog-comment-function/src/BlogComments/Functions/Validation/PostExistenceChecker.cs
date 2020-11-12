@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using BlogComments.GitHub;
 using Microsoft.Extensions.Options;
 
-namespace BlogComments
+namespace BlogComments.Functions.Validation
 {
     public class PostExistenceChecker : IPostExistenceChecker
     {

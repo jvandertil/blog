@@ -5,6 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BlogComments.Functions.Validation;
+using BlogComments.GitHub;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -15,7 +17,7 @@ using NUlid;
 using Octokit;
 using Octokit.Helpers;
 
-namespace BlogComments
+namespace BlogComments.Functions
 {
     public class SubmitPostCommentReply
     {

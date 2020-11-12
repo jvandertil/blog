@@ -2,13 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace BlogComments
+namespace BlogComments.Functions.Validation
 {
-    public interface IPostExistenceChecker
-    {
-        Task<string?> TryGetPostFileNameFromRepositoryAsync(string postName);
-    }
-
     public class CachingPostExistenceCheckerDecorator : IPostExistenceChecker
     {
         private readonly ConcurrentDictionary<string, string?> _cache;

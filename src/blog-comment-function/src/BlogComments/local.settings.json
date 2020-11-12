@@ -7,7 +7,7 @@
     "GitHub__Username": "jvandertil",
     "GitHub__Repository": "blog",
     "GitHub__EnablePullRequestCreation": false,
-    "KeyVault__Url": "https://jvandertilnl-s-we-kv.vault.azure.net/",
+    "KeyVault__Url": "https://jvandertil-blog-t-kv.vault.azure.net/",
     "KeyVault__KeyName": "jvandertil-blog-bot"
   },
   "Host": {

@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace BlogComments.GitHub
+namespace BlogComments.GitHub.Jwt
 {
     /// <summary>
     /// Identifies the owner of a block of memory who is responsible for disposing of the underlying memory appropriately.
