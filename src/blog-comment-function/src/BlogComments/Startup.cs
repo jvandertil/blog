@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
+using BlogComments.Functions.Persistence;
 using BlogComments.Functions.Validation;
 using BlogComments.GitHub;
 using BlogComments.GitHub.Jwt;
@@ -28,6 +29,8 @@ namespace BlogComments
             services.AddSingleton(configuration);
             services.AddSingleton<GitHubClientFactory>();
             services.AddSingleton<ISystemClock, RealSystemClock>();
+            services.AddSingleton<CommentRepository>();
+
             services.AddSingleton<ICryptographicSigner, KeyVaultRs256CryptographicSigner>();
             services.AddSingleton<CryptographyClient>(x =>
             {
