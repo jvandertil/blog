@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "bootstrap": "5.0.0-alpha2",
+    "bootstrap": "5.0.0-alpha3",
     "jquery": "3.5.1",
     "@fortawesome/fontawesome-free": "5.15.1",
     "prismjs": "1.23.0",
