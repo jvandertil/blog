@@ -37,10 +37,10 @@ namespace BlogComments
                 var settingsMonitor = x.GetRequiredService<IOptionsMonitor<KeyVaultOptions>>();
                 var settings = settingsMonitor.CurrentValue;
 
-                var keyClient = new KeyClient(settings.Url, new AzureCliCredential());
+                var keyClient = new KeyClient(settings.Url, new DefaultAzureCredential());
                 var key = keyClient.GetKey(settings.KeyName);
 
-                return new CryptographyClient(key.Value.Id, new AzureCliCredential());
+                return new CryptographyClient(key.Value.Id, new DefaultAzureCredential());
             });
 
             services.AddSingleton<GitHubPostExistenceValidator>();
