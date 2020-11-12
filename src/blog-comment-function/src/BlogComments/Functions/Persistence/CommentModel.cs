@@ -6,17 +6,16 @@ namespace BlogComments.Functions.Persistence
 {
     public class CommentModel
     {
-        public string Id { get; set; }
+        public string Id { get; }
+
+        public string DisplayName { get; }
+
+        public DateTimeOffset PostedDate { get; }
 
         [Required]
-        public string DisplayName { get; set; }
+        public string Content { get; }
 
-        public DateTimeOffset PostedDate { get; set; }
-
-        [Required]
-        public string Content { get; set; }
-
-        public bool AuthorComment { get; set; }
+        public bool AuthorComment { get; }
 
         public IList<CommentModel> Replies { get; set; }
 
