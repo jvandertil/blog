@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace BlogComments.Functions.Persistence
 {
@@ -12,7 +11,6 @@ namespace BlogComments.Functions.Persistence
 
         public DateTimeOffset PostedDate { get; set; }
 
-        [Required]
         public string Content { get; set; }
 
         public bool AuthorComment { get; set; }
