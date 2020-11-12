@@ -11,7 +11,16 @@
       "postedDate": "2020-11-11T23:06:52.3092262+00:00",
       "content": "Hi Nico,\r\n\r\nYou understand correctly, I am running the EXE from the Azure DevOps agent. Unfortunately, I don\u0027t think it is possible to use the service connection as an authentication mechanism towards Azure SQL. I believe I researched that a little bit, but it breaks down when trying to access the AzureSQL itself. Have you checked out the GitHub repository I linked in the post: https://github.com/jvandertil/AzureSqlAppIdentityAuthTool ? There is a README in the repository that might shed some light on how it actually works, plus it includes the source code for the EXE I mention in the post.\r\n\r\nI hope this helps you out, if not feel free to reach out again.\r\n ",
       "authorComment": true,
-      "replies": []
+      "replies": [
+        {
+          "id": "01EPY0HWY4613XMS44Y0791P0V",
+          "displayName": "Nico",
+          "postedDate": "2020-11-12T10:38:24.7250583+00:00",
+          "content": "Well, we are running into an issue on adding the firewall rule which seems to fail.\r\nThe code above is always giving (missing parameter --end-ip-address), so we refactored it to the new way to do so, using Invoke-WebRequest to get the IP, but this one is giving the \u0027run az login\u0027 error we are still looking into\r\nHowever for the next step, I would assume that instead of using the EXE, we could just as well do it in powershell v4, using the System.Data.SqlClient in powershell",
+          "authorComment": false,
+          "replies": []
+        }
+      ]
     }
   ]
 }
