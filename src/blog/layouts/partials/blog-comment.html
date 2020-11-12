@@ -19,7 +19,9 @@
     <div class="comment-footer">
         <button title="Reply" class="reply-button" onclick="toggleForm('form-reply-{{.id}}')"><small>Reply</small></button>
         <div class="post-reply-comment-form">
-            <form id="form-reply-{{.id}}" method="post" action="{{ strings.TrimSuffix "/" site.Params.CommentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
+            <!-- This variable is also in the layout for single. -->
+            {{ $commentHookUrl := (cond site.IsServer site.Params.CommentHookUrlLocal site.Params.CommentHookUrl) }}
+            <form id="form-reply-{{.id}}" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
                 <div class="form-field">
                     <label for="displayName">Display name:</label>
                     <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" />
