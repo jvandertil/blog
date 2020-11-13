@@ -10,6 +10,11 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET 5 sdk'
+      inputs:
+        packageType: sdk
+        version: 5.0
     - bash: eng/build-uploader.sh
       displayName: 'Run build script'
     - task: PublishPipelineArtifact@1
