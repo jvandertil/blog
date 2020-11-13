@@ -23,7 +23,7 @@ namespace Uploader
             Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
         {
             return JsonSerializer.SerializeAsync(stream, _content, _content.GetType(), _options);
         }
