@@ -3,7 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
+using BlogComments.Functions.Persistence;
+using BlogComments.Functions.Validation;
 using BlogComments.GitHub;
+using BlogComments.GitHub.Jwt;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +29,8 @@ namespace BlogComments
             services.AddSingleton(configuration);
             services.AddSingleton<GitHubClientFactory>();
             services.AddSingleton<ISystemClock, RealSystemClock>();
+            services.AddSingleton<CommentRepository>();
+
             services.AddSingleton<ICryptographicSigner, KeyVaultRs256CryptographicSigner>();
             services.AddSingleton<CryptographyClient>(x =>
             {
@@ -38,11 +43,11 @@ namespace BlogComments
                 return new CryptographyClient(key.Value.Id, new DefaultAzureCredential());
             });
 
-            services.AddSingleton<PostExistenceChecker>();
-            services.AddSingleton<IPostExistenceChecker>(x =>
+            services.AddSingleton<GitHubPostExistenceValidator>();
+            services.AddSingleton<IPostExistenceValidator>(x =>
             {
-                var inner = x.GetRequiredService<PostExistenceChecker>();
-                var decorated = new CachingPostExistenceCheckerDecorator(inner);
+                var inner = x.GetRequiredService<GitHubPostExistenceValidator>();
+                var decorated = new CachingPostExistenceValidatorDecorator(inner);
 
                 return decorated;
             });

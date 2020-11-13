@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using BlogComments.GitHub;
+using BlogComments.GitHub.Jwt;
 using Microsoft.Extensions.Options;
 using Octokit;
 
-namespace BlogComments
+namespace BlogComments.GitHub
 {
     public class GitHubClientFactory
     {

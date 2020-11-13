@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BlogComments.GitHub
+namespace BlogComments.GitHub.Jwt
 {
     public class AppClientTokenGenerator
     {
-        private const byte FULL_STOP_BYTE = 0x2E; // .
-        private const byte EQUALS_SIGN_BYTE = 0x3D; // =
+        private const byte FULL_STOP_BYTE = (byte)'.';
+        private const byte EQUALS_SIGN_BYTE = (byte)'=';
 
         private readonly ICryptographicSigner _signer;
         private readonly ISystemClock _clock;

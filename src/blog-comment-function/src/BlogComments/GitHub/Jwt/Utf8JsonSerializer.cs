@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Text.Json;
 
-namespace BlogComments.GitHub
+namespace BlogComments.GitHub.Jwt
 {
     public class Utf8JsonSerializer
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace BlogComments.GitHub
+namespace BlogComments.GitHub.Jwt
 {
     public interface ICryptographicSigner
     {

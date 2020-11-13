@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace BlogComments.GitHub
+namespace BlogComments
 {
     public sealed class RealSystemClock : ISystemClock
     {

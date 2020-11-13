@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BlogComments.GitHub
+namespace BlogComments.GitHub.Jwt
 {
     /// <remarks>
     /// Taken from https://github.com/dotnet/runtime/blob/master/src/libraries/Common/src/System/Text/Json/PooledByteBufferWriter.cs
