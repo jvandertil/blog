@@ -33,8 +33,9 @@ namespace BlogComments.Functions.Validation
             var tree = await github.Git.Tree.GetRecursive(repository.Id, repository.DefaultBranch);
 
             var postFileRef = tree.Tree
-                .Where(x => x.Path.StartsWith(POSTS_BASEPATH, StringComparison.OrdinalIgnoreCase))
-                .FirstOrDefault(x => x.Path.Contains(postName, StringComparison.OrdinalIgnoreCase));
+                .Where(x => x.Path.StartsWith(POSTS_BASEPATH, StringComparison.OrdinalIgnoreCase)
+                            && x.Path.Contains(postName, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
 
             if (postFileRef is null)
             {

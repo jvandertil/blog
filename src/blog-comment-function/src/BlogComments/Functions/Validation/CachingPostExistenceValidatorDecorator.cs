@@ -18,9 +18,7 @@ namespace BlogComments.Functions.Validation
 
         public async Task<string?> TryGetPostFileNameFromRepositoryAsync(string postName)
         {
-            string? fileName;
-
-            if (!_cache.TryGetValue(postName, out fileName))
+            if (!_cache.TryGetValue(postName, out string? fileName))
             {
                 fileName = await _decorated.TryGetPostFileNameFromRepositoryAsync(postName);
 

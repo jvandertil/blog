@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BlogComments.Tests
 {
-    public class Rs256CryptographicSignerTests
+    public class InMemoryRs256CryptographicSignerTests
     {
         [Fact]
         public void CalculateSignature_CalculatesValidSignature()
@@ -42,7 +42,7 @@ vJZcnFq2CZ2CpfhEDOoRbIBs1+l8ktaAZJBr6o2KUPUE2AzkHNfZeHjZ/6AXmKuy
 
             const string expectedSignature = "IS2ZVZEovipo6NLmLCk0ALb50OSHdVljwFN5CflRZrVW5cCvXjdv8zViq2yWkGvCpgD63llb6ydPyCDoSsXKHmhO2ACpWNJs/9MfBBJ/M3NvP552cmB46xh2z21ufDZYjEMLCCKaTY1qMU9reB3uMtohARJkH4+s+/69XtrVQ1ZOmz7QHnfkM/I99XtCxRvPBNaaU0bojM+cxYzzERtCNHhKUkPuwkCnUYFqniGVsEOaYbQ91o7L/Mr+JlSvHItBTxKIzRXJV2GpS8uMTIwClqMBYZa7nPIVv/RHS60NRGr45U4w5xEBTibFAeFmKZ16CCV2tcYWQs/Tz7sAo/ucxA==";
 
-            var signer = new Rs256CryptographicSigner(PemPrivateKeyConverter.ExtractRsaPrivateKey(privateKey));
+            var signer = new InMemoryRs256CryptographicSigner(PemPrivateKeyConverter.ExtractRsaPrivateKey(privateKey));
 
             var signature = signer.CalculateSignature(new byte[0]);
             var signatureBase64 = Convert.ToBase64String(signature);

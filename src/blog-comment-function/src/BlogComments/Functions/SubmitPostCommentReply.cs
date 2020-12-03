@@ -15,13 +15,16 @@ namespace BlogComments.Functions
     {
         private readonly CommentRepository _repository;
         private readonly IPostExistenceValidator _postExistenceValidator;
+        private readonly ModelBinder _modelBinder;
 
         public SubmitPostCommentReply(
             CommentRepository repository,
-            IPostExistenceValidator postExistenceValidator)
+            IPostExistenceValidator postExistenceValidator,
+            ModelBinder modelBinder)
         {
             _repository = repository;
             _postExistenceValidator = postExistenceValidator;
+            _modelBinder = modelBinder;
         }
 
         [FunctionName(nameof(SubmitPostCommentReply))]
@@ -49,7 +52,7 @@ namespace BlogComments.Functions
                 return new NotFoundResult();
             }
 
-            if (!ModelBinder.BindAndValidate(form, out var reply, out var errors))
+            if (!_modelBinder.TryBindAndValidate(form, out var reply, out var errors))
             {
                 return new BadRequestObjectResult(errors);
             }

@@ -3,14 +3,14 @@ using System.Security.Cryptography;
 
 namespace BlogComments.GitHub.Jwt
 {
-    public sealed class Rs256CryptographicSigner : ICryptographicSigner, IDisposable
+    public sealed class InMemoryRs256CryptographicSigner : ICryptographicSigner, IDisposable
     {
         public string Algorithm => "RS256";
 
         private readonly RSA _rsa;
         private bool _disposed;
 
-        public Rs256CryptographicSigner(ReadOnlyMemory<byte> keyBytes)
+        public InMemoryRs256CryptographicSigner(ReadOnlyMemory<byte> keyBytes)
         {
             _rsa = RSA.Create();
             _rsa.ImportRSAPrivateKey(keyBytes.Span, out _);
