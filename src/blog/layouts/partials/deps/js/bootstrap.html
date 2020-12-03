@@ -3,5 +3,8 @@
         crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-    $('.alert').alert()
+    const alertList = document.querySelectorAll('.alert')
+    alertList.forEach((alert) => {
+        new bootstrap.Alert(alert)
+    })
 </script>
