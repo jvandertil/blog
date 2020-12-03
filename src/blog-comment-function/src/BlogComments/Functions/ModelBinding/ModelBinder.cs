@@ -1,35 +1,43 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using BlogComments.Functions.Persistence;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
 namespace BlogComments.Functions.ModelBinding
 {
-    public static class ModelBinder
+    public class ModelBinder
     {
-        public static bool BindAndValidate(IFormCollection form,
+        private readonly IValidator<CommentContents> _commentValidator;
+
+        public ModelBinder(IValidator<CommentContents> commentValidator)
+        {
+            _commentValidator = commentValidator;
+        }
+
+        public bool TryBindAndValidate(IFormCollection form,
             [NotNullWhen(true)] out CommentContents? model,
-            [NotNullWhen(false)] out IEnumerable<ValidationResult>? errors)
+            [NotNullWhen(false)] out IEnumerable<ValidationError>? errors)
         {
             var userDisplayName = form["DisplayName"].FirstOrDefault();
-            var commentContent = form["Content"].FirstOrDefault();
+            var commentContent = form["Contents"].FirstOrDefault();
 
             var boundModel = new CommentContents(userDisplayName, commentContent);
-            var errorList = new List<ValidationResult>();
+            var errorList = new List<ValidationError>();
 
-            if (Validator.TryValidateObject(boundModel, new ValidationContext(boundModel, null, null), errorList, true))
+            var result = _commentValidator.Validate(boundModel);
+
+            if (result.IsValid)
             {
                 model = boundModel;
                 errors = null;
-
                 return true;
             }
             else
             {
                 model = null;
-                errors = errorList;
+                errors = result.Errors.Select(x => new ValidationError(x.PropertyName, x.ErrorMessage));
 
                 return false;
             }

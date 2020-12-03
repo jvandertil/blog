@@ -1,8 +1,22 @@
+function isVisible(element) {
+    return !element.classList.contains("d-none");
+}
+
+function hideElement(element) {
+    element.classList.add("d-none");
+    element.setAttribute("aria-hidden", "true")
+}
+
+function showElement(element) {
+    element.classList.remove("d-none");
+    element.setAttribute("aria-hidden", "false")
+}
+
 var highlightFields = function (response) {
     $('.form-field').removeClass('is-invalid');
 
     $.each(response, function (index, val) {
-        var propName = val.memberNames[0];
+        var propName = val.memberName;
         var nameSelector = '[name = "' + propName.replace(/(:|\.|\[|\])/g, "\\$1") + '"]',
             idSelector = '#' + propName.replace(/(:|\.|\[|\])/g, "\\$1");
         var $el = $(nameSelector) || $(idSelector);
@@ -24,12 +38,16 @@ var highlightErrors = function (xhr) {
 };
 
 function showSuccessAlert() {
-    $("#comment-success-alert").attr("aria-hidden", "false").removeClass("d-none");
+    var alertElement = document.getElementById('comment-success-alert');
+
+    showElement(alertElement);
     document.getElementById('comment-success-alert').scrollIntoView({ behavior: 'smooth' });
 }
 
 function hideSuccessAlert() {
-    $("#comment-success-alert").attr("aria-hidden", "true").addClass("d-none");
+    var alertElement = document.getElementById('comment-success-alert');
+
+    hideElement(alertElement);
 }
 
 function handleSuccess(form) {
@@ -67,19 +85,7 @@ $('form[method=post]').not('.no-ajax').on('submit', function () {
     return false;
 });
 
-function isVisible(element) {
-    return !element.classList.contains("d-none");
-}
 
-function hideElement(element) {
-    element.classList.add("d-none");
-    element.setAttribute("aria-hidden", "true")
-}
-
-function showElement(element) {
-    element.classList.remove("d-none");
-    element.setAttribute("aria-hidden", "false")
-}
 
 function toggleForm(id) {
     var form = document.getElementById(id);

@@ -14,13 +14,16 @@ namespace BlogComments.Functions
     {
         private readonly CommentRepository _repository;
         private readonly IPostExistenceValidator _postExistenceValidator;
+        private readonly ModelBinder _modelBinder;
 
         public SubmitPostComment(
             CommentRepository repository,
-            IPostExistenceValidator postExistenceChecker)
+            IPostExistenceValidator postExistenceChecker,
+            ModelBinder modelBinder)
         {
             _repository = repository;
             _postExistenceValidator = postExistenceChecker;
+            _modelBinder = modelBinder;
         }
 
         [FunctionName(nameof(SubmitPostComment))]
@@ -42,7 +45,7 @@ namespace BlogComments.Functions
 
             // Bind and validate posted form.
             var form = await req.ReadFormAsync();
-            if (!ModelBinder.BindAndValidate(form, out var comment, out var errors))
+            if (!_modelBinder.TryBindAndValidate(form, out var comment, out var errors))
             {
                 return new BadRequestObjectResult(errors);
             }

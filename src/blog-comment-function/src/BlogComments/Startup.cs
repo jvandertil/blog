@@ -3,10 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
+using BlogComments.Functions.ModelBinding;
 using BlogComments.Functions.Persistence;
 using BlogComments.Functions.Validation;
 using BlogComments.GitHub;
 using BlogComments.GitHub.Jwt;
+using FluentValidation;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -69,6 +71,9 @@ namespace BlogComments
                     return !string.IsNullOrWhiteSpace(opts.KeyName)
                         && !(opts.Url is null);
                 });
+
+            services.AddTransient<ModelBinder>();
+            services.AddValidatorsFromAssemblyContaining<Startup>();
         }
     }
 

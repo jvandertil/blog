@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -70,7 +69,7 @@ namespace BlogComments.Functions.Persistence
             var fileContent = SerializeComment(comment);
             var file = new UpdateFileRequest($"Add reply by {reply.DisplayName} on {postName}, thread {threadId}", fileContent, existingFile.Sha, branchRef.Ref)
             {
-                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", DateTimeOffset.UtcNow),
+                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", _clock.UtcNow),
             };
 
             await github.Repository.Content.UpdateFile(username, repositoryName, targetFile, file);
@@ -121,7 +120,7 @@ namespace BlogComments.Functions.Persistence
             // Create file
             var file = new CreateFileRequest($"Add comment by {comment.DisplayName} on {postName}", content, branchRef.Ref)
             {
-                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", DateTimeOffset.UtcNow),
+                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", _clock.UtcNow),
             };
 
             await github.Repository.Content.CreateFile(username, repositoryName, COMMENT_DATA_BASEPATH + $"/{postName}/{comment.Id}.json", file);

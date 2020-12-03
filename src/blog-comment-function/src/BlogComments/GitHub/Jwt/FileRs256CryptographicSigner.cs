@@ -1,17 +1,21 @@
-using System;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography;
+using BlogComments.GitHub.Helpers;
 
 namespace BlogComments.GitHub.Jwt
 {
-    public sealed class Rs256CryptographicSigner : ICryptographicSigner, IDisposable
+    public sealed class FileRs256CryptographicSigner : ICryptographicSigner, IDisposable
     {
         public string Algorithm => "RS256";
 
         private readonly RSA _rsa;
         private bool _disposed;
 
-        public Rs256CryptographicSigner(ReadOnlyMemory<byte> keyBytes)
+        public FileRs256CryptographicSigner(string path)
         {
+            var keyBytes = PemPrivateKeyConverter.ExtractRsaPrivateKey(File.ReadAllText(path));
+
             _rsa = RSA.Create();
             _rsa.ImportRSAPrivateKey(keyBytes.Span, out _);
         }
