@@ -54,5 +54,11 @@
     ol code,
     .alert code {
         color: #ff6a00;
+
+    .page-link, .page-item.disabled .page-link {
+        @extend .bg-dark;
+
+        $color: #212529;
+        border-color: lighten($color, 10%);
     }
 }
