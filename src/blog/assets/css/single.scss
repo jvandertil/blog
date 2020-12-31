@@ -1,8 +1,8 @@
 .author-card {
     @extend .card;
     @extend .card-body;
-    @extend .border-left-0;
-    @extend .border-right-0;
+    @extend .border-start-0;
+    @extend .border-end-0;
 }
 
 .single-post > header {
