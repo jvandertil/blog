@@ -31,9 +31,7 @@ resources:
   - pipeline: BlogDeployScriptsCI
     source: Blog.DeployScripts.CI
     branch: master
-    trigger:
-      branches:
-      - master
+    trigger: none
   - pipeline: BlogCommentFunctionCI
     source: Blog.CommentFunction.CI
     branch: master
