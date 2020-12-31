@@ -14,9 +14,8 @@
     @extend .text-light;
     transition: all 0.3s;
 
-    table {
-        @extend .bg-dark;
-        @extend .text-light;
+    .table {
+        @extend .table-dark;
     }
 
     .single-post {
