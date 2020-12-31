@@ -53,7 +53,8 @@
     p code,
     ol code,
     .alert code {
-        color: #ff6a00;
+        color: var(--bs-orange);
+    }
 
     .page-link, .page-item.disabled .page-link {
         @extend .bg-dark;
