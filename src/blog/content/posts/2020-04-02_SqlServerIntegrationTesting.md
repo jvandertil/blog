@@ -102,28 +102,28 @@ public class ConnectionTests : IClassFixture<DatabaseFixture>, IAsyncLifetime
 {
     private readonly DatabaseFixture _fixture;
 
-    private SqlConnection Connection { get; }
+    private readonly SqlConnection _connection;
 
     public ConnectionTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
-        Connection = new SqlConnection(_fixture.ConnectionString);
+        _connection = new SqlConnection(_fixture.ConnectionString);
     }
 
     public async Task InitializeAsync()
     {
-        await Connection.OpenAsync();
+        await _connection.OpenAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await Connection.DisposeAsync();
+        await _connection.DisposeAsync();
     }
 
     [Fact]
     public async Task Can_Connect()
     {
-        using var command = Connection.CreateCommand();
+        using var command = _connection.CreateCommand();
         cmd.CommandText = "SELECT 1";
 
         var result = await cmd.ExecuteScalarAsync();
