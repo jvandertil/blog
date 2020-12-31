@@ -16,6 +16,11 @@
                 @extend .badge;
                 @extend .bg-light;
                 @extend .text-dark;
+
+                &:hover {
+                    filter: brightness(85%);
+                    transition: ease-in-out 0.15s;
+                }
             }
         }
     }
