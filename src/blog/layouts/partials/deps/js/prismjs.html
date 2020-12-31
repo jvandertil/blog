@@ -3,7 +3,17 @@
         crossorigin="anonymous"
         defer></script>
 
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/components/prism-csharp.min.js"
+        integrity="sha256-oss3VR24FAxcsJPu/sqFUq+2vAmtiizCz0PcmyQFkss="
+        crossorigin="anonymous"
+        defer></script>
+
+{{ $customPrism := resources.Get "js/customize-prism.js" | resources.Minify | resources.Fingerprint }}
+<script src="{{ $customPrism.Permalink }}"
+        integrity="{{ $customPrism.Data.Integrity }}"
+        defer></script>
+
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js" 
-        integrity="sha256-33Qw0lN3qo7tLZL4c7vDLCapRUs+gNtQRaVIOHk4Ors=" 
+        integrity="sha256-33Qw0lN3qo7tLZL4c7vDLCapRUs+gNtQRaVIOHk4Ors="
         crossorigin="anonymous"
         defer></script>
