@@ -14,9 +14,8 @@
     @extend .text-light;
     transition: all 0.3s;
 
-    table {
-        @extend .bg-dark;
-        @extend .text-light;
+    .table {
+        @extend .table-dark;
     }
 
     .single-post {
@@ -54,6 +53,13 @@
     p code,
     ol code,
     .alert code {
-        color: #ff6a00;
+        color: var(--bs-orange);
+    }
+
+    .page-link, .page-item.disabled .page-link {
+        @extend .bg-dark;
+
+        $color: #212529;
+        border-color: lighten($color, 10%);
     }
 }

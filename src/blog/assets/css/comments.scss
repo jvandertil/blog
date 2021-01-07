@@ -1,6 +1,6 @@
 .post-add-comment-form, .post-reply-comment-form {
     .form-field {
-        @extend .form-group;
+        @extend .mb-3;
 
         input {
             @extend .form-control;

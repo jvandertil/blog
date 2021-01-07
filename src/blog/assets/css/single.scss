@@ -1,8 +1,8 @@
 .author-card {
     @extend .card;
     @extend .card-body;
-    @extend .border-left-0;
-    @extend .border-right-0;
+    @extend .border-start-0;
+    @extend .border-end-0;
 }
 
 .single-post > header {
@@ -12,7 +12,7 @@
 
 .post-date {
     @extend .text-uppercase;
-    @extend .font-weight-light;
+    @extend .fw-light;
     display: inline-block;
     font-size: 18px;
 }
@@ -56,6 +56,8 @@
 table {
     @extend .table;
     @extend .table-striped;
+    @extend .border-top;
+
     width: 90%;
     margin-left: auto;
     margin-right: auto;

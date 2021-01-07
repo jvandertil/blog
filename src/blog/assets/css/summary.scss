@@ -14,7 +14,13 @@
 
             a {
                 @extend .badge;
-                @extend .badge-light;
+                @extend .bg-light;
+                @extend .text-dark;
+
+                &:hover {
+                    filter: brightness(85%);
+                    transition: ease-in-out 0.15s;
+                }
             }
         }
     }
@@ -31,5 +37,5 @@ h2.post-title {
 
 .draft-badge {
     @extend .badge;
-    @extend .badge-primary;
+    @extend .bg-primary;
 }

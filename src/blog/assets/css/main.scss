@@ -1,4 +1,4 @@
-@import "../dist/bootstrap-4.5.3/bootstrap";
+@import "../dist/bootstrap-5.0.0-beta1/bootstrap";
 
 @import "navbar.scss";
 @import "footer.scss";
@@ -21,4 +21,13 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
+    
+    a {
+        text-decoration: none;
+    }
+}
+
+nav > .pagination {
+    @extend .d-flex;
+    @extend .justify-content-center;
 }

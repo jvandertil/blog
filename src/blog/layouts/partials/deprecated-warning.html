@@ -4,15 +4,15 @@
 {{ if .Params.Deprecated }}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Warning!</strong> This content has been marked deprecated, and might no longer be accurate.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true"></span>
     </button>
 </div>
 {{ else if now.After $oldContentCutoff }}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Warning!</strong> This content appears to be pretty old and might not be as accurate as it once was.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true"></span>
     </button>
 </div>
 {{end}}
