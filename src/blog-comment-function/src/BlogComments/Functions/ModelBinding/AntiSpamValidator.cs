@@ -11,9 +11,9 @@ namespace BlogComments.Functions.ModelBinding
             "Amoxicillin",
         };
 
-        public AntiSpamValidator()
-            : base("Do not post spam.")
+        protected override string GetDefaultMessageTemplate()
         {
+            return "Do not post spam.";
         }
 
         protected override bool IsValid(PropertyValidatorContext context)
