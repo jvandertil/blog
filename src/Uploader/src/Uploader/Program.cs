@@ -120,7 +120,7 @@ namespace Uploader
                     Console.WriteLine("Error while syncing content. Retry attempt {0} of {1}.", attempts, MAX_ATTEMPTS);
                     Console.WriteLine(e);
 
-                    await Task.Delay(1000 * (int)Math.Pow(2, attempts));
+                    await Task.Delay(5000 * (int)Math.Pow(2, attempts));
                 }
             }
 
