@@ -20,17 +20,11 @@
     {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $polyfills.Permalink }}" integrity="{{ $polyfills.Data.Integrity }}"></script>
 
-    <!-- Darkmode scripts are needed first thing in the body. -->
-    {{ $darkmodeJs := resources.Get "js/darkmode.js" | resources.Minify | resources.Fingerprint }}
-    <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}" integrity="{{ $darkmodeJs.Data.Integrity }}"></script>
-
     {{ partial "deps/js/google" . }}
 </head>
 <body>
-    <!-- Initialize the theme here to avoid a flash of unthemed content. -->
-    <script type="text/javascript">
-        initializeTheme();
-    </script>
+    {{ $darkmodeJs := resources.Get "js/darkmode.ts" | js.Build | resources.Minify | resources.Fingerprint }}
+    <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}" integrity="{{ $darkmodeJs.Data.Integrity }}"></script>
 
     <header>
         <nav>
@@ -43,7 +37,7 @@
                 {{ end }}
             </ul>
 
-            <button class="navbar-darkmode" onclick="toggleDarkmode()" onkeydown="toggleDarkmodeKeyPress">
+            <button id="btnToggleDarkmode" class="navbar-darkmode">
                 <i class="fas fa-adjust" title="Toggle dark mode"></i>
             </button>
         </nav>
