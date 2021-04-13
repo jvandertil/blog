@@ -37,7 +37,7 @@ using Xunit;
 
 public class DatabaseFixture : IAsyncLifetime
 {
-    private const string BaseConnectionString = "Data Source=(localdb)\MSSQLLocalDB;IntegratedSecurity=True;";
+    private const string BaseConnectionString = "Data Source=(localdb)\MSSQLLocalDB;Integrated Security=True;";
 
     private readonly string _dbName;
 
