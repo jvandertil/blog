@@ -1,5 +1,5 @@
 # Update the version in eng/build-blog.sh as well
-$hugoVersion = "0.80.0"
+$hugoVersion = "0.83.1"
 $hugoFilename = "hugo_extended_$hugoVersion`_Windows-64bit.zip"
 $hugoRelease = "https://github.com/gohugoio/hugo/releases/download/v$hugoVersion/$hugoFilename"
 $destination = Join-Path $PSScriptRoot ".bin"
