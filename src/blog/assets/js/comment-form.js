@@ -85,8 +85,6 @@ $('form[method=post]').not('.no-ajax').on('submit', function () {
     return false;
 });
 
-
-
 function toggleForm(id) {
     var form = document.getElementById(id);
     if (isVisible(form)) {
