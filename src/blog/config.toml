@@ -19,7 +19,7 @@ pygmentsUseClasses = true
 	github = "jvandertil"
 	linkedin = "jvandertil"
 
-	oldContentWarningDays = 730
+	oldContentWarningDays = 1090
 	backToTopText = "Back to top"
 
 	githubRepoUrl = "https://www.github.com/jvandertil/blog"
