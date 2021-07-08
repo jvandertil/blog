@@ -9,6 +9,7 @@ namespace BlogComments.Functions.ModelBinding
         {
             "mewkid.net",
             "Amoxicillin",
+            "azithromycin",
         };
 
         protected override string GetDefaultMessageTemplate()
