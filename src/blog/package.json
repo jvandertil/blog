@@ -4,6 +4,6 @@
     "jquery": "3.6.0",
     "@fortawesome/fontawesome-free": "5.15.3",
     "prismjs": "1.23.0",
-    "prism-themes": "1.6.0"
+    "prism-themes": "1.8.0"
   }
 }
