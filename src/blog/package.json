@@ -2,7 +2,7 @@
   "dependencies": {
     "bootstrap": "5.0.2",
     "jquery": "3.6.0",
-    "@fortawesome/fontawesome-free": "5.15.3",
+    "@fortawesome/fontawesome-free": "5.15.4",
     "prismjs": "1.24.1",
     "prism-themes": "1.8.0"
   }
