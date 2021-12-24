@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "pipeline": {
+      "commandName": "Project",
+      "commandLineArgs": "--target Deploy --Environment tst"
+    }
+  }
+}

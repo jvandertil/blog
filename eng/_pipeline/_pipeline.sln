@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pipeline", "pipeline\pipeline.csproj", "{58AE8A52-FB34-4BFD-9982-D835EA3E8C83}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StronglyTypedBicepGenerator", "StronglyTypedBicepGenerator\StronglyTypedBicepGenerator.csproj", "{5CFFD3C2-C29A-4B6F-85ED-9171A6691852}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StronglyTypedBicepGenerator.Tests", "StronglyTypedBicepGenerator.Tests\StronglyTypedBicepGenerator.Tests.csproj", "{1481557E-5E28-43B9-BF8A-3C887F1154EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{D6996A8D-6D0A-4A85-A436-8D6114700634}"
+	ProjectSection(SolutionItems) = preProject
+		..\infra\blog.bicep = ..\infra\blog.bicep
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58AE8A52-FB34-4BFD-9982-D835EA3E8C83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58AE8A52-FB34-4BFD-9982-D835EA3E8C83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58AE8A52-FB34-4BFD-9982-D835EA3E8C83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58AE8A52-FB34-4BFD-9982-D835EA3E8C83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CFFD3C2-C29A-4B6F-85ED-9171A6691852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CFFD3C2-C29A-4B6F-85ED-9171A6691852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CFFD3C2-C29A-4B6F-85ED-9171A6691852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CFFD3C2-C29A-4B6F-85ED-9171A6691852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1481557E-5E28-43B9-BF8A-3C887F1154EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1481557E-5E28-43B9-BF8A-3C887F1154EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1481557E-5E28-43B9-BF8A-3C887F1154EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1481557E-5E28-43B9-BF8A-3C887F1154EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD670478-7EB5-4C7D-B1B0-BADA5F38EC7D}
+	EndGlobalSection
+EndGlobal

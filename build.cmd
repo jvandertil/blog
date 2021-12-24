@@ -1,8 +1,7 @@
-@echo off
+:; set -eo pipefail
+:; SCRIPT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+:; ${SCRIPT_DIR}/build.sh "$@"
+:; exit $?
 
-del /s /f /Q %~dp0\artifacts
-
-powershell -ExecutionPolicy ByPass -NoProfile -File %~dp0\eng\build-blog.ps1
-powershell -ExecutionPolicy ByPass -NoProfile -File %~dp0\eng\build-uploader.ps1
-powershell -ExecutionPolicy ByPass -NoProfile -File %~dp0\eng\build-infra.ps1
-powershell -ExecutionPolicy ByPass -NoProfile -File %~dp0\eng\build-comment-function.ps1
+@ECHO OFF
+powershell -ExecutionPolicy ByPass -NoProfile -File "%~dp0build.ps1" %*
