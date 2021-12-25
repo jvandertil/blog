@@ -19,6 +19,12 @@ namespace Vandertil.Blog.Pipeline
         [Parameter("Deploy only - The environment that is being deployed (tst, prd)")]
         public string Environment { get; set; }
 
+        [Parameter]
+        public string CloudFlareApiKey { get; set; }
+
+        [Parameter]
+        public string CloudFlareZoneId { get; set; }
+
         public static int Main() => Execute<Program>(x => (x as IClean).Clean, x => x.Build);
 
         private AbsolutePath ArtifactsDirectory => ((this) as IProvideArtifactsDirectory).ArtifactsDirectory;
@@ -50,6 +56,9 @@ namespace Vandertil.Blog.Pipeline
                 await CreateOrUpdateCNameRecordAsync($"{CustomDomain}", $"{new Uri(deployment.StorageAccountWebEndpoint).Host}", true);
                 EnableStaticWebsite();
 
+                using var client = new CloudFlareClient(CloudFlareApiKey);
+                await client.PurgeZoneCache(CloudFlareZoneId);
+
                 var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
                 using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress))
                 {
@@ -70,19 +79,19 @@ namespace Vandertil.Blog.Pipeline
 
         private async Task CreateOrUpdateCNameRecordAsync(string name, string content, bool proxied)
         {
-            var client = new CloudFlareClient(CloudFlareApiKey);
-            var records = await client.ListDnsRecords(ZoneId);
+            using var client = new CloudFlareClient(CloudFlareApiKey);
+            var records = await client.ListDnsRecords(CloudFlareZoneId);
 
             if (records.Success)
             {
                 var record = records.Result.SingleOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
                 if (record is null)
                 {
-                    await client.CreateDnsRecord(ZoneId, DnsRecordType.CNAME, name, content, proxied);
+                    await client.CreateDnsRecord(CloudFlareZoneId, DnsRecordType.CNAME, name, content, proxied);
                 }
                 else
                 {
-                    await client.UpdateDnsRecord(ZoneId, record.Id, DnsRecordType.CNAME, name, content, proxied);
+                    await client.UpdateDnsRecord(CloudFlareZoneId, record.Id, DnsRecordType.CNAME, name, content, proxied);
                 }
             }
         }
@@ -91,10 +100,14 @@ namespace Vandertil.Blog.Pipeline
         {
             await HttpTasks.HttpDownloadFileAsync("https://api.cloudflare.com/client/v4/ips", InfraDirectory / "cloudflare-ips.txt");
 
-            return AzCli.DeployTemplate<Bicep.Deployments.Blog>(InfraDirectory / "blog.bicep", ResourceGroup, new Bicep.Parameters.BlogParameters
+            var deployment = AzCli.DeployTemplate<Bicep.Deployments.Blog>(InfraDirectory / "blog.bicep", ResourceGroup, new Bicep.Parameters.BlogParameters
             {
                 env = "tst"
             });
+
+            AzCli.Az($"functionapp cors add --resource-group {ResourceGroup} --name {deployment.FunctionAppName} --allowed-origins https://{CustomDomain}");
+
+            return deployment;
         }
 
         private void EnableStaticWebsite()

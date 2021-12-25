@@ -52,6 +52,50 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = 
   }
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
+  name: 'kv-${appName}-${env}'
+  location: location
+
+  properties: {
+    enableRbacAuthorization: true
+    enabledForTemplateDeployment: true
+
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
+
+    networkAcls: {
+      bypass: 'None'
+      defaultAction: 'Deny'
+    }
+
+    tenantId: tenant().tenantId
+    softDeleteRetentionInDays: 7
+    accessPolicies: []
+  }
+}
+
+resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-preview' = {
+  name: 'replace'
+
+  parent: keyVault
+  properties: {
+    accessPolicies: [
+      {
+        objectId: functionApp.identity.principalId
+        permissions: {
+          keys: [
+            'get'
+            'sign'
+          ]
+        }
+        tenantId: functionApp.identity.tenantId
+      }
+    ]
+  }
+}
+
 // This storage account should be used ONLY for the function app.
 resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: 'safa${appName}${env}'
@@ -131,6 +175,14 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
           name: 'GitHub__EnablePullRequestCreation'
           value: env == 'prd'
         }
+        {
+          name: 'KeyVault__Url'
+          value: keyVault.properties.vaultUri
+        }
+        {
+          name: 'KeyVault__KeyName'
+          value: 'jvandertil-blog-bot'
+        }
       ])
 
       minTlsVersion: '1.2'
@@ -140,7 +192,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
 
       scmIpSecurityRestrictionsUseMain: false
     }
-    
+
     httpsOnly: true
     clientCertEnabled: true
     clientCertMode: 'Optional'

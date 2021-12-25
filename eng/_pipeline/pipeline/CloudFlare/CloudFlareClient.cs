@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Vandertil.Blog.Pipeline.CloudFlare
 {
-    public class CloudFlareClient
+    public class CloudFlareClient : IDisposable
     {
         private readonly HttpClient _client;
 
@@ -61,6 +61,17 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
             return await ReadResponse<DnsRecord>(response);
         }
 
+        public async Task PurgeZoneCache(string zoneId)
+        {
+            var body = new
+            {
+                purge_everything = true
+            };
+
+            using var response = await _client.PostAsJsonAsync($"zones/{zoneId}/purge_cache", body);
+            response.EnsureSuccessStatusCode();
+        }
+
         private async Task<CloudFlareResponse<T>> ReadResponse<T>(HttpResponseMessage response)
         {
             return await response.Content.ReadFromJsonAsync<CloudFlareResponse<T>>(new System.Text.Json.JsonSerializerOptions
@@ -68,5 +79,7 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
                 PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
             }).ConfigureAwait(false);
         }
+
+        public void Dispose() => _client.Dispose();
     }
 }
