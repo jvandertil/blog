@@ -16,16 +16,16 @@ namespace Vandertil.Blog.Pipeline
         ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
         ///   - Microsoft VSCode           https://nuke.build/vscode
 
-        [Parameter("Deploy only - The environment that is being deployed (tst, prd)")]
+        [Parameter("Deploy only - The environment that is being deployed (tst, prd).")]
         public string Environment { get; set; }
 
-        [Parameter]
+        [Parameter("Deploy only - The API key for CloudFlare.", Name = "CloudflareApiKey")]
         public string CloudFlareApiKey { get; set; }
 
-        [Parameter]
+        [Parameter("Deploy only - The zone id this blog is hosted on in CloudFlare.", Name = "CloudflareZoneId")]
         public string CloudFlareZoneId { get; set; }
 
-        public static int Main() => Execute<Program>(x => (x as IClean).Clean, x => x.Build);
+        public static int Main() => Execute<Program>(x => x.Build);
 
         private AbsolutePath ArtifactsDirectory => ((this) as IProvideArtifactsDirectory).ArtifactsDirectory;
 
@@ -35,7 +35,7 @@ namespace Vandertil.Blog.Pipeline
 
         private AbsolutePath InfraDirectory => RootDirectory / "eng" / "infra";
 
-        private string ResourceGroup => $"rg-newinfra-{Environment}";
+        private string ResourceGroup => $"rg-jvandertil-blog-{Environment}";
 
         private string CustomDomain => Environment switch
         {
@@ -49,10 +49,10 @@ namespace Vandertil.Blog.Pipeline
                 AzCli.Az($"group create --name {ResourceGroup} --location westeurope");
                 var deployment = await DeployInfrastructureToAzure();
 
-                await UploadBlogContentAsync(deployment);
-
                 await CreateOrUpdateCNameRecordAsync($"asverify.{CustomDomain}", $"asverify.{new Uri(deployment.StorageAccountWebEndpoint).Host}", false);
                 await CreateOrUpdateCNameRecordAsync($"{CustomDomain}", $"{new Uri(deployment.StorageAccountWebEndpoint).Host}", true);
+
+                await UploadBlogContentAsync(deployment);
                 EnableStaticWebsite();
 
                 using var client = new CloudFlareClient(CloudFlareApiKey);

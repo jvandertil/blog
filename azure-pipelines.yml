@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    include:
+      - 'main'
+
+variables:
+  NUKE_TELEMETRY_OPTOUT: 1
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: 0
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    steps: 
+      - task: UseDotNet@2
+        displayName: Ensure latest .NET SDK available
+        inputs:
+          packageType: 'sdk'
+          version: '6.x'
+      - pwsh: |
+          .\build.ps1 --target Clean Build
+        displayName: Execute Nuke build
+
+- stage: Deploy
+  jobs:
+  - deployment:
+    environment: jvandertil-blog-tst
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: UseDotNet@2
+            displayName: Ensure latest .NET SDK available
+            inputs:
+              packageType: 'sdk'
+              version: '6.x'
+          - pwsh: |
+              .\build.ps1 Deploy --environment tst --cloudflare-api-key $env:CLOUDFLARE_API_KEY --cloudflare-zone-id $env:CLOUDFLARE_ZONE_ID
+            env:
+              CLOUDFLARE_API_KEY: $(SECRET_CF_API_KEY)
+              CLOUDFLARE_ZONE_ID: $(SECRET_CF_ZONE_ID)
