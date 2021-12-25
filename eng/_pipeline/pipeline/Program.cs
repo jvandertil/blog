@@ -8,7 +8,7 @@ using Vandertil.Blog.Pipeline.CloudFlare;
 
 namespace Vandertil.Blog.Pipeline
 {
-    public class Program : NukeBuild, IClean, IBlogContentPipeline, IBlogCommentFunctionPipeline, IBlogUploaderPipeline
+    public class Program : NukeBuild, IClean, IBlogContentPipeline, IBlogCommentFunctionPipeline
     {
         /// Support plugins are available for:
         ///   - JetBrains ReSharper        https://nuke.build/resharper
@@ -31,8 +31,7 @@ namespace Vandertil.Blog.Pipeline
 
         public Target Build => _ => _
             .Inherit<IBlogContentPipeline>(x => x.Build)
-            .Inherit<IBlogCommentFunctionPipeline>(x => x.Build)
-            .Inherit<IBlogUploaderPipeline>(x => x.Build);
+            .Inherit<IBlogCommentFunctionPipeline>(x => x.Build);
 
         private AbsolutePath InfraDirectory => RootDirectory / "eng" / "infra";
 
