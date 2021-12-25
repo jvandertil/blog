@@ -25,6 +25,27 @@ stages:
           .\build.ps1 --target Clean Build
         displayName: Execute Nuke build
 
+      - task: PublishTestResults@2
+        condition: always()
+        displayName: Publish Test Results
+        inputs:
+          testResultsFormat: 'VSTest'
+          testResultsFiles: '$(Build.SourcesDirectory)\artifacts\TestResults\*.trx'
+          mergeTestResults: true
+
+      - pwsh: |
+          cd artifacts
+          mkdir drop
+          copy *.zip drop
+        displayName: Prepare artifact drop
+
+      - task: PublishPipelineArtifact@1
+        displayName: Publish artifacts
+        inputs:
+          targetPath: './artifacts/drop'
+          artifact: 'build'
+          publishLocation: 'pipeline'
+
 - stage: Deploy
   jobs:
   - deployment:
@@ -33,6 +54,13 @@ stages:
       runOnce:
         deploy:
           steps:
+          - download: none
+          - checkout: self
+
+          - download: current
+            artifact: drop
+            target: ./artifacts
+
           - task: UseDotNet@2
             displayName: Ensure latest .NET SDK available
             inputs:
