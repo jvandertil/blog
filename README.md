@@ -10,11 +10,7 @@ This repository contains the following parts:
 
 * eng/
   * Contains scripts for deploying and building the blog components
-* infra/
-  * Contains the Pulumi stack that can provision the cloud infrastructure needed to run the blog in Azure.
 * src/blog
   * Contains the hugo source and content of my blog posts.
 * src/blog-comment-function
   * Contains the Azure Functions that power the comments on my blog posts.
-* src/Uploader
-  * Contains the program that uploads the blog content to Azure and purges the CloudFlare cache to immediately make it visible across the globe.
