@@ -53,6 +53,7 @@ stages:
 - stage: Deploy
   condition: |
     and(
+      succeeded(),
       eq(variables['IS_MAIN_BRANCH'], true), 
       eq(variables['IS_PULLREQUEST'], false)
     )
