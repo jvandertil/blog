@@ -56,6 +56,11 @@ namespace Vandertil.Blog.Pipeline.Azure
                     await Task.Delay(WaitTime).ConfigureAwait(false);
                 }
             }
+
+            if (!permissionsActivated)
+            {
+                throw new TimeoutException($"Network rule was not propagated within the specified time limit: {TimeOut}");
+            }
         }
     }
 }
