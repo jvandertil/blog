@@ -183,6 +183,8 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
       http20Enabled: true
 
       scmIpSecurityRestrictionsUseMain: false
+      scmIpSecurityRestrictions: [
+      ]
     }
 
     httpsOnly: true
