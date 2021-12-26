@@ -34,8 +34,10 @@ namespace Vandertil.Blog.Pipeline.Azure
 
         private static async Task CheckForPermissions(string storageAccount, string accessKey, string containerName)
         {
+            Logger.Info("Checking if network rule has propagated...");
+
             var WaitTime = TimeSpan.FromSeconds(5);
-            var TimeOut = TimeSpan.FromSeconds(60);
+            var TimeOut = TimeSpan.FromMinutes(10);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -49,7 +51,7 @@ namespace Vandertil.Blog.Pipeline.Azure
                 }
                 catch
                 {
-                    Logger.Info("Could not list container contents, retrying...");
+                    Logger.Info("Storage request failed, sleeping and retrying...");
                     await Task.Delay(WaitTime).ConfigureAwait(false);
                 }
             }
