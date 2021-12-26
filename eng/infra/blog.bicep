@@ -57,9 +57,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   location: location
 
   properties: {
-    enableRbacAuthorization: true
-    enabledForTemplateDeployment: true
-
     sku: {
       name: 'standard'
       family: 'A'
