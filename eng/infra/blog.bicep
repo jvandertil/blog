@@ -51,32 +51,19 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = 
     }
   }
 }
+var kvName = 'kv-${appName}-${env}'
 
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
-  name: 'kv-${appName}-${env}'
-  location: location
-
-  properties: {
-    sku: {
-      name: 'standard'
-      family: 'A'
-    }
-
-    networkAcls: {
-      bypass: 'None'
-      defaultAction: 'Deny'
-    }
-
-    tenantId: tenant().tenantId
-    softDeleteRetentionInDays: 7
-    accessPolicies: []
+module keyVault 'keyVault.bicep' ={
+  name: 'keyVault'
+  params: {
+    name: kvName
+    ipRules: split(functionApp.properties.outboundIpAddresses, ',')
   }
 }
 
 resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-preview' = {
-  name: 'replace'
+  name: '${kvName}/replace'
 
-  parent: keyVault
   properties: {
     accessPolicies: [
       {
@@ -174,7 +161,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
         }
         {
           name: 'KeyVault__Url'
-          value: keyVault.properties.vaultUri
+          value: 'https://${kvName}.${environment().suffixes.keyvaultDns}'
         }
         {
           name: 'KeyVault__KeyName'
