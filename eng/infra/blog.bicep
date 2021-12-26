@@ -51,13 +51,13 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = 
     }
   }
 }
-var kvName = 'kv-${appName}-${env}'
 
+var kvName = 'kv-${appName}-${env}'
 module keyVault 'keyVault.bicep' ={
   name: 'keyVault'
   params: {
     name: kvName
-    ipRules: split(functionApp.properties.outboundIpAddresses, ',')
+    ipRules: split(functionApp.properties.possibleOutboundIpAddresses, ',')
   }
 }
 
