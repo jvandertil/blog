@@ -43,6 +43,8 @@ namespace Vandertil.Blog.Pipeline
                 else
                 {
                     CompressionTasks.UncompressTarGZip(destinationFile, destinationFile.Parent);
+                    var chmod = ToolResolver.GetPathTool("chmod");
+                    chmod($"+x {destinationFile.Parent / "hugo"}");
                 }
             }
             else
