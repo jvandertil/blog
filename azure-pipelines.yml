@@ -68,8 +68,14 @@ stages:
             inputs:
               packageType: 'sdk'
               version: '6.x'
-          - pwsh: |
-              .\build.ps1 Deploy --environment tst --cloudflare-api-key $env:CLOUDFLARE_API_KEY --cloudflare-zone-id $env:CLOUDFLARE_ZONE_ID
+          - task: AzureCLI@2
+            displayName: 'Run deployment script'
+            inputs:
+              azureSubscription: 'Azure jvandertil.nl prd'
+              scriptType: 'pscore'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                .\build.ps1 Deploy --environment tst --cloudflare-api-key $env:CLOUDFLARE_API_KEY --cloudflare-zone-id $env:CLOUDFLARE_ZONE_ID
             env:
               CLOUDFLARE_API_KEY: $(SECRET_CF_API_KEY)
               CLOUDFLARE_ZONE_ID: $(SECRET_CF_ZONE_ID)
