@@ -1,5 +1,4 @@
-[![Build Status](https://dev.azure.com/jvandertil/OpenSource/_apis/build/status/Deploy/Blog.Content.Deploy?branchName=master)](https://dev.azure.com/jvandertil/OpenSource/_build/latest?definitionId=21&branchName=master)
-
+[![Build Status](https://dev.azure.com/jvandertil/OpenSource/_apis/build/status/jvandertil.blog?branchName=master)](https://dev.azure.com/jvandertil/OpenSource/_build/latest?definitionId=30&branchName=master)
 # jvandertil.nl
 
 This repository contains the source code and content for my blog located at [www.jvandertil.nl](https://www.jvandertil.nl).
