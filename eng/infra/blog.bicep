@@ -182,8 +182,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
     }
 
     httpsOnly: true
-    clientCertEnabled: true
-    clientCertMode: 'Optional'
+    clientCertEnabled: false
   }
 
   identity: {
