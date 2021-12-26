@@ -87,3 +87,4 @@ stages:
             env:
               CLOUDFLARE_API_KEY: $(SECRET_CF_API_KEY)
               CLOUDFLARE_ZONE_ID: $(SECRET_CF_ZONE_ID)
+
