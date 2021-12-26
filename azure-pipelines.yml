@@ -14,7 +14,7 @@ variables:
 stages:
 - stage: Build
   jobs:
-  - job:
+  - job: Build
     steps: 
       - task: UseDotNet@2
         displayName: Ensure latest .NET SDK available
@@ -48,7 +48,7 @@ stages:
 
 - stage: Deploy
   jobs:
-  - deployment:
+  - deployment: Deploy
     environment: jvandertil-blog-tst
     strategy:
       runOnce:
