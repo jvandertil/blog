@@ -148,6 +148,10 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
           value: monitoring.outputs.applicationInsightsInstrumentationKey
         }
         {
+          name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
+          value: '~2'
+        }
+        {
           name: 'GitHub__ApplicationId'
           value: '76324'
         }
