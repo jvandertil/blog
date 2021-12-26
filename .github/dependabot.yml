@@ -9,22 +9,6 @@ updates:
   assignees:
   - jvandertil
 - package-ecosystem: nuget
-  directory: "/src/Uploader"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-  assignees:
-  - jvandertil
-- package-ecosystem: nuget
-  directory: "/infra"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-  assignees:
-  - jvandertil
-- package-ecosystem: nuget
   directory: "/src/blog-comment-function"
   schedule:
     interval: daily
