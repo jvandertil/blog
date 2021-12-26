@@ -67,7 +67,7 @@ namespace Vandertil.Blog.Pipeline
                 await client.PurgeZoneCache(CloudFlareZoneId);
 
                 var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
-                using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress))
+                using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress.Trim()))
                 {
                     AzFunctionApp.DeployZipPackage(CommentFunctionArtifact, ResourceGroup, deployment.FunctionAppName);
                 }
@@ -78,7 +78,7 @@ namespace Vandertil.Blog.Pipeline
             CompressionTasks.UncompressZip(BlogArtifact, ArtifactsDirectory / "blog-content");
 
             var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
-            using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress))
+            using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress.Trim()))
             {
                 await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content", ResourceGroup, deployment.StorageAccountName, "$web");
             }
