@@ -5,6 +5,7 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Vandertil.Blog.Pipeline.Azure;
 using Vandertil.Blog.Pipeline.CloudFlare;
+using static Nuke.Common.IO.FileSystemTasks;
 
 namespace Vandertil.Blog.Pipeline
 {
@@ -28,6 +29,8 @@ namespace Vandertil.Blog.Pipeline
         public static int Main() => Execute<Program>(x => x.Build);
 
         private AbsolutePath ArtifactsDirectory => ((this) as IProvideArtifactsDirectory).ArtifactsDirectory;
+        private AbsolutePath BlogArtifact => ArtifactsDirectory / "blog.zip";
+        private AbsolutePath CommentFunctionArtifact => ArtifactsDirectory / "blog-comments-function.zip";
 
         public Target Build => _ => _
             .Inherit<IBlogContentPipeline>(x => x.Build)
@@ -44,6 +47,11 @@ namespace Vandertil.Blog.Pipeline
         };
 
         public Target Deploy => _ => _
+            .Requires(() => Environment)
+            .Requires(() => CloudFlareApiKey)
+            .Requires(() => CloudFlareZoneId)
+            .Requires(() => FileExists(BlogArtifact))
+            .Requires(() => FileExists(CommentFunctionArtifact))
             .Executes(async () =>
             {
                 AzCli.Az($"group create --name {ResourceGroup} --location westeurope");
@@ -61,13 +69,13 @@ namespace Vandertil.Blog.Pipeline
                 var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
                 using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress))
                 {
-                    AzFunctionApp.DeployZipPackage(ArtifactsDirectory / "blog-comments-function.zip", ResourceGroup, deployment.FunctionAppName);
+                    AzFunctionApp.DeployZipPackage(CommentFunctionArtifact, ResourceGroup, deployment.FunctionAppName);
                 }
             });
 
         private async Task UploadBlogContentAsync(Bicep.Deployments.Blog deployment)
         {
-            CompressionTasks.UncompressZip(ArtifactsDirectory / "blog.zip", ArtifactsDirectory / "blog-content");
+            CompressionTasks.UncompressZip(BlogArtifact, ArtifactsDirectory / "blog-content");
 
             var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
             using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress))
