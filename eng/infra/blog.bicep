@@ -161,7 +161,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
         }
         {
           name: 'KeyVault__Url'
-          value: 'https://${kvName}.${environment().suffixes.keyvaultDns}'
+          value: 'https://${kvName}${environment().suffixes.keyvaultDns}'
         }
         {
           name: 'KeyVault__KeyName'
