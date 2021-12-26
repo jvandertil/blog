@@ -15,7 +15,7 @@ namespace Vandertil.Blog.Pipeline.Azure
 
         public static string ReadFirstLine(IReadOnlyCollection<Output> output)
         {
-            return output.EnsureOnlyStd().First().Text;
+            return output.EnsureOnlyStd().First().Text.Trim();
         }
 
         public static void DeployTemplate(AbsolutePath templateFile, string resourceGroup, object parametersObj = null, Func<string, string> outputFilter = null)
