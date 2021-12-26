@@ -11,7 +11,7 @@ namespace Vandertil.Blog.Pipeline
         private AbsolutePath ContentSourceDirectory => SourceDirectory / "blog";
 
         private AbsolutePath HugoToolFolder => RootDirectory / ".bin" / "hugo";
-        private Tool Hugo => ToolResolver.GetLocalTool(HugoToolFolder /  (EnvironmentInfo.IsWin ? "hugo.exe" : "hugo"));
+        private Tool Hugo => ToolResolver.GetLocalTool(HugoToolFolder / (EnvironmentInfo.IsWin ? "hugo.exe" : "hugo"));
 
         Target Build => _ => _
             .Executes(async () =>
@@ -36,7 +36,14 @@ namespace Vandertil.Blog.Pipeline
             if (!FileExists(destinationFile))
             {
                 await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile);
-                CompressionTasks.UncompressZip(destinationFile, destinationFile.Parent);
+                if (EnvironmentInfo.IsWin)
+                {
+                    CompressionTasks.UncompressZip(destinationFile, destinationFile.Parent);
+                }
+                else
+                {
+                    CompressionTasks.UncompressTarGZip(destinationFile, destinationFile.Parent);
+                }
             }
             else
             {
