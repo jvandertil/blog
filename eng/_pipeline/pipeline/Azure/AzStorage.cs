@@ -48,6 +48,7 @@ namespace Vandertil.Blog.Pipeline.Azure
                 try
                 {
                     AzCli.Az($"storage blob list --account-name {storageAccount} --account-key {accessKey} --container-name {containerName} --num-results 1", logOutput: false, logInvocation: false);
+                    permissionsActivated = true;
                 }
                 catch
                 {
