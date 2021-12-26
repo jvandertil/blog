@@ -36,7 +36,8 @@ namespace Vandertil.Blog.Pipeline
 
             if (!FileExists(destinationFile))
             {
-                await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile);
+                await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile, headerConfigurator: headers => headers.Add("User-Agent", "jvandertil/blog build script"));
+
                 if (EnvironmentInfo.IsWin)
                 {
                     CompressionTasks.UncompressZip(destinationFile, destinationFile.Parent);
