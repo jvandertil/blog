@@ -78,6 +78,10 @@ resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-pre
       }
     ]
   }
+
+  dependsOn: [
+    keyVault
+  ]
 }
 
 // This storage account should be used ONLY for the function app.
