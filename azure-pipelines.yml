@@ -11,6 +11,9 @@ variables:
   DOTNET_NOLOGO: 1
   DOTNET_GENERATE_ASPNET_CERTIFICATE: 0
 
+  IS_PULLREQUEST: $[ eq(variables['Build.Reason'], 'PullRequest') ]
+  IS_MAIN_BRANCH: $[ eq(variables['Build.SourceBranch'], 'refs/heads/master') ]
+
 stages:
 - stage: Build
   jobs:
@@ -47,6 +50,11 @@ stages:
           publishLocation: 'pipeline'
 
 - stage: Deploy
+  condition: |
+    and(
+      eq(variables['IS_MAIN_BRANCH'], true), 
+      eq(variables['IS_PULLREQUEST'], false)
+    )
   jobs:
   - deployment: Deploy
     environment: jvandertil-blog-prd
