@@ -16,13 +16,16 @@ namespace BlogComments.Functions.ModelBinding
 
         public override string Name => nameof(AntiSpamValidator);
 
-        public override bool IsValid(ValidationContext<CommentContents> context, string value)
+        public override bool IsValid(ValidationContext<CommentContents> context, string? value)
         {
-            foreach (var term in SpamTerms)
+            if (value is not null)
             {
-                if (value.Contains(term, StringComparison.OrdinalIgnoreCase))
+                foreach (var term in SpamTerms)
                 {
-                    return false;
+                    if (value.Contains(term, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
                 }
             }
 
