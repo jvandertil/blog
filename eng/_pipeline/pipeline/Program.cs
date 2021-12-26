@@ -109,7 +109,7 @@ namespace Vandertil.Blog.Pipeline
 
             var deployment = AzCli.DeployTemplate<Bicep.Deployments.Blog>(InfraDirectory / "blog.bicep", ResourceGroup, new Bicep.Parameters.BlogParameters
             {
-                env = "tst"
+                env = Environment
             });
 
             AzCli.Az($"functionapp cors add --resource-group {ResourceGroup} --name {deployment.FunctionAppName} --allowed-origins https://{CustomDomain}");
