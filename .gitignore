@@ -1,2 +1,4 @@
 artifacts/
 .vs/
+.bin/
+.nuke/**
