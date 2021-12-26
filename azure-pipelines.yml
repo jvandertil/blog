@@ -30,7 +30,7 @@ stages:
         displayName: Publish Test Results
         inputs:
           testResultsFormat: 'VSTest'
-          testResultsFiles: '$(Build.SourcesDirectory)\artifacts\TestResults\*.trx'
+          testResultsFiles: '$(Build.SourcesDirectory)/artifacts/TestResults/*.trx'
           mergeTestResults: true
 
       - pwsh: |
@@ -57,9 +57,11 @@ stages:
           - download: none
           - checkout: self
 
-          - download: current
-            artifact: drop
-            target: ./artifacts
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'build'
+              targetPath: './artifacts'
 
           - task: UseDotNet@2
             displayName: Ensure latest .NET SDK available
