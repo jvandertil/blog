@@ -24,12 +24,12 @@
             <form id="form-reply-{{.id}}" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
                 <div class="form-field">
                     <label for="displayName">Display name:</label>
-                    <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" />
+                    <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" required />
                 </div>
 
                 <div class="form-field">
                     <label for="content">Your comment:</label>
-                    <textarea id="content" name="Contents" placeholder="Join the discussion" rows="3"></textarea>
+                    <textarea id="content" name="Contents" placeholder="Join the discussion" rows="3" required></textarea>
                 </div>
 
                 <button type="submit">
