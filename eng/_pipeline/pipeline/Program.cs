@@ -64,7 +64,7 @@ namespace Vandertil.Blog.Pipeline
             .Executes(async () =>
             {
                 AzCli.Az($"group create --name {ResourceGroup} --location westeurope");
-                var deployment = await DeployInfrastructureToAzure();
+                Bicep.Deployments.Blog deployment = await DeployInfrastructureToAzure();
 
                 await CreateOrUpdateCNameRecordAsync($"asverify.{CustomDomain}", $"asverify.{new Uri(deployment.StorageAccountWebEndpoint).Host}", false);
                 await CreateOrUpdateCNameRecordAsync($"{CustomDomain}", $"{new Uri(deployment.StorageAccountWebEndpoint).Host}", true);
