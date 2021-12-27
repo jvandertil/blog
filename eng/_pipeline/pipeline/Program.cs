@@ -86,9 +86,32 @@ namespace Vandertil.Blog.Pipeline
         {
             CompressionTasks.UncompressZip(BlogArtifact, ArtifactsDirectory / "blog-content");
 
-            using (AzStorage.DisableFirewallTemporary(ResourceGroup, deployment.StorageAccountName))
+            const int MaxAttempts = 5;
+            int attempt = 0;
+            bool uploaded = false;
+            while (!uploaded)
             {
-                await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content" / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
+                attempt++;
+
+                try
+                {
+                    var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
+                    using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress))
+                    {
+                        await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content" / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
+                        uploaded = true;
+                    }
+                }
+                catch
+                {
+                    Logger.Info("Error while syncing content, retrying.");
+
+                    if (attempt >= MaxAttempts)
+                    {
+                        throw;
+                    }
+                }
+
             }
         }
 
