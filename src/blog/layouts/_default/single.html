@@ -35,7 +35,7 @@
 
             <div class="post-add-comment-form">
                 <!-- This variable is also in the blog-comment partial. -->
-                {{ $commentHookUrl := (cond site.IsServer site.Params.CommentHookUrlLocal site.Params.CommentHookUrl) }}
+                {{ $commentHookUrl := site.Params.CommentHookUrl }}
                 <form id="comment-form" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment">
                     <div class="form-field">
                         <label for="displayName">Display name:</label>

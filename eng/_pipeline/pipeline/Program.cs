@@ -17,8 +17,8 @@ namespace Vandertil.Blog.Pipeline
         ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
         ///   - Microsoft VSCode           https://nuke.build/vscode
 
-        [Parameter("Deploy only - The environment that is being deployed (tst, prd).")]
-        public string Environment { get; set; }
+        [Parameter("Deploy only - The environment that is being deployed.")]
+        public Environment Environment { get; set; }
 
         [Parameter("Deploy only - The API key for CloudFlare.", Name = "CloudflareApiKey")]
         public string CloudFlareApiKey { get; set; }
@@ -28,7 +28,7 @@ namespace Vandertil.Blog.Pipeline
 
         public static int Main() => Execute<Program>(x => x.Build);
 
-        private AbsolutePath ArtifactsDirectory => ((this) as IProvideArtifactsDirectory).ArtifactsDirectory;
+        private AbsolutePath ArtifactsDirectory => (this as IProvideArtifactsDirectory).ArtifactsDirectory;
         private AbsolutePath BlogArtifact => ArtifactsDirectory / "blog.zip";
         private AbsolutePath CommentFunctionArtifact => ArtifactsDirectory / "blog-comments-function.zip";
 
@@ -40,11 +40,20 @@ namespace Vandertil.Blog.Pipeline
 
         private string ResourceGroup => $"rg-jvandertil-blog-{Environment}";
 
-        private string CustomDomain => Environment switch
+        private string CustomDomain
         {
-            "prd" => "www.jvandertil.nl",
-            _ => $"{Environment}.jvandertil.nl"
-        };
+            get
+            {
+                if (Environment == Environment.Prd)
+                {
+                    return "www.jvandertil.nl";
+                }
+                else
+                {
+                    return $"{Environment}.jvandertil.nl";
+                }
+            }
+        }
 
         public Target Deploy => _ => _
             .Requires(() => Environment)
@@ -80,7 +89,7 @@ namespace Vandertil.Blog.Pipeline
             var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
             using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress.Trim()))
             {
-                await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content", ResourceGroup, deployment.StorageAccountName, "$web");
+                await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content" / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
             }
         }
 

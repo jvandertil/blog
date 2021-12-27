@@ -15,6 +15,14 @@ namespace Vandertil.Blog.Pipeline
         private AbsolutePath HugoToolFolder => RootDirectory / ".bin" / "hugo";
         private Tool Hugo => ToolResolver.GetLocalTool(HugoToolFolder / (EnvironmentInfo.IsWin ? "hugo.exe" : "hugo"));
 
+        Target Serve => _ => _
+            .Executes(async () =>
+            {
+                await RestoreHugoBinary();
+
+                Hugo($"serve --environment dev --source {ContentSourceDirectory} --minify -DEF");
+            });
+
         Target Build => _ => _
             .Executes(async () =>
             {
@@ -22,7 +30,10 @@ namespace Vandertil.Blog.Pipeline
 
                 AbsolutePath artifactPath = ArtifactsDirectory / "blog";
 
-                Hugo($"--source {ContentSourceDirectory} --destination {artifactPath} --minify");
+                foreach (var environment in Environment.All())
+                {
+                    Hugo($"--environment {environment} --source {ContentSourceDirectory} --destination {artifactPath / environment} --minify");
+                }
 
                 CompressionTasks.CompressZip(artifactPath, ArtifactsDirectory / "blog.zip");
                 DeleteDirectory(artifactPath);
