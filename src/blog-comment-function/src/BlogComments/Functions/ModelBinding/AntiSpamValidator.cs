@@ -5,7 +5,7 @@ using FluentValidation.Validators;
 
 namespace BlogComments.Functions.ModelBinding
 {
-    public class AntiSpamValidator : PropertyValidator<CommentContents, string>
+    public class AntiSpamValidator : PropertyValidator<CommentContents, string?>
     {
         private static readonly string[] SpamTerms =
         {

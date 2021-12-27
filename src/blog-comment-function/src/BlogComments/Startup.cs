@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
@@ -79,23 +78,31 @@ namespace BlogComments
 
     public class KeyVaultOptions
     {
-        [NotNull, DisallowNull]
-        public Uri? Url { get; set; }
+        public Uri Url { get; set; }
 
-        [NotNull, DisallowNull]
-        public string? KeyName { get; set; }
+        public string KeyName { get; set; }
+
+        public KeyVaultOptions()
+        {
+            Url = null!;
+            KeyName = null!;
+        }
     }
 
     public class GitHubOptions
     {
         public int ApplicationId { get; set; }
 
-        [NotNull, DisallowNull]
-        public string? Username { get; set; }
+        public string Username { get; set; }
 
-        [NotNull, DisallowNull]
-        public string? Repository { get; set; }
+        public string Repository { get; set; }
 
         public bool EnablePullRequestCreation { get; set; } = false;
+
+        public GitHubOptions()
+        {
+            Username = null!;
+            Repository = null!;
+        }
     }
 }

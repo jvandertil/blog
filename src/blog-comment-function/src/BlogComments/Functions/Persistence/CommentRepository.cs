@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -56,6 +57,7 @@ namespace BlogComments.Functions.Persistence
             }
 
             var comment = DeserializeComment(existingFile.Content);
+            Debug.Assert(comment is not null);
 
             var reply = MapComment(contents);
 
@@ -139,10 +141,13 @@ namespace BlogComments.Functions.Persistence
             var commentId = Ulid.NewUlid().ToString();
             var date = _clock.UtcNow;
 
+            Debug.Assert(contents.DisplayName is not null);
+            Debug.Assert(contents.Contents is not null);
+
             return new CommentModel(commentId, contents.DisplayName, date, contents.Contents);
         }
 
-        private static CommentModel DeserializeComment(string content)
+        private static CommentModel? DeserializeComment(string content)
             => JsonSerializer.Deserialize<CommentModel>(content, SERIALIZER_OPTIONS);
 
         private static string SerializeComment(CommentModel comment)
