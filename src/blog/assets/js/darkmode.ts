@@ -18,17 +18,6 @@ namespace Darkmode {
 
                 if (darkmodeButton) {
                     darkmodeButton.addEventListener("click", () => this.toggleDarkmode());
-                    darkmodeButton.addEventListener("keydown", (e) => {
-                        const KEY_ENTER = 13;
-                        const KEY_SPACE = 32;
-
-                        switch (e.which) {
-                            case KEY_ENTER:
-                            case KEY_SPACE: {
-                                this.toggleDarkmode();
-                            }
-                        }
-                    });
                 }
             });
         }
