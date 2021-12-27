@@ -113,7 +113,8 @@ namespace BlogComments.Functions.Persistence
             var comment = MapComment(contents);
 
             // Create branch
-            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + comment.Id);
+            var baseBranch = await github.Git.Reference.Get(username, repositoryName, "heads/main");
+            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + comment.Id, baseBranch);
 
             string content = SerializeComment(comment);
 
