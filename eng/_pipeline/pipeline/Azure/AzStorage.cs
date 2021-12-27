@@ -53,8 +53,9 @@ namespace Vandertil.Blog.Pipeline.Azure
                 catch
                 {
                     Logger.Info("Storage request failed, sleeping and retrying...");
-                    await Task.Delay(WaitTime).ConfigureAwait(false);
                 }
+
+                await Task.Delay(WaitTime).ConfigureAwait(false);
             }
 
             if (!permissionsActivated)
