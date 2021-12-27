@@ -86,8 +86,7 @@ namespace Vandertil.Blog.Pipeline
         {
             CompressionTasks.UncompressZip(BlogArtifact, ArtifactsDirectory / "blog-content");
 
-            var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
-            using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress.Trim()))
+            using (AzStorage.DisableFirewallTemporary(ResourceGroup, deployment.StorageAccountName))
             {
                 await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content" / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
             }

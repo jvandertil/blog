@@ -8,6 +8,13 @@ namespace Vandertil.Blog.Pipeline.Azure
 {
     public static class AzStorage
     {
+        public static IDisposable DisableFirewallTemporary(string resourceGroup, string storageAccountName)
+        {
+            AzCli.Az($"storage account update --default-action Allow --resource-group {resourceGroup} --account-name {storageAccountName}");
+
+            return new AzCliCleanupDisposable($"storage account update --default-action Deny --resource-group {resourceGroup} --account-name {storageAccountName}");
+        }
+
         public static IDisposable AllowIpAddressTemporary(string resourceGroup, string storageAccountName, string ipAddress)
         {
             AzCli.Az($"storage account network-rule add --resource-group {resourceGroup} --account-name {storageAccountName} --ip-address {ipAddress}");
