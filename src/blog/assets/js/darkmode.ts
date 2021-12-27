@@ -11,6 +11,7 @@ namespace Darkmode {
         }
 
         public init(): void {
+            this.detectUserPreferenceIfNotSet();
             this.applyTheme();
 
             document.addEventListener("DOMContentLoaded", () => {
@@ -20,6 +21,13 @@ namespace Darkmode {
                     darkmodeButton.addEventListener("click", () => this.toggleDarkmode());
                 }
             });
+        }
+
+        private detectUserPreferenceIfNotSet(): void {
+            let preferDarkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+            if (!this.preferences.isSet()) {
+                this.preferences.save(preferDarkModeQuery.matches);
+            }
         }
 
         private toggleDarkmode(): void {
@@ -70,13 +78,20 @@ namespace Darkmode {
     class PreferenceStore {
         private readonly trueLiteral = "true";
         private readonly falseLiteral = "false";
+        private readonly key = "darkmode-enabled";
 
         public save(enabled: boolean) {
-            localStorage.setItem("darkmode-enabled", enabled ? this.trueLiteral : this.falseLiteral);
+            localStorage.setItem(this.key, enabled ? this.trueLiteral : this.falseLiteral);
+        }
+
+        public isSet(): boolean {
+            var fromStorage = localStorage.getItem(this.key);
+
+            return fromStorage !== null;
         }
 
         public get(): boolean {
-            var enabled = localStorage.getItem("darkmode-enabled");
+            var enabled = localStorage.getItem(this.key);
 
             return enabled && enabled === this.trueLiteral;
         }
