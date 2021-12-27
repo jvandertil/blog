@@ -23,7 +23,8 @@ pygmentsUseClasses = true
 	backToTopText = "Back to top"
 
 	githubRepoUrl = "https://www.github.com/jvandertil/blog"
-
+	githubMainBranch = "main"
+	
 	commentHookUrl = "https://fa-jvandertilblog-prd.azurewebsites.net/"
 	commentHookUrlLocal =  "http://localhost:7071/"
 
