@@ -75,8 +75,8 @@ namespace Vandertil.Blog.Pipeline
                 using var client = new CloudFlareClient(CloudFlareApiKey);
                 await client.PurgeZoneCache(CloudFlareZoneId);
 
-                var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
-                using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress.Trim()))
+                string ipAddress = await GetCurrentIpAddressAsync();
+                using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress))
                 {
                     AzFunctionApp.DeployZipPackage(CommentFunctionArtifact, ResourceGroup, deployment.FunctionAppName);
                 }
@@ -95,7 +95,7 @@ namespace Vandertil.Blog.Pipeline
 
                 try
                 {
-                    var ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
+                    string ipAddress = await GetCurrentIpAddressAsync();
                     using (AzStorage.AllowIpAddressTemporary(ResourceGroup, deployment.StorageAccountName, ipAddress))
                     {
                         await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content" / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
@@ -148,6 +148,13 @@ namespace Vandertil.Blog.Pipeline
             AzCli.Az($"functionapp cors add --resource-group {ResourceGroup} --name {deployment.FunctionAppName} --allowed-origins https://{CustomDomain}");
 
             return deployment;
+        }
+
+        private static async Task<string> GetCurrentIpAddressAsync()
+        {
+            string ipAddress = await HttpTasks.HttpDownloadStringAsync("http://ipv4.icanhazip.com/");
+
+            return ipAddress.Trim();
         }
 
         private void EnableStaticWebsite()
