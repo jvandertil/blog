@@ -24,17 +24,25 @@ namespace Darkmode {
         }
 
         private detectUserPreferenceIfNotSet(): void {
-            let preferDarkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+            const preferDarkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
             if (!this.preferences.isSet()) {
-                this.preferences.save(preferDarkModeQuery.matches);
+                this.setDarkmode(preferDarkModeQuery.matches);
             }
+
+            preferDarkModeQuery.addEventListener('change', e => {
+                this.setDarkmode(e.matches);
+            });
+        }
+
+        private setDarkmode(enabled: boolean): void {
+            this.preferences.save(enabled);
+            this.applyTheme();
         }
 
         private toggleDarkmode(): void {
             const darkmodeEnabled = this.preferences.get();
 
-            this.preferences.save(!darkmodeEnabled);
-            this.applyTheme();
+            this.setDarkmode(!darkmodeEnabled);
         }
 
         private applyTheme(): void {
