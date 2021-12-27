@@ -57,7 +57,6 @@ $avatar-diameter: 85px;
 
 table {
     @extend .table;
-    @extend .table-striped;
     @extend .border-top;
 
     width: 90%;
