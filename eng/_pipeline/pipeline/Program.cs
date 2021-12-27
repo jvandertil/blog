@@ -110,6 +110,8 @@ namespace Vandertil.Blog.Pipeline
                     {
                         throw;
                     }
+
+                    await Task.Delay(TimeSpan.FromSeconds(10));
                 }
 
             }
