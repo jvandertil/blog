@@ -1,7 +1,7 @@
 param name string
 param ipRules array
 
-var location = resourceGroup().location
+param location string = resourceGroup().location
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   name: name

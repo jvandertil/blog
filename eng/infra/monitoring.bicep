@@ -1,10 +1,10 @@
 param env string
 param appName string
 
+param location string = resourceGroup().location
+
 var workspaceName = 'la-${appName}-${env}'
 var appInsightsName = 'ai-${appName}-${env}'
-
-var location = resourceGroup().location
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
   name: workspaceName
