@@ -1,5 +1,5 @@
 param env string
-param location string = resourceGroup().location
+param location string = 'westeurope'
 
 var appName = 'jvandertilblog'
 var cloudFlareIps = json(loadTextContent('cloudflare-ips.txt')).result.ipv4_cidrs

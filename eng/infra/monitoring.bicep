@@ -1,6 +1,5 @@
 param env string
 param appName string
-
 param location string = resourceGroup().location
 
 var workspaceName = 'la-${appName}-${env}'
