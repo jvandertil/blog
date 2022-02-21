@@ -9,6 +9,7 @@ module monitoring 'monitoring.bicep' = {
   params: {
     env: env
     appName: appName
+    location: location
   }
 }
 
@@ -58,6 +59,7 @@ module keyVault 'keyVault.bicep' ={
   params: {
     name: kvName
     ipRules: split(functionApp.properties.possibleOutboundIpAddresses, ',')
+    location: location
   }
 }
 
