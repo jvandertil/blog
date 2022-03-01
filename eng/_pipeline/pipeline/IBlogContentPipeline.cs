@@ -8,7 +8,7 @@ namespace Vandertil.Blog.Pipeline
 {
     public interface IBlogContentPipeline : IProvideArtifactsDirectory, IProvideSourceDirectory
     {
-        private const string HugoVersion = "0.91.2";
+        private const string HugoVersion = "0.93.0";
 
         private AbsolutePath ContentSourceDirectory => SourceDirectory / "blog";
 
