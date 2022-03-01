@@ -11,6 +11,8 @@ namespace Vandertil.Blog.Pipeline
 {
     public class Program : NukeBuild, IClean, IBlogContentPipeline, IBlogCommentFunctionPipeline
     {
+        private const string AzureLocation = "westeurope";
+
         /// Support plugins are available for:
         ///   - JetBrains ReSharper        https://nuke.build/resharper
         ///   - JetBrains Rider            https://nuke.build/rider
@@ -63,7 +65,7 @@ namespace Vandertil.Blog.Pipeline
             .Requires(() => FileExists(CommentFunctionArtifact))
             .Executes(async () =>
             {
-                AzCli.Az($"group create --name {ResourceGroup} --location westeurope");
+                AzCli.Az($"group create --name {ResourceGroup} --location {AzureLocation}");
                 Bicep.Deployments.Blog deployment = await DeployInfrastructureToAzure();
 
                 await CreateOrUpdateCNameRecordAsync($"asverify.{CustomDomain}", $"asverify.{new Uri(deployment.StorageAccountWebEndpoint).Host}", false);
@@ -142,7 +144,8 @@ namespace Vandertil.Blog.Pipeline
 
             var deployment = AzCli.DeployTemplate<Bicep.Deployments.Blog>(InfraDirectory / "blog.bicep", ResourceGroup, new Bicep.Parameters.BlogParameters
             {
-                env = Environment
+                env = Environment,
+                location = AzureLocation,
             });
 
             AzCli.Az($"functionapp cors add --resource-group {ResourceGroup} --name {deployment.FunctionAppName} --allowed-origins https://{CustomDomain}");
