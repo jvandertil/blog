@@ -16,7 +16,7 @@
 
     <PackageReference Include="NUlid" Version="1.7.0" />
     <PackageReference Include="Octokit" Version="0.50.0" />
-    <PackageReference Include="FluentValidation" Version="10.3.6" />
+    <PackageReference Include="FluentValidation" Version="10.4.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.6" />
   </ItemGroup>
 
