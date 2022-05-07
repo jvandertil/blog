@@ -37,7 +37,7 @@ namespace Vandertil.Blog.Pipeline.Azure
             Logger.Info("Checking if network rule has propagated...");
 
             var WaitTime = TimeSpan.FromSeconds(5);
-            var TimeOut = TimeSpan.FromMinutes(1);
+            var TimeOut = TimeSpan.FromMinutes(5);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
