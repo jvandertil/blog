@@ -66,8 +66,7 @@ namespace BlogComments.Functions.Persistence
                 return false;
             }
 
-            var defaultBranch = (await github.Repository.Branch.Get(repository.Id, repository.DefaultBranch));
-            var defaultRef = await github.Git.Reference.Get(repository.Id, defaultBranch.Commit.Ref);
+            var baseBranch = await github.Git.Reference.Get(username, repositoryName, "heads/main");
             var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + threadId + "/" + reply.Id, defaultRef);
 
             var fileContent = SerializeComment(comment);
