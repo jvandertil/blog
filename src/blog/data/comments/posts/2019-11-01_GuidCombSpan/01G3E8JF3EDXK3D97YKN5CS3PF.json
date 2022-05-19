@@ -1,0 +1,8 @@
+{
+  "id": "01G3E8JF3EDXK3D97YKN5CS3PF",
+  "displayName": "Ramon",
+  "postedDate": "2022-05-19T13:37:03.0943227+00:00",
+  "content": "Interesting benchmark.. but how would I use this in an actual code?\r\n\r\nvar id = GenerateCombSpan(Guid.NewGuid(), DateTime.UtcNow)\r\n\r\nIsn\u0027t your benchmark currently hiding allocations?\r\n\r\n",
+  "authorComment": false,
+  "replies": []
+}
