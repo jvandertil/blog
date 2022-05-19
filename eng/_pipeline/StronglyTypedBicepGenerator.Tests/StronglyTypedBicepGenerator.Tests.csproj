@@ -12,6 +12,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 
+    <PackageReference Include="Nuke.Common" Version="6.0.3" />
+
+    <!-- NexusIQ has identified that Nuke.Common 6.0.3 references packages with a known vulnerability.
+     Override these versions explicitly, when Nuke.Common references fixed versions this can be removed. -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
     <PackageReference Include="FluentAssertions" Version="6.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
