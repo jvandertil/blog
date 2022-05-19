@@ -8,13 +8,6 @@ namespace Vandertil.Blog.Pipeline.Azure
 {
     public static class AzStorage
     {
-        public static IDisposable AllowIpAddressTemporary(string resourceGroup, string storageAccountName, string ipAddress)
-        {
-            AzCli.Az($"storage account network-rule add --resource-group {resourceGroup} --account-name {storageAccountName} --ip-address {ipAddress}");
-
-            return new AzCliCleanupDisposable($"storage account network-rule remove --resource-group {resourceGroup} --account-name {storageAccountName} --ip-address {ipAddress}");
-        }
-
         public static IDisposable GetPrimaryStorageKeyWithAutoCycle(string resourceGroup, string storageAccountName, out string primaryStorageKey)
         {
             var output = AzCli.Az($"storage account keys list --resource-group {resourceGroup} --account-name {storageAccountName} --query \"[?keyName == 'key1'].value | [0]\" --output tsv", logOutput: false);

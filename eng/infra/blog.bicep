@@ -33,7 +33,7 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = 
     allowCrossTenantReplication: false
 
     networkAcls: {
-      defaultAction: 'Deny'
+      defaultAction: 'Allow' // This will be set to Deny after deployment
       bypass: 'None'
       ipRules: [for range in cloudFlareIps: {
         value: range
