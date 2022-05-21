@@ -27,7 +27,7 @@ namespace Vandertil.Blog.Pipeline.Azure
             }
             catch (Exception e)
             {
-                Logger.Warn(e);
+                Serilog.Log.Warning(e, "Exception occured during cleanup.");
 
                 // Do not throw from Dispose.
             }

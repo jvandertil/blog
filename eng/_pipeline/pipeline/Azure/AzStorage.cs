@@ -27,7 +27,7 @@ namespace Vandertil.Blog.Pipeline.Azure
 
         private static async Task CheckForPermissions(string storageAccount, string accessKey, string containerName)
         {
-            Logger.Info("Checking if network rule has propagated...");
+            Serilog.Log.Information("Checking if network rule has propagated...");
 
             var WaitTime = TimeSpan.FromSeconds(5);
             var TimeOut = TimeSpan.FromMinutes(5);
@@ -45,7 +45,7 @@ namespace Vandertil.Blog.Pipeline.Azure
                 }
                 catch
                 {
-                    Logger.Info("Storage request failed, sleeping and retrying...");
+                    Serilog.Log.Information("Storage request failed, sleeping and retrying...");
                 }
 
                 await Task.Delay(WaitTime).ConfigureAwait(false);

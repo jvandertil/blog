@@ -10,8 +10,7 @@ namespace Vandertil.Blog.Pipeline.Azure
 {
     public static class AzCli
     {
-        [PathExecutable(name: "az")]
-        public static Tool Az => ValueInjectionUtility.TryGetValue(() => Az);
+        public static Tool Az => ToolResolver.GetPathTool("az");
 
         public static string ReadFirstLine(IReadOnlyCollection<Output> output)
         {

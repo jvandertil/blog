@@ -45,7 +45,7 @@ namespace Vandertil.Blog.Pipeline
             string HugoReleaseUrl = $"https://github.com/gohugoio/hugo/releases/download/v{HugoVersion}/{HugoFileName}";
             AbsolutePath destinationFile = HugoToolFolder / HugoFileName;
 
-            if (!FileExists(destinationFile))
+            if (!destinationFile.Exists())
             {
                 await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile, headerConfigurator: headers => headers.Add("User-Agent", "jvandertil/blog build script"));
 
@@ -62,7 +62,7 @@ namespace Vandertil.Blog.Pipeline
             }
             else
             {
-                Logger.Info("Skipping Hugo restore, already restored.");
+                Serilog.Log.Information("Skipping Hugo restore, already restored.");
             }
         }
     }

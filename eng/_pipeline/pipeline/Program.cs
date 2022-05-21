@@ -61,8 +61,8 @@ namespace Vandertil.Blog.Pipeline
             .Requires(() => Environment)
             .Requires(() => CloudFlareApiKey)
             .Requires(() => CloudFlareZoneId)
-            .Requires(() => FileExists(BlogArtifact))
-            .Requires(() => FileExists(CommentFunctionArtifact))
+            .Requires(() => BlogArtifact.Exists())
+            .Requires(() => CommentFunctionArtifact.Exists())
             .Executes(async () =>
             {
                 AzCli.Az($"group create --name {ResourceGroup} --location {AzureLocation}");
@@ -102,7 +102,7 @@ namespace Vandertil.Blog.Pipeline
                 }
                 catch
                 {
-                    Logger.Info("Error while syncing content, retrying.");
+                    Serilog.Log.Information("Error while syncing content, retrying.");
 
                     if (attempt >= MaxAttempts)
                     {
@@ -111,7 +111,6 @@ namespace Vandertil.Blog.Pipeline
 
                     await Task.Delay(TimeSpan.FromSeconds(10));
                 }
-
             }
         }
 
