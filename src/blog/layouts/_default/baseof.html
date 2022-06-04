@@ -19,8 +19,6 @@
     <!-- Load polyfills for old browsers (IE). -->
     {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $polyfills.Permalink }}" integrity="{{ $polyfills.Data.Integrity }}"></script>
-
-    {{ partial "deps/js/google" . }}
 </head>
 <body>
     {{ $darkmodeJs := resources.Get "js/darkmode.ts" | js.Build | resources.Minify | resources.Fingerprint }}
