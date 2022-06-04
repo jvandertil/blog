@@ -15,7 +15,11 @@
             {{ dateFormat "2 January 2006" $commentDate }}
         </a>
     </div>
-    <div class="comment-content">{{ .content | markdownify }}</div>
+    <div class="comment-content">
+        {{/* Emit a wrapper to make tables responsive in the comments. */}}
+        {{ $wrappedTable := printf "<div class='table-responsive'> ${1} </div>" }}
+        {{ .content | markdownify | replaceRE "(<table>(?:.|\n)+?</table>)" $wrappedTable | safeHTML }}
+    </div>
     <div class="comment-footer">
         <button title="Reply" class="reply-button" onclick="toggleForm('form-reply-{{.id}}')"><small>Reply</small></button>
         <div class="post-reply-comment-form">
