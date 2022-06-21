@@ -18,12 +18,13 @@ pygmentsUseClasses = true
 	github = "jvandertil"
 	linkedin = "jvandertil"
 
+    enableOldContentWarning = true
 	oldContentWarningDays = 1090
 	backToTopText = "Back to top"
 
 	githubRepoUrl = "https://www.github.com/jvandertil/blog"
 	githubMainBranch = "main"
-	
+
 	# Defined in environment configs
 	commentHookUrl = ""
 
