@@ -1,0 +1,5 @@
+{{ $poppins := resources.Match "fonts/Poppins/*.ttf" }}
+
+{{ range $poppins }}
+    {{ .Publish }}
+{{ end }}

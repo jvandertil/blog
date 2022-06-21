@@ -1,4 +1,5 @@
 @import "../dist/bootstrap-5.1.3/bootstrap";
+@import "fonts.scss";
 
 @import "navbar.scss";
 @import "footer.scss";
@@ -17,11 +18,12 @@ body > main {
 
 body {
     background: #fdfdfd;
+    font-family: 'Poppins', var(--bs-body-font-family);
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
-    
+
     a {
         text-decoration: none;
     }
