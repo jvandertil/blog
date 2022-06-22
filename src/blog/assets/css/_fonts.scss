@@ -1,18 +1,21 @@
 @font-face {
     font-family: Poppins;
     src: url('/fonts/poppins/Poppins-Regular.ttf') format('truetype');
+    font-display: swap;
 }
 
 @font-face {
     font-family: Poppins;
     font-style: italic;
     src: url('/fonts/poppins/Poppins-Italic.ttf') format('truetype');
+    font-display: swap;
 }
 
 @font-face {
     font-family: Poppins;
     font-weight: bold;
     src: url('/fonts/poppins/Poppins-Bold.ttf') format('truetype');
+    font-display: swap;
 }
 
 @font-face {
@@ -21,4 +24,5 @@
     /* font-weight requires a range: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide#Using_a_variable_font_font-face_changes */
     font-weight: 300 700;
     font-style: normal;
+    font-display: swap;
   }
