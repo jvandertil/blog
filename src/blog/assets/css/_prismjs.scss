@@ -32,5 +32,49 @@ code[class*="language-"] {
             color: #f8f8f2;
         }
     }
+
+    .copy-to-clipboard-button {
+        background-color: $darkBg !important;
+        border-color: #606770 !important;
+
+        span {
+            background-color: $darkBg;
+        }
+    }
+}
+
+.copy-to-clipboard-button {
+    background-color: $lightBg !important;
+    box-shadow: none !important;
+    padding: 0.4rem !important;
+    border: 1px solid !important;
+    border-color: #dadde1 !important;
+
+    transition: opacity .2s ease-in-out;
+
+    span {
+        background-color: $lightBg;
+        font-family: "Font Awesome 6 Free";
+        font-size: 16px;
+        width: 16px !important;
+    }
+}
+
+.copy-to-clipboard-button[data-copy-state="copy-success"] {
+    span {
+        @extend .text-success;
+
+        font-weight: 900;
+        font-size: 16px;
+    }
+}
+
+.copy-to-clipboard-button[data-copy-state="copy-error"] {
+    span {
+        @extend .text-danger;
+
+        font-weight: 900;
+        font-size: 16px;
+    }
 }
 

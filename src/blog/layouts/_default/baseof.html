@@ -22,7 +22,7 @@
     {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $polyfills.Permalink }}" integrity="{{ $polyfills.Data.Integrity }}"></script>
 </head>
-<body>
+<body data-prismjs-copy="&#xf0c5;" data-prismjs-copy-success="&#xf00c;" data-prismjs-copy-error="&#xf00d;" data-prismjs-copy-timeout="1000">
     {{ $darkmodeJs := resources.Get "js/darkmode.ts" | js.Build | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}" integrity="{{ $darkmodeJs.Data.Integrity }}"></script>
 
