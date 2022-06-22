@@ -1,5 +1,11 @@
-{{ $poppins := resources.Match "fonts/Poppins/*.ttf" }}
+{{ $truetype := resources.Match "fonts/**.ttf" }}
 
-{{ range $poppins }}
+{{ range $truetype }}
+    {{ .Publish }}
+{{ end }}
+
+{{ $woff2 := resources.Match "fonts/**.woff2" }}
+
+{{ range $woff2 }}
     {{ .Publish }}
 {{ end }}

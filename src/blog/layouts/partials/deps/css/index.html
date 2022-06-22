@@ -1,3 +1,5 @@
+{{ partial "deps/css/prismjs" . }}
+
 {{ $style := resources.Get "css/main.scss" | resources.ToCSS (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
 <link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
 
@@ -5,4 +7,3 @@
       integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0="
       crossorigin="anonymous">
 
-{{ partial "deps/css/prismjs" . }}
