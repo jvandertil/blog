@@ -1,11 +1,11 @@
 {{ $truetype := resources.Match "fonts/**.ttf" }}
 
 {{ range $truetype }}
-    {{ .Publish }}
+    <link rel="preload" as="font" href="{{ .Permalink }}" />
 {{ end }}
 
 {{ $woff2 := resources.Match "fonts/**.woff2" }}
 
 {{ range $woff2 }}
-    {{ .Publish }}
+    <link rel="preload" as="font" href="{{ .Permalink }}" />
 {{ end }}

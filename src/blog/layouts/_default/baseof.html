@@ -14,9 +14,9 @@
     <link href="{{ $rssLink.Permalink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
     {{ end }}
 
-    {{ partial "deps/css/index" . }}
-
     {{ partial "deps/fonts/index" . }}
+
+    {{ partial "deps/css/index" . }}
 
     <!-- Load polyfills for old browsers (IE). -->
     {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify | resources.Fingerprint }}
