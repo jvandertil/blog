@@ -18,7 +18,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing 
     name: 'some-existing-storage-account'
 }
 
-resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2015-07-01' = {
+resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
     name: guid(storageAccount.id, resourceGroup().id, principalId)
     scope: storageAccount
     properties: {
@@ -40,9 +40,9 @@ param principalId string
 param roleDefinition string
 
 var roles = {
-    // See https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for these mappings
-    'Storage Blob Data Contributor' = '/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-    'Storage Blob Data Reader' = '/providers/Microsoft.Authorization/roleDefinitions/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+    // See https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for these mappings and more.
+    'Storage Blob Data Contributor': '/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    'Storage Blob Data Reader': '/providers/Microsoft.Authorization/roleDefinitions/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
 }
 
 var roleDefinitionId = roles[roleDefinition]
@@ -51,7 +51,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing 
     name: storageAccountName
 }
 
-resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2015-07-01' = {
+// Requires at least version 2018-01-01-preview!
+resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
     // Generate a unique but deterministic resource name
     name: guid('storage-rbac', storageAccount.id, resourceGroup().id, principalId, roleDefinitionId)
     scope: storageAccount
