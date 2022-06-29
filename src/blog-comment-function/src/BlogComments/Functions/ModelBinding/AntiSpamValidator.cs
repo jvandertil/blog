@@ -13,6 +13,7 @@ namespace BlogComments.Functions.ModelBinding
             "Amoxicillin",
             "azithromycin",
             "loveawake.ru",
+            "slkjfdf.net",
         };
 
         public override string Name => nameof(AntiSpamValidator);
