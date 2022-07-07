@@ -63,3 +63,13 @@ table {
     margin-left: auto;
     margin-right: auto;
 }
+
+figure {
+    @extend .figure;
+
+    img {
+        @extend .figure-img;
+        @extend .img-fluid;
+        @extend .rounded;
+    }
+}
