@@ -2,7 +2,16 @@
   "id": "01GFB1ASKQD6H269223YVWN9XH",
   "displayName": "Jens",
   "postedDate": "2022-10-14T10:41:10.2678962+00:00",
-  "content": "Hi Jos, well done! Do you have any idea how to update an existing roleDefinition if you only want to use the known roleName?\r\n```bicep\r\nresource roleDef \u0027Microsoft.Authorization/roleDefinitions@2022-04-01\u0027 existing = {\r\n    name: \u0027roleName\u0027 // NOT GUID \r\n}\r\n```\r\nfor later use of e.g.:\r\n```bicep\r\n var realid = roleDef.id\r\n```\r\n\r\nWasn\u0027t successful to update existing roleDefinitions with bicep due to the issue that I have to know the GUID for it as the mandatory name property. :(\r\n",
+  "content": "Hi Jos, well done! Do you have any idea how to update an existing roleDefinition if you only want to use the known roleName?\r\n\u0060\u0060\u0060bicep\r\nresource roleDef \u0027Microsoft.Authorization/roleDefinitions@2022-04-01\u0027 existing = {\r\n    name: \u0027roleName\u0027 // NOT GUID \r\n}\r\n\u0060\u0060\u0060\r\nfor later use of e.g.:\r\n\u0060\u0060\u0060bicep\r\n var realid = roleDef.id\r\n\u0060\u0060\u0060\r\n\r\nWasn\u0027t successful to update existing roleDefinitions with bicep due to the issue that I have to know the GUID for it as the mandatory name property. :(\r\n",
   "authorComment": false,
-  "replies": []
+  "replies": [
+    {
+      "id": "01GFBB4Q2DEA633T533FHG88V0",
+      "displayName": "Jos van der Til",
+      "postedDate": "2022-10-14T13:32:36.8152084+00:00",
+      "content": "Hi Jens,\r\n\r\nI am not quite sure if I understand your question. You want to find the name (guid) of an existing role assignment by using the role name such as \u0027Storage Blob Data Reader\u0027? If so, I unfortunately do not know of a way to do that in Bicep.\r\n\r\nI know you can download a CSV or JSON file of all the role assignments on a resource in the Azure Portal, which might be of some help.\r\nAlternatively, you can use the AzCLI to get what you want using: \u0060az role assignment list --scope \u003Cresource id\u003E --role \u0022\u003Crole name\u003E\u0022\u0060\r\n\r\nHope this helps!\r\n",
+      "authorComment": false,
+      "replies": []
+    }
+  ]
 }
