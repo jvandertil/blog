@@ -1,0 +1,8 @@
+{
+  "id": "01GFB1ASKQD6H269223YVWN9XH",
+  "displayName": "Jens",
+  "postedDate": "2022-10-14T10:41:10.2678962+00:00",
+  "content": "Hi Jos, well done! Do you have any idea how to update an existing roleDefinition if you only want to use the known roleName?\r\n\r\nresource roleDef \u0027Microsoft.Authorization/roleDefinitions@2022-04-01\u0027 existing = {\r\n    name: \u0027roleName\u0027 // NOT GUID \r\n}\r\n\r\nfor later use of e.g.:\r\nvar realid = roleDef.id\r\n\r\nWasn\u0027t successful to update existing roleDefinitions with bicep due to the issue that I have to know the GUID for it as the mandatory name property. :(\r\n",
+  "authorComment": false,
+  "replies": []
+}
