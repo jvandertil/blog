@@ -10,7 +10,7 @@
       "displayName": "Jos van der Til",
       "postedDate": "2022-10-14T13:32:36.8152084+00:00",
       "content": "Hi Jens,\r\n\r\nI am not quite sure if I understand your question. You want to find the name (guid) of an existing role assignment by using the role name such as \u0027Storage Blob Data Reader\u0027? If so, I unfortunately do not know of a way to do that in Bicep.\r\n\r\nI know you can download a CSV or JSON file of all the role assignments on a resource in the Azure Portal, which might be of some help.\r\nAlternatively, you can use the AzCLI to get what you want using: \u0060az role assignment list --scope \u003Cresource id\u003E --role \u0022\u003Crole name\u003E\u0022\u0060\r\n\r\nHope this helps!\r\n",
-      "authorComment": false,
+      "authorComment": true,
       "replies": []
     }
   ]
