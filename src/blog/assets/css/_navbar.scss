@@ -4,9 +4,10 @@ body > header {
     > nav {
         @extend .navbar;
         @extend .navbar-expand-lg;
-        @extend .navbar-light;
         @extend .bg-light;
         @extend .container-fluid;
+
+        padding-left: .75rem;
 
         ul {
             @extend .navbar-nav;
