@@ -48,6 +48,7 @@ internal class MsTestLogger : ILogger
     }
 
     public IDisposable BeginScope<TState>(TState state)
+        where TState : notnull
     {
         return NoopDisposable.Instance;
     }
