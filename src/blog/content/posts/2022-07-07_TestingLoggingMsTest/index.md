@@ -130,7 +130,7 @@ internal class DisposableMsTestLogger<T> : MsTestLogger<T>, IDisposable
 
     public void Dispose()
     {
-        _logs.Complete();
+        _logs.TryComplete();
     }
 }
 ```
@@ -174,7 +174,7 @@ internal class MsTestLoggerFactory : ILoggerFactory
 
     public void Dispose()
     {
-        _logs.Writer.Complete();
+        _logs.Writer.TryComplete();
     }
 }
 ```
