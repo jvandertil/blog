@@ -8,7 +8,7 @@ namespace Vandertil.Blog.Pipeline
 {
     public interface IBlogContentPipeline : IProvideArtifactsDirectory, IProvideSourceDirectory
     {
-        private const string HugoVersion = "0.101.0";
+        private const string HugoVersion = "0.111.2";
 
         private AbsolutePath ContentSourceDirectory => SourceDirectory / "blog";
 
@@ -41,7 +41,7 @@ namespace Vandertil.Blog.Pipeline
 
         private async Task RestoreHugoBinary()
         {
-            string HugoFileName = EnvironmentInfo.IsWin ? $"hugo_extended_{HugoVersion}_Windows-64bit.zip" : $"hugo_extended_{HugoVersion}_Linux-64bit.tar.gz";
+            string HugoFileName = EnvironmentInfo.IsWin ? $"hugo_extended_{HugoVersion}_windows-amd64.zip" : $"hugo_extended_{HugoVersion}_linux-amd64.tar.gz";
             string HugoReleaseUrl = $"https://github.com/gohugoio/hugo/releases/download/v{HugoVersion}/{HugoFileName}";
             AbsolutePath destinationFile = HugoToolFolder / HugoFileName;
 
