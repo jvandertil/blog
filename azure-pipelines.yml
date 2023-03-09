@@ -23,7 +23,7 @@ stages:
         displayName: Ensure latest .NET SDK available
         inputs:
           packageType: 'sdk'
-          version: '7.x'
+          version: '6.x'
       - pwsh: |
           .\build.ps1 --target Clean Build
         displayName: Execute Nuke build
