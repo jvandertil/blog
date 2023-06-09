@@ -68,7 +68,7 @@ namespace BlogComments
                 .Validate(opts =>
                 {
                     return !string.IsNullOrWhiteSpace(opts.KeyName)
-                        && !(opts.Url is null);
+                        && opts.Url is not null;
                 });
 
             services.AddTransient<ModelBinder>();
