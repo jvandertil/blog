@@ -80,7 +80,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Run deployment script'
             inputs:
-              azureSubscription: 'Azure jvandertil.nl prd'
+              azureSubscription: 'sub-jvdtil-quintor (SPN)'
               scriptType: 'pscore'
               scriptLocation: 'inlineScript'
               inlineScript: |
