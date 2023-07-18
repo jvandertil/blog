@@ -33,6 +33,16 @@ I came up with the following Bicep module which shows a nice way to hide the nas
 param storageAccountName string
 param principalId string
 
+@allowed[
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+    ''
+]
+param principalType string = ''
+
 @allowed([
     'Storage Blob Data Contributor'
     'Storage Blob Data Reader'
@@ -51,14 +61,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing 
     name: storageAccountName
 }
 
-// Requires at least version 2018-01-01-preview!
-resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     // Generate a unique but deterministic resource name
     name: guid('storage-rbac', storageAccount.id, resourceGroup().id, principalId, roleDefinitionId)
     scope: storageAccount
     properties: {
         principalId: principalId
         roleDefinitionId: roleDefinitionId
+        principalType: empty(principalType) ? null : principalType
     }
 }
 ```
@@ -84,3 +94,5 @@ module roleAuthorization 'storageAuth.bicep' = {
 ```
 
 I hope someone has some use for this as well.
+
+*Update 18-07-2023: Updated to include principalType in template.*
