@@ -2,15 +2,15 @@
   "id": "01H5MGTBE75W3YT11WQZS2X2SV",
   "displayName": "Emran Hossain",
   "postedDate": "2023-07-18T12:50:18.7160387+00:00",
-  "content": "Hi Jos , \r\nIs it possible to assign RBAC role like \u0022 Storage Blob Data Contributor\u0022 to Azure AD Group \r\n",
+  "content": "Hi Jos , \r\n\r\nIs it possible to assign RBAC role like \u0022Storage Blob Data Contributor\u0022 to Azure AD Group \r\n",
   "authorComment": false,
   "replies": [
     {
       "id": "01H5MMJJNN3J1NP3DXV0DP9Q5F",
       "displayName": "Jos van der Til",
       "postedDate": "2023-07-18T13:55:58.2641358+00:00",
-      "content": "Hi Emran,\r\n\r\nYes, this is also possible! Thank you for asking.\r\nI have updated to template to include the \u0060principalType\u0060  parameter that you can use.\r\n\r\nIt works in the same way, you will need to get the \u0060objectId\u0060 of the group you want to assign the role to from Azure AD.\r\nThen you can use the template in the same way:\r\n\u0060\u0060\u0060\r\nmodule roleAuthorization \u0027storageAuth.bicep\u0027 = {\r\n    name: \u0027roleAuthorization\u0027\r\n    properties: {\r\n        principalId: principalId\r\n        principalType: \u0027Group\u0027\r\n        storageAccountName: \u0027some-existing-storage-account\u0027\r\n        roleDefinition: \u0027Storage Blob Data Contributor\u0027\r\n    }\r\n}\r\n\u0060\u0060\u0060\r\n\r\nHope this helps!",
-      "authorComment": false,
+      "content": "Hi Emran,\r\n\r\nYes, this is also possible! Thank you for asking.\r\nI have updated to template to include the `principalType` parameter that you can use.\r\n\r\nIt works in the same way, you will need to get the `objectId` of the group you want to assign the role to from Azure AD.\r\nThen you can use the template in the same way:\r\n```bicep\r\nmodule roleAuthorization \u0027storageAuth.bicep\u0027 = {\r\n    name: \u0027roleAuthorization\u0027\r\n    properties: {\r\n        principalId: principalId\r\n        principalType: \u0027Group\u0027\r\n        storageAccountName: \u0027some-existing-storage-account\u0027\r\n        roleDefinition: \u0027Storage Blob Data Contributor\u0027\r\n    }\r\n}\r\n```\r\n\r\nHope this helps!",
+      "authorComment": true,
       "replies": []
     }
   ]
