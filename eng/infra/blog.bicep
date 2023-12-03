@@ -13,7 +13,7 @@ module monitoring 'monitoring.bicep' = {
   }
 }
 
-resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: 'sa${appName}${env}'
   location: location
   kind: 'StorageV2'
@@ -63,7 +63,7 @@ module keyVault 'keyVault.bicep' ={
   }
 }
 
-resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-preview' = {
+resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = {
   name: '${kvName}/replace'
 
   properties: {
@@ -87,7 +87,7 @@ resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-pre
 }
 
 // This storage account should be used ONLY for the function app.
-resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: 'safa${appName}${env}'
   location: location
 
@@ -109,7 +109,7 @@ resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01
   }
 }
 
-resource hostingPlan 'Microsoft.Web/serverfarms@2021-01-15' = {
+resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'asp-fa-${appName}-${env}'
   location: location
   sku: {
@@ -118,7 +118,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   }
 }
 
-resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
+resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   name: 'fa-${appName}-${env}'
   location: location
   kind: 'functionapp'
@@ -128,7 +128,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
     siteConfig: {
       use32BitWorkerProcess: false
       netFrameworkVersion: 'v8.0'
-      
+
       appSettings: concat([
         {
           name: 'AzureWebJobsStorage'
@@ -190,6 +190,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
       http20Enabled: true
 
       scmIpSecurityRestrictionsUseMain: false
+      scmIpSecurityRestrictionsDefaultAction: 'Deny'
       scmIpSecurityRestrictions: [
       ]
     }

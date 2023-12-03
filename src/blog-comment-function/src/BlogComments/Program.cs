@@ -15,8 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults()
     .ConfigureFunctionsWebApplication()
-    .ConfigureAppConfiguration(builder => builder.AddEnvironmentVariables())
     .ConfigureServices((builder, services) =>
     {
         services.AddApplicationInsightsTelemetryWorkerService();

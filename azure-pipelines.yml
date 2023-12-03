@@ -22,8 +22,8 @@ stages:
       - task: UseDotNet@2
         displayName: Ensure latest .NET SDK available
         inputs:
-          packageType: 'sdk'
-          version: '8.x'
+          packageType: sdk
+          version: 8.x
       - pwsh: |
           .\build.ps1 --target Clean Build
         displayName: Execute Nuke build
@@ -75,8 +75,9 @@ stages:
           - task: UseDotNet@2
             displayName: Ensure latest .NET SDK available
             inputs:
-              packageType: 'sdk'
-              version: '8.x'
+              packageType: sdk
+              version: 8.x
+
           - task: AzureCLI@2
             displayName: 'Run deployment script'
             inputs:
