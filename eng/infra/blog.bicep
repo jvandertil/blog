@@ -112,6 +112,9 @@ resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'asp-fa-${appName}-${env}'
   location: location
+
+  kind: 'linux'
+
   sku: {
     tier: 'Dynamic'
     name: 'Y1'
@@ -133,7 +136,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
 
     siteConfig: {
       use32BitWorkerProcess: false
-      linuxFxVersion: 'DOTNETCORE:8.0'
+      linuxFxVersion: 'DOTNETCORE|8.0'
 
       appSettings: concat([
         {
