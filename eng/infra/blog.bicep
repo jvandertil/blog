@@ -127,7 +127,8 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
     clientAffinityEnabled: true
     siteConfig: {
       use32BitWorkerProcess: false
-
+      netFrameworkVersion: 'v8.0'
+      
       appSettings: concat([
         {
           name: 'AzureWebJobsStorage'
@@ -139,7 +140,11 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: 'dotnet'
+          value: 'dotnet-isolated'
+        }
+        {
+          name: 'WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED'
+          value: '1'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'

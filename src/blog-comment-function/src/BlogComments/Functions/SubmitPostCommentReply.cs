@@ -4,8 +4,7 @@ using BlogComments.Functions.Persistence;
 using BlogComments.Functions.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using NUlid;
 
@@ -27,7 +26,7 @@ namespace BlogComments.Functions
             _modelBinder = modelBinder;
         }
 
-        [FunctionName(nameof(SubmitPostCommentReply))]
+        [Function(nameof(SubmitPostCommentReply))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/posts/{post_name}/comment/{thread_id}/reply/{comment_id}")] HttpRequest req,
             [FromRoute] string post_name,
