@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
-using static Nuke.Common.IO.FileSystemTasks;
 
 namespace Vandertil.Blog.Pipeline
 {
@@ -13,7 +12,8 @@ namespace Vandertil.Blog.Pipeline
         private AbsolutePath ContentSourceDirectory => SourceDirectory / "blog";
 
         private AbsolutePath HugoToolFolder => RootDirectory / ".bin" / "hugo";
-        private Tool Hugo => ToolResolver.GetLocalTool(HugoToolFolder / (EnvironmentInfo.IsWin ? "hugo.exe" : "hugo"));
+
+        private Tool Hugo => ToolResolver.GetTool(HugoToolFolder / (EnvironmentInfo.IsWin ? "hugo.exe" : "hugo"));
 
         Target Serve => _ => _
             .Executes(async () =>
@@ -35,8 +35,8 @@ namespace Vandertil.Blog.Pipeline
                     Hugo($"--environment {environment} --source {ContentSourceDirectory} --destination {artifactPath / environment} --minify");
                 }
 
-                CompressionTasks.CompressZip(artifactPath, ArtifactsDirectory / "blog.zip");
-                DeleteDirectory(artifactPath);
+                artifactPath.CompressTo(ArtifactsDirectory / "blog.zip");
+                artifactPath.DeleteDirectory();
             });
 
         private async Task RestoreHugoBinary()
@@ -48,14 +48,10 @@ namespace Vandertil.Blog.Pipeline
             if (!destinationFile.Exists())
             {
                 await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile, headerConfigurator: headers => headers.Add("User-Agent", "jvandertil/blog build script"));
+                destinationFile.UncompressTo(destinationFile.Parent);
 
-                if (EnvironmentInfo.IsWin)
+                if (!EnvironmentInfo.IsWin)
                 {
-                    CompressionTasks.UncompressZip(destinationFile, destinationFile.Parent);
-                }
-                else
-                {
-                    CompressionTasks.UncompressTarGZip(destinationFile, destinationFile.Parent);
                     var chmod = ToolResolver.GetPathTool("chmod");
                     chmod($"+x {destinationFile.Parent / "hugo"}");
                 }

@@ -17,7 +17,7 @@ namespace Vandertil.Blog.Pipeline.Azure
             return output.EnsureOnlyStd().First().Text.Trim();
         }
 
-        public static void DeployTemplate(AbsolutePath templateFile, string resourceGroup, object parametersObj = null, Func<string, string> outputFilter = null)
+        public static void DeployTemplate(AbsolutePath templateFile, string resourceGroup, object parametersObj = null)
         {
             var commandBuilder = new StringBuilder($"deployment group create --mode Complete --template-file \"{templateFile}\" --resource-group {resourceGroup}");
 
@@ -38,19 +38,19 @@ namespace Vandertil.Blog.Pipeline.Azure
 
             try
             {
-                Az(commandBuilder.ToString(), outputFilter: outputFilter);
+                Az(commandBuilder.ToString());
             }
             catch
             {
-                Az($"deployment group list --resource-group {resourceGroup}", outputFilter: outputFilter);
+                Az($"deployment group list --resource-group {resourceGroup}");
 
                 throw;
             }
         }
 
-        public static TDeployment DeployTemplate<TDeployment>(AbsolutePath templateFile, string resourceGroup, object parametersObj = null, Func<string, string> outputFilter = null)
+        public static TDeployment DeployTemplate<TDeployment>(AbsolutePath templateFile, string resourceGroup, object parametersObj = null)
         {
-            DeployTemplate(templateFile, resourceGroup, parametersObj, outputFilter);
+            DeployTemplate(templateFile, resourceGroup, parametersObj);
 
             return (TDeployment)Activator.CreateInstance(typeof(TDeployment), new object[] { resourceGroup });
         }

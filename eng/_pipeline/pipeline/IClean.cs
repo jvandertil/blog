@@ -1,7 +1,6 @@
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.IO.FileSystemTasks;
 
 namespace Vandertil.Blog.Pipeline
 {
@@ -10,9 +9,9 @@ namespace Vandertil.Blog.Pipeline
         Target Clean => _ => _
             .Executes(() =>
             {
-                SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+                SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(x => x.DeleteDirectory());
 
-                EnsureCleanDirectory(ArtifactsDirectory);
+                ArtifactsDirectory.CreateOrCleanDirectory();
             });
     }
 }

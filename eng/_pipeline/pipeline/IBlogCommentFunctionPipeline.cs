@@ -45,8 +45,8 @@ namespace Vandertil.Blog.Pipeline
                     .SetProject(FunctionSourceDirectory / "BlogComments" / "BlogComments.csproj")
                     .SetOutput(artifactsPath));
 
-                CompressionTasks.CompressZip(artifactsPath, ArtifactsDirectory / "blog-comments-function.zip");
-                DeleteDirectory(artifactsPath);
+                artifactsPath.CompressTo(ArtifactsDirectory / "blog-comments-function.zip");
+                artifactsPath.DeleteDirectory();
             });
     }
 }

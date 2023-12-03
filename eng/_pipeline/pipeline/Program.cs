@@ -5,7 +5,6 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Vandertil.Blog.Pipeline.Azure;
 using Vandertil.Blog.Pipeline.CloudFlare;
-using static Nuke.Common.IO.FileSystemTasks;
 
 namespace Vandertil.Blog.Pipeline
 {
@@ -38,7 +37,7 @@ namespace Vandertil.Blog.Pipeline
             .Inherit<IBlogContentPipeline>(x => x.Build)
             .Inherit<IBlogCommentFunctionPipeline>(x => x.Build);
 
-        private AbsolutePath InfraDirectory => RootDirectory / "eng" / "infra";
+        private static AbsolutePath InfraDirectory => RootDirectory / "eng" / "infra";
 
         private string ResourceGroup => $"rg-jvandertil-blog-{Environment}";
 
@@ -61,8 +60,8 @@ namespace Vandertil.Blog.Pipeline
             .Requires(() => Environment)
             .Requires(() => CloudFlareApiKey)
             .Requires(() => CloudFlareZoneId)
-            .Requires(() => BlogArtifact.Exists())
-            .Requires(() => CommentFunctionArtifact.Exists())
+            .Requires(() => BlogArtifact.FileExists())
+            .Requires(() => CommentFunctionArtifact.FileExists())
             .Executes(async () =>
             {
                 AzCli.Az($"group create --name {ResourceGroup} --location {AzureLocation}");
@@ -86,7 +85,8 @@ namespace Vandertil.Blog.Pipeline
 
         private async Task UploadBlogContentAsync(Bicep.Deployments.Blog deployment)
         {
-            CompressionTasks.UncompressZip(BlogArtifact, ArtifactsDirectory / "blog-content");
+            var contentPath = ArtifactsDirectory / "blog-content";
+            BlogArtifact.UncompressTo(contentPath);
 
             const int MaxAttempts = 5;
             int attempt = 0;
@@ -97,7 +97,7 @@ namespace Vandertil.Blog.Pipeline
 
                 try
                 {
-                    await AzStorage.SyncFolderToContainerAsync(ArtifactsDirectory / "blog-content" / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
+                    await AzStorage.SyncFolderToContainerAsync(contentPath / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
                     uploaded = true;
                 }
                 catch

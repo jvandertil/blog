@@ -21,7 +21,7 @@ namespace Vandertil.Blog.Pipeline.Azure
             using (GetPrimaryStorageKeyWithAutoCycle(resourceGroup, storageAccountName, out string storageKey))
             {
                 await CheckForPermissions(storageAccountName, storageKey, containerName);
-                AzCli.Az($"storage blob sync --source {path} --container {containerName} --account-name {storageAccountName} --account-key {storageKey} --only-show-errors", outputFilter: x => x.Replace(storageKey, "***"));
+                AzCli.Az($"storage blob sync --source {path} --container {containerName} --account-name {storageAccountName} --account-key {storageKey:r} --only-show-errors");
             }
         }
 
