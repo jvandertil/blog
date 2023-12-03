@@ -136,7 +136,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
 
     siteConfig: {
       use32BitWorkerProcess: false
-      linuxFxVersion: 'DOTNET|8.0'
+      linuxFxVersion: 'DOTNET-ISOLATED|8.0'
 
       appSettings: concat([
         {
