@@ -5,6 +5,8 @@
 		<AzureFunctionsVersion>v4</AzureFunctionsVersion>
 		<Nullable>enable</Nullable>
 		<OutputType>exe</OutputType>
+		<RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+		<PublishReadyToRun>true</PublishReadyToRun>
 	</PropertyGroup>
 
 	<ItemGroup>

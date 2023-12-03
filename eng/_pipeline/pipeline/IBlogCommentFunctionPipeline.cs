@@ -1,7 +1,6 @@
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.DotNet;
-using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 namespace Vandertil.Blog.Pipeline
@@ -40,10 +39,10 @@ namespace Vandertil.Blog.Pipeline
                 var artifactsPath = ArtifactsDirectory / "work";
 
                 DotNetPublish(s => s
-                    .EnableNoBuild()
                     .SetConfiguration(Configuration)
                     .SetProject(FunctionSourceDirectory / "BlogComments" / "BlogComments.csproj")
-                    .SetOutput(artifactsPath));
+                    .SetOutput(artifactsPath)
+                    .SetRuntime("linux-x64"));
 
                 artifactsPath.CompressTo(ArtifactsDirectory / "blog-comments-function.zip");
                 artifactsPath.DeleteDirectory();

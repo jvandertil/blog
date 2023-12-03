@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
-using Nuke.Common.ValueInjection;
 
 namespace Vandertil.Blog.Pipeline.Azure
 {

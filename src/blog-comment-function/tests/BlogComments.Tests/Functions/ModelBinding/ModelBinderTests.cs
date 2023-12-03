@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using BlogComments.Functions.ModelBinding;
 using BlogComments.Functions.Persistence;
 using FluentAssertions;

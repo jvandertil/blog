@@ -116,18 +116,24 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
     tier: 'Dynamic'
     name: 'Y1'
   }
+
+  properties: {
+    reserved: true
+  }
 }
 
 resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   name: 'fa-${appName}-${env}'
   location: location
-  kind: 'functionapp'
+  kind: 'functionapp,linux'
   properties: {
+    reserved: true
     serverFarmId: hostingPlan.id
-    clientAffinityEnabled: true
+    clientAffinityEnabled: false
+
     siteConfig: {
       use32BitWorkerProcess: false
-      netFrameworkVersion: 'v8.0'
+      linuxFxVersion: 'DOTNETCORE|8.0'
 
       appSettings: concat([
         {
@@ -152,7 +158,11 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: monitoring.outputs.applicationInsightsInstrumentationKey
+          value: monitoring.outputs.appInsightsInstrumentationKey
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: monitoring.outputs.appInsightsConnectionString
         }
         {
           name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
