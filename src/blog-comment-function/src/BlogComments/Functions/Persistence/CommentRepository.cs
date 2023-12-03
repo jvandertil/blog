@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
@@ -22,12 +23,12 @@ namespace BlogComments.Functions.Persistence
 
         private readonly GitHubClientFactory _githubFactory;
         private readonly IOptionsMonitor<GitHubOptions> _options;
-        private readonly ISystemClock _clock;
+        private readonly TimeProvider _clock;
 
         public CommentRepository(
             GitHubClientFactory githubFactory,
             IOptionsMonitor<GitHubOptions> options,
-            ISystemClock clock)
+            TimeProvider clock)
         {
             _githubFactory = githubFactory;
             _options = options;
@@ -72,7 +73,7 @@ namespace BlogComments.Functions.Persistence
             var fileContent = SerializeComment(comment);
             var file = new UpdateFileRequest($"Add reply by {reply.DisplayName} on {postName}, thread {threadId}", fileContent, existingFile.Sha, branchRef.Ref)
             {
-                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", _clock.UtcNow),
+                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", _clock.GetUtcNow()),
             };
 
             await github.Repository.Content.UpdateFile(username, repositoryName, targetFile, file);
@@ -124,7 +125,7 @@ namespace BlogComments.Functions.Persistence
             // Create file
             var file = new CreateFileRequest($"Add comment by {comment.DisplayName} on {postName}", content, branchRef.Ref)
             {
-                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", _clock.UtcNow),
+                Committer = new Committer("jvandertil-blog-bot", "noreply@jvandertil.nl", _clock.GetUtcNow()),
             };
 
             await github.Repository.Content.CreateFile(username, repositoryName, COMMENT_DATA_BASEPATH + $"/{postName}/{comment.Id}.json", file);
@@ -140,7 +141,7 @@ namespace BlogComments.Functions.Persistence
         private CommentModel MapComment(CommentContents contents)
         {
             var commentId = Ulid.NewUlid().ToString();
-            var date = _clock.UtcNow;
+            var date = _clock.GetUtcNow();
 
             Debug.Assert(contents.DisplayName is not null);
             Debug.Assert(contents.Contents is not null);

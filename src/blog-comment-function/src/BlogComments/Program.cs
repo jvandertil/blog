@@ -1,3 +1,4 @@
+using System;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
@@ -23,7 +24,7 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         services.AddSingleton<GitHubClientFactory>();
-        services.AddSingleton<ISystemClock, RealSystemClock>();
+        services.AddSingleton(TimeProvider.System);
         services.AddSingleton<CommentRepository>();
 
         services.AddSingleton<ICryptographicSigner, KeyVaultRs256CryptographicSigner>();

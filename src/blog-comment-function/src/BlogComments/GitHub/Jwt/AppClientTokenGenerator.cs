@@ -12,9 +12,9 @@ namespace BlogComments.GitHub.Jwt
         private const byte EQUALS_SIGN_BYTE = (byte)'=';
 
         private readonly ICryptographicSigner _signer;
-        private readonly ISystemClock _clock;
+        private readonly TimeProvider _clock;
 
-        public AppClientTokenGenerator(ISystemClock clock, ICryptographicSigner signer)
+        public AppClientTokenGenerator(TimeProvider clock, ICryptographicSigner signer)
         {
             _signer = signer;
             _clock = clock;
@@ -22,7 +22,7 @@ namespace BlogComments.GitHub.Jwt
 
         public string CreateToken(int applicationId, int durationValiditySeconds)
         {
-            DateTimeOffset utcNow = _clock.UtcNow;
+            DateTimeOffset utcNow = _clock.GetUtcNow();
 
             var payload = new Dictionary<string, object>
             {
