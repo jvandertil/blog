@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Nuke.Common;
 using Nuke.Common.IO;
@@ -47,7 +48,7 @@ namespace Vandertil.Blog.Pipeline
 
             if (!destinationFile.Exists())
             {
-                await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile, headerConfigurator: headers => headers.Add("User-Agent", "jvandertil/blog build script"));
+                await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile, clientConfigurator: client => { client.Timeout = TimeSpan.FromSeconds(30); return client; }, headerConfigurator: headers => headers.Add("User-Agent", "jvandertil/blog build script"));
                 destinationFile.UncompressTo(destinationFile.Parent);
 
                 if (!EnvironmentInfo.IsWin)
