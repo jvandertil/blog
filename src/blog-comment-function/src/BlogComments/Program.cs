@@ -16,7 +16,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWorkerDefaults()
     .ConfigureFunctionsWebApplication()
     .ConfigureServices((builder, services) =>
     {

@@ -5,7 +5,6 @@ using BlogComments.Functions.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 using NUlid;
 
 namespace BlogComments.Functions
@@ -31,8 +30,7 @@ namespace BlogComments.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/posts/{post_name}/comment/{thread_id}/reply/{comment_id}")] HttpRequest req,
             [FromRoute] string post_name,
             [FromRoute] string thread_id,
-            [FromRoute] string comment_id,
-            ILogger log)
+            [FromRoute] string comment_id)
         {
             var repositoryPostName = await _postExistenceValidator.TryGetPostFileNameFromRepositoryAsync(post_name);
             if (repositoryPostName is null)
@@ -41,8 +39,6 @@ namespace BlogComments.Functions
             }
 
             var postName = repositoryPostName;
-
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
             var form = await req.ReadFormAsync();
             if (!Ulid.TryParse(thread_id, out var threadId)

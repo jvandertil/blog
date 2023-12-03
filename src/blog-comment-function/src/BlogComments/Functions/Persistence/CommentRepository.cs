@@ -13,7 +13,7 @@ namespace BlogComments.Functions.Persistence
 {
     public sealed class CommentRepository
     {
-        private static readonly JsonSerializerOptions SERIALIZER_OPTIONS = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions SERIALIZER_OPTIONS = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true

@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Nuke.Common;
 using Nuke.Common.IO;
 
 namespace Vandertil.Blog.Pipeline.Azure
@@ -13,7 +12,7 @@ namespace Vandertil.Blog.Pipeline.Azure
             var output = AzCli.Az($"storage account keys list --resource-group {resourceGroup} --account-name {storageAccountName} --query \"[?keyName == 'key1'].value | [0]\" --output tsv", logOutput: false);
             primaryStorageKey = AzCli.ReadFirstLine(output);
 
-            return new AzCliCleanupDisposable($"storage account keys renew --resource-group {resourceGroup} --account-name {storageAccountName} --key primary --output none");
+            return new AzCliCleanupDisposable($"storage account keys renew --resource-group {resourceGroup} --account-name {storageAccountName} --key key1 --output none");
         }
 
         public static async Task SyncFolderToContainerAsync(AbsolutePath path, string resourceGroup, string storageAccountName, string containerName)
