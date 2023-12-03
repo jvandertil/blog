@@ -19,7 +19,7 @@ namespace Vandertil.Blog.Pipeline.Azure
 
         public static void DeployTemplate(AbsolutePath templateFile, string resourceGroup, object parametersObj = null)
         {
-            var commandBuilder = new StringBuilder($"deployment group create --mode Complete --template-file \"{templateFile}\" --resource-group {resourceGroup}");
+            var commandBuilder = new StringBuilder($"deployment group create --mode Complete --template-file {templateFile} --resource-group {resourceGroup}");
 
             if (parametersObj is not null)
             {
@@ -32,7 +32,7 @@ namespace Vandertil.Blog.Pipeline.Azure
 
                 foreach (var entry in parameters)
                 {
-                    commandBuilder.Append(entry.Key).Append('=').Append(FormattableString.Invariant($"\"{entry.Value}\" "));
+                    commandBuilder.Append(entry.Key).Append('=').Append(FormattableString.Invariant($"{entry.Value} "));
                 }
             }
 
