@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
 {
@@ -11,13 +12,17 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
 
         private bool _indentWrittenForLine;
 
-        public CodeWriter()
-            : this("    ")
+        public LanguageVersion LanguageVersion { get; }
+
+        public CodeWriter(LanguageVersion langVersion)
+            : this(langVersion, "    ")
         {
         }
 
-        public CodeWriter(string indentToken)
+        public CodeWriter(LanguageVersion langVersion, string indentToken)
         {
+            LanguageVersion = langVersion;
+
             _indentToken = indentToken;
             _builder = new StringBuilder();
         }

@@ -8,4 +8,4 @@ module someAppService 'moduleTemplate.bicep' = {
 }
 
 output thisProperty string = 'test'
-output thatProperty string = 'test 2'"
+output thatProperty string = 'test 2'

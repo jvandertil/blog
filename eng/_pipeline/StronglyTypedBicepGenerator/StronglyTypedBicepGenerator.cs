@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Humanizer;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator.Parser;
@@ -14,22 +15,8 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
     [Generator]
     public class StronglyTypedBicepGenerator : ISourceGenerator
     {
-        private const string AttributeSource = @"using System;
-
-namespace BicepGenerator
-{
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    internal sealed class BicepFileAttribute : Attribute
-    {
-        public string FileName { get; }
-
-        public BicepFileAttribute(string fileName)
-        {
-            FileName = fileName;
-        }
-    }
-}
-";
+        internal const string AttributeNamespace = "Vandertil.BicepGenerator";
+        internal const string AttributeName = "BicepFileAttribute";
 
         internal class SyntaxReceiver : ISyntaxReceiver
         {
@@ -50,36 +37,74 @@ namespace BicepGenerator
                 return cds.AttributeLists
                     .SelectMany(x => x.Attributes)
                     .Select(x => x.Name).OfType<NameSyntax>()
-                    .Any(x => x.ToString() == "BicepFile" || x.ToString() == "BicepGenerator.BicepFile");
+                    .Any(x => x.ToString() == "BicepFile" || x.ToString() == "Vandertil.BicepGenerator.BicepFile");
             }
         }
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            context.RegisterForPostInitialization((i) => i.AddSource("BicepFileAttribute", AttributeSource));
+            context.RegisterForPostInitialization(i =>
+            {
+                var codeWriter = new CodeWriter(LanguageVersion.Default);
+
+                codeWriter
+                    .AppendLine("using System;")
+                    .AppendLine()
+                    .AppendLine($"namespace {AttributeNamespace}")
+                    .OpenBlock()
+                        .EmitGeneratedCodeAttribute()
+                        .EmitExcludeFromCodeCoverageAttribute()
+                        .AppendLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]")
+                        .AppendLine($"internal sealed class {AttributeName} : Attribute")
+                        .OpenBlock()
+                            .AppendLine("public string FileName { get; }")
+                            .AppendLine()
+                            .AppendLine("public BicepFileAttribute(string fileName)")
+                            .OpenBlock()
+                                .AppendLine("FileName = fileName;")
+                            .CloseBlock()
+                        .CloseBlock()
+                        .AppendLine()
+                        .EmitGeneratedCodeAttribute()
+                        .EmitExcludeFromCodeCoverageAttribute()
+                        .AppendLine("[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]")
+                        .AppendLine("internal sealed class SecretAttribute : Attribute")
+                        .OpenBlock()
+                            .AppendLine("public SecretAttribute() { }")
+                        .CloseBlock()
+                    .CloseBlock();
+
+                i.AddSource("BicepFileAttribute.Generated", codeWriter.ToString());
+            });
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
         }
 
         public void Execute(GeneratorExecutionContext context)
         {
-            if (!(context.SyntaxReceiver is SyntaxReceiver receiver))
+            if (context.SyntaxReceiver is not SyntaxReceiver receiver)
             {
                 throw new ArgumentException("Received invalid receiver in Execute step");
+            }
+
+            if (context.Compilation is not CSharpCompilation comp)
+            {
+                return;
             }
 
             foreach (var classDefinition in receiver.DecoratorRequestingClasses)
             {
                 var filePath = classDefinition.SyntaxTree.FilePath;
 
+                var model = context.Compilation.GetSemanticModel(classDefinition.SyntaxTree);
+
                 var bicepFiles = classDefinition.AttributeLists
-                   .SelectMany(x => x.Attributes)
-                   .Where(x => x.Name.ToString() == "BicepFile" || x.Name.ToString() == "BicepGenerator.BicepFile")
-                   .Select(x => x.ArgumentList.Arguments.Single().ToString().Trim('\"'))
+                   .SelectAttribute($"{AttributeNamespace}.{AttributeName}", model)
+                   .Select(x => x.ArgumentList!.Arguments.Single().ToString().Trim('\"'))
                    .Select(file => Path.Combine(Path.GetDirectoryName(filePath), file))
-                   .Select(x => BicepParser.ParseFile(x))
+                   .Select(BicepParser.ParseFile)
                    .ToList();
 
-                var sourceBuilder = new CodeWriter();
+                var sourceBuilder = new CodeWriter(comp.LanguageVersion);
                 WriteFileHeaderAndUsings(sourceBuilder);
 
                 OpenNamespace(classDefinition, sourceBuilder);
@@ -92,7 +117,7 @@ namespace BicepGenerator
 
                 CloseContainingClassBlocks(classDefinition, sourceBuilder);
 
-                sourceBuilder.CloseBlock(); // end namespace
+                CloseNamespace(classDefinition, sourceBuilder);
 
                 sourceBuilder.AppendLine("#nullable restore");
 
@@ -103,6 +128,12 @@ namespace BicepGenerator
 
         private static void WriteParameters(List<BicepFile> bicepFiles, CodeWriter sourceBuilder)
         {
+            if (!bicepFiles.Any(x => x.Parameters.Count > 0))
+            {
+                // No bicep file has parameters, skip this.
+                return;
+            }
+
             sourceBuilder
                     .EmitGeneratedCodeAttribute()
                     .EmitExcludeFromCodeCoverageAttribute()
@@ -123,8 +154,16 @@ namespace BicepGenerator
 
                 foreach (var param in file.Parameters)
                 {
+                    if (param.IsSecret)
+                    {
+                        sourceBuilder.AppendLine($"[{AttributeNamespace}.Secret]");
+                    }
+
+                    string required = (param.Required && sourceBuilder.LanguageVersion >= LanguageVersion.CSharp11) ? "required " : "";
+                    string setOrInit = (sourceBuilder.LanguageVersion >= LanguageVersion.CSharp9) ? "init" : "set";
+
                     sourceBuilder
-                        .AppendLine($"public {BicepDataTypeToTypeString(param.DataType)} {param.Name} {{ get; set; }}");
+                        .AppendLine($"public {required}{BicepDataTypeToTypeString(param.DataType)} {param.Name} {{ get; {setOrInit}; }}");
                 }
 
                 sourceBuilder
@@ -136,24 +175,22 @@ namespace BicepGenerator
 
             static string BicepDataTypeToTypeString(BicepDataType type)
             {
-                switch (type)
+                return type switch
                 {
-                    case BicepDataType.String:
-                        return "string";
-                    case BicepDataType.Bool:
-                        return "bool";
-                    case BicepDataType.Integer:
-                        return "int";
+                    BicepDataType.String => "string",
+                    BicepDataType.Bool => "bool",
+                    BicepDataType.Integer => "int",
+                    BicepDataType.Array => "object[]",
 
-                    default:
-                        throw new InvalidOperationException($"Did not know how to convert from {type} to CLR type.");
-                }
+                    _ => throw new InvalidOperationException($"Did not know how to convert from {type} to CLR type."),
+                };
             }
         }
 
         private static void WriteFileHeaderAndUsings(CodeWriter sourceBuilder)
         {
             sourceBuilder.AppendLine("#nullable disable");
+            sourceBuilder.AppendLine("using System;");
             sourceBuilder.AppendLine("using System.Collections.Concurrent;");
             sourceBuilder.AppendLine("using System.Linq;");
             sourceBuilder.AppendLine("using Nuke.Common.Tooling;");
@@ -162,9 +199,31 @@ namespace BicepGenerator
 
         private static void OpenNamespace(ClassDeclarationSyntax cds, CodeWriter sourceBuilder)
         {
+            if (!HasNamespace(cds, out var @namespace))
+            {
+                return;
+            }
+
             sourceBuilder
-                .Append("namespace ").AppendLine(GetNamespace(cds))
+                .Append("namespace ").AppendLine(@namespace!)
                 .OpenBlock();
+        }
+
+        private static void CloseNamespace(ClassDeclarationSyntax cds, CodeWriter sourceBuilder)
+        {
+            if (!HasNamespace(cds, out _))
+            {
+                return;
+            }
+
+            sourceBuilder.CloseBlock();
+        }
+
+        private static bool HasNamespace(ClassDeclarationSyntax cds, out string? @namespace)
+        {
+            @namespace = GetNamespace(cds);
+
+            return @namespace is not null;
         }
 
         private static void WriteDeployments(IList<BicepFile> bicepFiles, CodeWriter sourceBuilder)
@@ -264,7 +323,7 @@ namespace BicepGenerator
             // Walk up any nested class definitions and output classes in correct order.
             var classes = new Stack<ClassDeclarationSyntax>();
 
-            SyntaxNode node = classDeclaration;
+            SyntaxNode? node = classDeclaration;
             while (node is ClassDeclarationSyntax c)
             {
                 classes.Push(c);
@@ -295,8 +354,8 @@ namespace BicepGenerator
 
         private static void CloseContainingClassBlocks(ClassDeclarationSyntax classDeclaration, CodeWriter sourceBuilder)
         {
-            SyntaxNode node = classDeclaration;
-            while (node is ClassDeclarationSyntax c)
+            SyntaxNode? node = classDeclaration;
+            while (node is ClassDeclarationSyntax)
             {
                 sourceBuilder.CloseBlock();
 
@@ -304,16 +363,16 @@ namespace BicepGenerator
             }
         }
 
-        private static string GetNamespace(SyntaxNode node)
+        private static string? GetNamespace(SyntaxNode node)
         {
-            SyntaxNode namespaceNode = node;
-            while (!namespaceNode.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.NamespaceDeclaration)
-                   && !namespaceNode.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.FileScopedNamespaceDeclaration))
+            SyntaxNode? namespaceNode = node;
+            while (!namespaceNode.IsKind(SyntaxKind.NamespaceDeclaration)
+                   && !namespaceNode.IsKind(SyntaxKind.FileScopedNamespaceDeclaration))
             {
-                namespaceNode = namespaceNode.Parent;
+                namespaceNode = namespaceNode?.Parent;
             }
 
-            return (namespaceNode as BaseNamespaceDeclarationSyntax).Name.ToString();
+            return (namespaceNode as BaseNamespaceDeclarationSyntax)?.Name.ToString();
         }
 
         private static void ConvertOutputToProperty(string outputName, string deploymentName, CodeWriter writer)
@@ -354,6 +413,31 @@ namespace BicepGenerator
                     .AppendLine("_outputsCache.TryAdd((resourceGroup, outputName), outputValue);")
                 .CloseBlock()
                 .AppendLine();
+        }
+    }
+}
+
+internal static class EnumerableExtensions
+{
+    public static IEnumerable<AttributeSyntax> SelectAttribute(this IEnumerable<AttributeListSyntax> attributeLists, string attributeName, SemanticModel model)
+    {
+        foreach (var list in attributeLists)
+        {
+            foreach (var attribute in list.Attributes)
+            {
+                var type = model.GetSymbolInfo(attribute).Symbol?.ContainingType;
+                if (type is null)
+                {
+                    continue;
+                }
+
+                var attributeFullName = type.ToDisplayString();
+
+                if (attributeFullName == attributeName)
+                {
+                    yield return attribute;
+                }
+            }
         }
     }
 }

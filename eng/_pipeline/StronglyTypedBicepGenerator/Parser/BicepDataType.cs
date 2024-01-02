@@ -6,5 +6,6 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator.Parser
         String = 1,
         Bool = 2,
         Integer = 3,
+        Array = 4,
     }
 }

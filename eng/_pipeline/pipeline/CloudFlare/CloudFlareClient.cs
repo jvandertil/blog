@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Vandertil.Blog.Pipeline.CloudFlare
 {
-    public class CloudFlareClient : IDisposable
+    public sealed class CloudFlareClient : IDisposable
     {
         private readonly HttpClient _client;
 
@@ -19,7 +19,7 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
         }
 
-        public async Task<CloudFlareResponse<DnsRecord[]>> ListDnsRecords(string zoneId)
+        public async Task<CloudFlareResponse<DnsRecord[]>?> ListDnsRecords(string zoneId)
         {
             using var response = await _client.GetAsync($"zones/{zoneId}/dns_records").ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
@@ -27,15 +27,15 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
             return await ReadResponse<DnsRecord[]>(response);
         }
 
-        public async Task<CloudFlareResponse<DnsRecord>> CreateDnsRecord(string zoneId, DnsRecordType type, string name, string content, bool proxied)
+        public async Task<CloudFlareResponse<DnsRecord>?> CreateDnsRecord(string zoneId, DnsRecordType type, string name, string content, bool proxied)
         {
             var body = new
             {
                 type = type.ToString(),
-                name = name,
-                content = content,
+                name,
+                content,
                 ttl = 1,
-                proxied = proxied,
+                proxied,
             };
 
             using var response = await _client.PostAsJsonAsync($"zones/{zoneId}/dns_records", body);
@@ -44,15 +44,15 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
             return await ReadResponse<DnsRecord>(response);
         }
 
-        public async Task<CloudFlareResponse<DnsRecord>> UpdateDnsRecord(string zoneId, string recordId, DnsRecordType type, string name, string content, bool proxied)
+        public async Task<CloudFlareResponse<DnsRecord>?> UpdateDnsRecord(string zoneId, string recordId, DnsRecordType type, string name, string content, bool proxied)
         {
             var body = new
             {
                 type = type.ToString(),
-                name = name,
-                content = content,
+                name,
+                content,
                 ttl = 1,
-                proxied = proxied,
+                proxied,
             };
 
             using var response = await _client.PutAsJsonAsync($"zones/{zoneId}/dns_records/{recordId}", body);
@@ -72,7 +72,7 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
             response.EnsureSuccessStatusCode();
         }
 
-        private async Task<CloudFlareResponse<T>> ReadResponse<T>(HttpResponseMessage response)
+        private static async Task<CloudFlareResponse<T>?> ReadResponse<T>(HttpResponseMessage response)
         {
             return await response.Content.ReadFromJsonAsync<CloudFlareResponse<T>>(new System.Text.Json.JsonSerializerOptions
             {

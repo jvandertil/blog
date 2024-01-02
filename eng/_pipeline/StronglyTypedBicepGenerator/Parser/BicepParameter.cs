@@ -6,10 +6,16 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator.Parser
 
         public BicepDataType DataType { get; }
 
-        public BicepParameter(string name, BicepDataType dataType)
+        public bool Required { get; }
+
+        public bool IsSecret { get; }
+
+        public BicepParameter(string name, BicepDataType dataType, bool required, bool isSecret)
         {
             Name = name;
             DataType = dataType;
+            Required = required;
+            IsSecret = isSecret;
         }
     }
 }

@@ -71,34 +71,34 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator.Parser
 
         private static IEnumerable<BicepParameter> ParseParameters(string contents)
         {
-            var matches = Regex.Matches(contents, "^param (\\w+) (\\w+).*$", RegexOptions.Multiline);
+            var matches = Regex.Matches(contents, "^(?:(\\s*@secure\\(\\))[\\s\\S]*?)?^param (\\w+) (\\w+)( ?= ?.*)?\\s*$", RegexOptions.Multiline);
 
             if (matches.Count > 0)
             {
                 for (int i = 0; i < matches.Count; ++i)
                 {
                     var match = matches[i];
-                    var name = match.Groups[1].Value;
-                    var type = match.Groups[2].Value;
+                    var secret = match.Groups[1].Success;
+                    var name = match.Groups[2].Value;
+                    var type = match.Groups[3].Value;
+                    var required = !match.Groups[4].Success;
 
-                    yield return new BicepParameter(name, ParseDataType(type));
+                    yield return new BicepParameter(name, ParseDataType(type), required, secret);
                 }
             }
         }
 
         private static BicepDataType ParseDataType(string type)
         {
-            switch (type.ToUpperInvariant())
+            return type.ToUpperInvariant() switch
             {
-                case "BOOL":
-                    return BicepDataType.Bool;
-                case "STRING":
-                    return BicepDataType.String;
-                case "INT":
-                    return BicepDataType.Integer;
-                default:
-                    throw new InvalidOperationException($"Unsupported Bicep type: {type}.");
-            }
+                "BOOL" => BicepDataType.Bool,
+                "STRING" => BicepDataType.String,
+                "INT" => BicepDataType.Integer,
+                "ARRAY" => BicepDataType.Array,
+
+                _ => throw new InvalidOperationException($"Unsupported Bicep type: {type}."),
+            };
         }
     }
 }

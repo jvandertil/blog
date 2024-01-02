@@ -1,5 +1,6 @@
-﻿//HintName: NewStronglyTypedBicepGeneratorTests.Generated.cs
+﻿//HintName: StronglyTypedBicepGeneratorTests.Generated.cs
 #nullable disable
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using Nuke.Common.Tooling;
@@ -43,10 +44,10 @@ namespace BicepTests
             [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             public class InputOnlyParameters
             {
-                public string environment { get; set; }
-                public string tag { get; set; }
-                public int someNumber { get; set; }
-                public bool someBool { get; set; }
+                public required string environment { get; init; }
+                public string tag { get; init; }
+                public required int someNumber { get; init; }
+                public required bool someBool { get; init; }
             }
         }
     }

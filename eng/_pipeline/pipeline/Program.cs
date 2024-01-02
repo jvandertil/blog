@@ -19,13 +19,13 @@ namespace Vandertil.Blog.Pipeline
         ///   - Microsoft VSCode           https://nuke.build/vscode
 
         [Parameter("Deploy only - The environment that is being deployed.")]
-        public Environment Environment { get; set; }
+        public Environment? Environment { get; set; }
 
         [Parameter("Deploy only - The API key for CloudFlare.", Name = "CloudflareApiKey")]
-        public string CloudFlareApiKey { get; set; }
+        public string? CloudFlareApiKey { get; set; }
 
         [Parameter("Deploy only - The zone id this blog is hosted on in CloudFlare.", Name = "CloudflareZoneId")]
-        public string CloudFlareZoneId { get; set; }
+        public string? CloudFlareZoneId { get; set; }
 
         public static int Main() => Execute<Program>(x => x.Build);
 
@@ -73,8 +73,8 @@ namespace Vandertil.Blog.Pipeline
                 await UploadBlogContentAsync(deployment);
                 EnableStaticWebsite();
 
-                using var client = new CloudFlareClient(CloudFlareApiKey);
-                await client.PurgeZoneCache(CloudFlareZoneId);
+                using var client = new CloudFlareClient(CloudFlareApiKey!);
+                await client.PurgeZoneCache(CloudFlareZoneId!);
 
                 string ipAddress = await GetCurrentIpAddressAsync();
                 using (AzFunctionApp.CreateTemporaryScmFirewallRule(ResourceGroup, deployment.FunctionAppName, ipAddress))
@@ -97,7 +97,7 @@ namespace Vandertil.Blog.Pipeline
 
                 try
                 {
-                    await AzStorage.SyncFolderToContainerAsync(contentPath / Environment, ResourceGroup, deployment.StorageAccountName, "$web");
+                    await AzStorage.SyncFolderToContainerAsync(contentPath / Environment!, ResourceGroup, deployment.StorageAccountName, "$web");
                     uploaded = true;
                 }
                 catch
@@ -116,19 +116,19 @@ namespace Vandertil.Blog.Pipeline
 
         private async Task CreateOrUpdateCNameRecordAsync(string name, string content, bool proxied)
         {
-            using var client = new CloudFlareClient(CloudFlareApiKey);
-            var records = await client.ListDnsRecords(CloudFlareZoneId);
+            using var client = new CloudFlareClient(CloudFlareApiKey!);
+            var records = await client.ListDnsRecords(CloudFlareZoneId!);
 
-            if (records.Success)
+            if (records is not null && records.Success)
             {
                 var record = records.Result.SingleOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
-                if (record is null)
+                if (record is null || record.Id is null)
                 {
-                    await client.CreateDnsRecord(CloudFlareZoneId, DnsRecordType.CNAME, name, content, proxied);
+                    await client.CreateDnsRecord(CloudFlareZoneId!, DnsRecordType.CNAME, name, content, proxied);
                 }
                 else
                 {
-                    await client.UpdateDnsRecord(CloudFlareZoneId, record.Id, DnsRecordType.CNAME, name, content, proxied);
+                    await client.UpdateDnsRecord(CloudFlareZoneId!, record.Id, DnsRecordType.CNAME, name, content, proxied);
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace Vandertil.Blog.Pipeline
 
             var deployment = AzCli.DeployTemplate<Bicep.Deployments.Blog>(InfraDirectory / "blog.bicep", ResourceGroup, new Bicep.Parameters.BlogParameters
             {
-                env = Environment,
+                env = Environment!,
                 location = AzureLocation,
             });
 

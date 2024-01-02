@@ -1,1 +1,1 @@
-output appServiceName string = appService.nam
+output appServiceName string = appService.name

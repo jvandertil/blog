@@ -1,5 +1,6 @@
-﻿//HintName: NewStronglyTypedBicepGeneratorTests.Generated.cs
+﻿//HintName: StronglyTypedBicepGeneratorTests.Generated.cs
 #nullable disable
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using Nuke.Common.Tooling;
@@ -145,17 +146,6 @@ namespace BicepTests
             }
         }
 
-        [System.CodeDom.Compiler.GeneratedCode("StronglyTypedBicepGenerator", "1.0.0.0")]
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        public static class Parameters
-        {
-
-            [System.CodeDom.Compiler.GeneratedCode("StronglyTypedBicepGenerator", "1.0.0.0")]
-            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-            public class TemplateWithModuleParameters
-            {
-            }
-        }
     }
 }
 #nullable restore

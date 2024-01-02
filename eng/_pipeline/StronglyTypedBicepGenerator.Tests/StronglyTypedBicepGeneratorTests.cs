@@ -13,10 +13,12 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator.Tests;
 public class StronglyTypedBicepGeneratorTests : VerifyBase
 {
     [TestMethod]
+
     public Task EmitsAttributeClass()
     {
         return Verify($$"""
-            using BicepGenerator;
+            using Vandertil.BicepGenerator;
+            
             namespace BicepTests
             {
                 public static partial class Bicep
@@ -30,7 +32,7 @@ public class StronglyTypedBicepGeneratorTests : VerifyBase
     public Task EmitsNamedDeploymentWithOutputs()
     {
         return Verify($$"""
-            using BicepGenerator;
+            using Vandertil.BicepGenerator;
             namespace BicepTests
             {
                 [BicepFile("{{TestFile("outputOnly.bicep")}}")]
@@ -47,7 +49,7 @@ public class StronglyTypedBicepGeneratorTests : VerifyBase
         return Verify($$"""
             namespace BicepTests
             {
-                [BicepGenerator.BicepFile("{{TestFile("outputOnly.bicep")}}")]
+                [Vandertil.BicepGenerator.BicepFile("{{TestFile("outputOnly.bicep")}}")]
                 public static partial class Bicep
                 {
                 }
@@ -59,7 +61,7 @@ public class StronglyTypedBicepGeneratorTests : VerifyBase
     public Task EmitsParametersWithInputs()
     {
         return Verify($$"""
-            using BicepGenerator;
+            using Vandertil.BicepGenerator;
             namespace BicepTests
             {
                 [BicepFile("{{TestFile("inputOnly.bicep")}}")]
@@ -74,7 +76,7 @@ public class StronglyTypedBicepGeneratorTests : VerifyBase
     public Task EmitsModulesAsSeparateDeployments()
     {
         return Verify($$"""
-            using BicepGenerator;
+            using using Vandertil.BicepGenerator;
             namespace BicepTests
             {
                 [BicepFile("{{TestFile("templateWithModule.bicep")}}")]
@@ -111,6 +113,10 @@ public class StronglyTypedBicepGeneratorTests : VerifyBase
         driver = driver.RunGenerators(compilation);
 
         var verifierSettings = new VerifySettings();
+        verifierSettings.ScrubLinesWithReplace(line => line.Contains("StronglyTypedBicepGeneratorTests.cs") ? line.Replace(Path.DirectorySeparatorChar, '/') : line);
+        verifierSettings.ScrubLinesWithReplace(line => line.Replace(
+            @$"GeneratedCode(""StronglyTypedBicepGenerator"", ""{generator.GetType().Assembly.GetName().Version}"")",
+            @"GeneratedCode(""StronglyTypedBicepGenerator"", ""1.0.0.0"")"));
 
         return Verify(driver, verifierSettings);
     }

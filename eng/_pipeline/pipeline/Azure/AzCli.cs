@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 
@@ -16,28 +17,34 @@ namespace Vandertil.Blog.Pipeline.Azure
             return output.EnsureOnlyStd().First().Text.Trim();
         }
 
-        public static void DeployTemplate(AbsolutePath templateFile, string resourceGroup, object parametersObj = null)
+        public static void DeployTemplate(AbsolutePath templateFile, string resourceGroup, object? parametersObj = null)
         {
-            var commandBuilder = new StringBuilder($"deployment group create --mode Complete --template-file {templateFile} --resource-group {resourceGroup}");
+            ArgumentStringHandler command = $"deployment group create --mode Complete --template-file {templateFile} --resource-group {resourceGroup}";
 
             if (parametersObj is not null)
             {
-                var parameters = parametersObj
-                    .GetType()
+                var parameterObjType = parametersObj.GetType();
+
+                var parameters = parameterObjType
                     .GetProperties()
                     .ToDictionary(x => x.Name, x => x.GetValue(parametersObj, null));
 
-                commandBuilder.Append(" --parameters ");
+                command.AppendLiteral(" --parameters ");
 
-                foreach (var entry in parameters)
+                var nonEmptyParameters = parameters.Where(x => !(x.Value is null or ""));
+                foreach (var entry in nonEmptyParameters)
                 {
-                    commandBuilder.Append(entry.Key).Append('=').Append(FormattableString.Invariant($"{entry.Value} "));
+                    bool isSecret = parameterObjType.GetProperty(entry.Key)?.GetCustomAttribute<BicepGenerator.SecretAttribute>() is not null;
+
+                    command.AppendLiteral(entry.Key);
+                    command.AppendLiteral("=");
+                    AppendFormatted(entry.Value, ref command, isSecret ? "r" : null);
                 }
             }
 
             try
             {
-                Az(commandBuilder.ToString());
+                Az(command);
             }
             catch
             {
@@ -47,11 +54,39 @@ namespace Vandertil.Blog.Pipeline.Azure
             }
         }
 
-        public static TDeployment DeployTemplate<TDeployment>(AbsolutePath templateFile, string resourceGroup, object parametersObj = null)
+        public static TDeployment DeployTemplate<TDeployment>(AbsolutePath templateFile, string resourceGroup, object? parametersObj = null)
         {
             DeployTemplate(templateFile, resourceGroup, parametersObj);
 
-            return (TDeployment)Activator.CreateInstance(typeof(TDeployment), new object[] { resourceGroup });
+            return (TDeployment)Activator.CreateInstance(typeof(TDeployment), new object[] { resourceGroup })!;
+        }
+
+        private static void AppendFormatted(object? value, ref ArgumentStringHandler handler, string? format)
+        {
+            if (value is string)
+            {
+                // Special case string as it is an IEnumerable<char> as well.
+                handler.AppendFormatted(value, format: format);
+            }
+            else if (value is IEnumerable enumerable)
+            {
+                var arrayArgument = FormatArrayValue(enumerable);
+                handler.AppendFormatted(arrayArgument, format: format);
+            }
+            else
+            {
+                handler.AppendFormatted(value, format: format);
+            }
+        }
+
+        private static string FormatArrayValue(IEnumerable enumerable)
+        {
+            var values = enumerable
+                .Cast<object>()
+                .Select(item => FormattableString.Invariant($"'{item}'"));
+
+            var formattedValues = string.Join(",", values);
+            return $"[{formattedValues}]";
         }
     }
 }
