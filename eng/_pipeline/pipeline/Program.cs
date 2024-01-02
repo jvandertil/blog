@@ -12,12 +12,6 @@ namespace Vandertil.Blog.Pipeline
     {
         private const string AzureLocation = "westeurope";
 
-        /// Support plugins are available for:
-        ///   - JetBrains ReSharper        https://nuke.build/resharper
-        ///   - JetBrains Rider            https://nuke.build/rider
-        ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
-        ///   - Microsoft VSCode           https://nuke.build/vscode
-
         [Parameter("Deploy only - The environment that is being deployed.")]
         public Environment? Environment { get; set; }
 
@@ -159,7 +153,7 @@ namespace Vandertil.Blog.Pipeline
         {
             var deployment = new Bicep.Deployments.Blog(ResourceGroup);
 
-            AzCli.Az($"storage account update --name {deployment.StorageAccountName} --custom-domain {CustomDomain} --use-subdomain true --default-action Deny");
+            AzCli.Az($"storage account update --name {deployment.StorageAccountName} --custom-domain {CustomDomain} --use-subdomain true --default-action Deny --allow-blob-public-access true");
             AzCli.Az($"storage blob service-properties update --auth-mode login --account-name {deployment.StorageAccountName} --static-website true --404-document 404.html --index-document index.html");
         }
     }

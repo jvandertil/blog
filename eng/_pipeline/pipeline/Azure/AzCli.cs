@@ -39,6 +39,7 @@ namespace Vandertil.Blog.Pipeline.Azure
                     command.AppendLiteral(entry.Key);
                     command.AppendLiteral("=");
                     AppendFormatted(entry.Value, ref command, isSecret ? "r" : null);
+                    command.AppendLiteral(" ");
                 }
             }
 
