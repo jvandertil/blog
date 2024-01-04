@@ -12,78 +12,97 @@ function showElement(element) {
     element.setAttribute("aria-hidden", "false")
 }
 
-var highlightFields = function (response) {
-    $('.form-field').removeClass('is-invalid');
+function highlightFields(response) {
+    for (const field of document.getElementsByClassName('.form-field')) {
+        field.classList.remove('is-invalid');
+    }
 
-    $.each(response, function (index, val) {
-        var propName = val.memberName;
-        var nameSelector = '[name = "' + propName.replace(/(:|\.|\[|\])/g, "\\$1") + '"]',
+    for (const val of response) {
+        let propName = val.memberName;
+        let nameSelector = '[name = "' + propName.replace(/(:|\.|\[|\])/g, "\\$1") + '"]',
             idSelector = '#' + propName.replace(/(:|\.|\[|\])/g, "\\$1");
-        var $el = $(nameSelector) || $(idSelector);
+
+        let element = document.querySelector(nameSelector) || document.getElementById(idSelector);
 
         if (val.errorMessage.length > 0) {
-            $el.addClass('is-invalid');
+            element.classList.add('is-invalid');
         }
-    });
-};
-
-var highlightErrors = function (xhr) {
-    try {
-        var data = JSON.parse(xhr.responseText);
-        highlightFields(data);
-        //showSummary(data);
-        //window.scrollTo(0, 0);
-    } catch (e) {
     }
 };
 
-function showSuccessAlert() {
-    var alertElement = document.getElementById('comment-success-alert');
+function highlightErrors(response) {
+    try {
+        let data = response.json();
+        data.then(e => highlightFields(e));
+    } catch (e) {
+        console.log("error deserializing json response.");
+    }
+};
+
+function showAlert(alertId) {
+    let alertElement = document.getElementById(alertId);
 
     showElement(alertElement);
-    document.getElementById('comment-success-alert').scrollIntoView({ behavior: 'smooth' });
+    alertElement.scrollIntoView({ behavior: 'smooth' });
 }
 
-function hideSuccessAlert() {
-    var alertElement = document.getElementById('comment-success-alert');
-
+function hideAlert(alertId) {
+    let alertElement = document.getElementById(alertId);
     hideElement(alertElement);
 }
 
-function handleSuccess(form) {
-    $(form).find("input[type=text], textarea").val("");
+for (const f of document.getElementsByTagName("form")) {
+    if (f.method !== "post" || f.classList.contains("no-ajax")) {
+        continue;
+    }
 
-    showSuccessAlert();
-}
+    f.addEventListener("submit", e => {
+        e.stopPropagation();
+        e.preventDefault();
 
-$('form[method=post]').not('.no-ajax').on('submit', function () {
-    var submitBtn = $(this).find('[type="submit"]');
+        let submitBtn = e.submitter;
+        let form = e.target;
+        let data = new FormData(form);
 
-    submitBtn.prop('disabled', true);
-    $(window).unbind();
+        submitBtn.disabled = true;
 
-    var $this = $(this);
-    var formData = $this.serialize();
+        for (let e of form.querySelectorAll('.is-invalid')) {
+            e.classList.remove('is-invalid');
+        }
 
-    $this.find('.is-invalid').removeClass('is-invalid');
-    hideSuccessAlert();
+        hideAlert('comment-success-alert');
+        hideAlert('comment-failure-alert');
+        hideAlert('comment-validation-alert');
 
-    $this.find(".submitSpinner").removeClass("d-none");
+        showElement(submitBtn.querySelector('.submitSpinner'));
 
-    $.ajax({
-        url: $this.attr('action'),
-        type: 'post',
-        data: formData,
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    }).fail(highlightErrors)
-        .done(function () { handleSuccess($this); })
-        .always(function () {
-            submitBtn.prop('disabled', false);
-            $this.find(".submitSpinner").addClass("d-none");
+        fetch(form.action, {
+            method: 'post',
+            body: data
         })
-
-    return false;
-});
+            .then(response => {
+                if (response.status === 200) {
+                    form.reset();
+                    showAlert('comment-success-alert');
+                } else if (response.status === 400) {
+                    highlightErrors(response);
+                    showAlert('comment-validation-alert');
+                } else {
+                    // Generic error message.
+                    console.log("request failed with status: " + response.status);
+                    showAlert('comment-failure-alert');
+                }
+            })
+            .catch(e => {
+                console.log("request failed with error: " + e);
+                showAlert('comment-failure-alert');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                hideElement(submitBtn.querySelector('.submitSpinner'));
+            });
+    })
+}
 
 function toggleForm(id) {
     var form = document.getElementById(id);

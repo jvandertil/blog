@@ -33,6 +33,16 @@
                 <b>NOTE:</b> Your comment may take a while to appear because comments are moderated.
             </div>
 
+            <div id="comment-failure-alert" class="alert alert-danger fade show d-none" aria-hidden="true">
+                <p><b>OOPS:</b> Your comment has not been submitted. </p>
+                Looks like something went wrong submitting your comment. Please report this on <a href="{{ .Site.Params.githubRepoUrl }}">GitHub</a>.
+            </div>
+
+            <div id="comment-validation-alert" class="alert alert-danger fade show d-none" aria-hidden="true">
+                <p><b>OOPS:</b> Your comment has not been submitted. </p>
+                Looks like you have some validation errors. Please fill in all fields.
+            </div>
+
             <div class="post-add-comment-form">
                 <!-- This variable is also in the blog-comment partial. -->
                 {{ $commentHookUrl := site.Params.CommentHookUrl }}

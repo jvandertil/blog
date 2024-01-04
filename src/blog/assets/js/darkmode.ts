@@ -101,7 +101,7 @@ namespace Darkmode {
         public get(): boolean {
             var enabled = localStorage.getItem(this.key);
 
-            return enabled && enabled === this.trueLiteral;
+            return enabled === this.trueLiteral;
         }
     }
 
