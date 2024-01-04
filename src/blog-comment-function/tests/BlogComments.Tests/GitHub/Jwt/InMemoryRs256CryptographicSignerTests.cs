@@ -44,7 +44,7 @@ vJZcnFq2CZ2CpfhEDOoRbIBs1+l8ktaAZJBr6o2KUPUE2AzkHNfZeHjZ/6AXmKuy
 
             var signer = new InMemoryRs256CryptographicSigner(PemPrivateKeyConverter.ExtractRsaPrivateKey(privateKey));
 
-            var signature = signer.CalculateSignature(new byte[0]);
+            var signature = signer.CalculateSignature([]);
             var signatureBase64 = Convert.ToBase64String(signature);
 
             Assert.Equal(expectedSignature, signatureBase64);

@@ -14,19 +14,11 @@ Zm9v
 YmFy
 -----END RSA PRIVATE KEY-----
 ";
-            var expected = new byte[]
-            {
-                (byte)'f',
-                (byte)'o',
-                (byte)'o',
-                (byte)'b',
-                (byte)'a',
-                (byte)'r',
-            };
+            var expected = "foobar"u8;
 
             ReadOnlyMemory<byte> result = PemPrivateKeyConverter.ExtractRsaPrivateKey(input);
 
-            Assert.Equal(expected, result.ToArray());
+            Assert.Equal(expected, result.Span);
         }
     }
 }
