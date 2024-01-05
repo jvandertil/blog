@@ -19,7 +19,7 @@
 </ul>
 <p>
     {{ if eq .Page.Params.Type "post" }}
-    <small>Notice an error or mistake? Suggest an <a href="{{ .Site.Params.githubRepoUrl }}/edit/{{ .Site.Params.githubMainBranch }}/content/{{ replace .Page.File.Path "\\" "/" }}">edit</a>.</small>
+    <small>Notice an error or mistake? Suggest an <a href="{{ .Site.Params.githubRepoUrl }}/edit/{{ .Site.Params.githubMainBranch }}/src/blog/content/{{ replace .Page.File.Path "\\" "/" }}">edit</a>.</small>
     {{ end }}
 </p>
 
