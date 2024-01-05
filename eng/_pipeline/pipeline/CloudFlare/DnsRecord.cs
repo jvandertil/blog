@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Vandertil.Blog.Pipeline.CloudFlare
 {
     public class DnsRecord
@@ -8,7 +6,6 @@ namespace Vandertil.Blog.Pipeline.CloudFlare
 
         public string? Name { get; set; }
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public DnsRecordType Type { get; set; }
 
         public string? Content { get; set; }

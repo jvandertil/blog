@@ -8,7 +8,7 @@ namespace Vandertil.Blog.Pipeline
 {
     public interface IBlogContentPipeline : IProvideArtifactsDirectory, IProvideSourceDirectory
     {
-        private const string HugoVersion = "0.111.2";
+        private const string HugoVersion = "0.121.1";
 
         private AbsolutePath ContentSourceDirectory => SourceDirectory / "blog";
 
@@ -48,6 +48,8 @@ namespace Vandertil.Blog.Pipeline
 
             if (!destinationFile.Exists())
             {
+                Serilog.Log.Information("Restoring Hugo binary.");
+
                 await HttpTasks.HttpDownloadFileAsync(HugoReleaseUrl, destinationFile, clientConfigurator: client => { client.Timeout = TimeSpan.FromSeconds(30); return client; }, headerConfigurator: headers => headers.Add("User-Agent", "jvandertil/blog build script"));
                 destinationFile.UncompressTo(destinationFile.Parent);
 

@@ -1,5 +1,8 @@
-﻿namespace Vandertil.Blog.Pipeline.CloudFlare
+using System.Text.Json.Serialization;
+
+namespace Vandertil.Blog.Pipeline.CloudFlare
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DnsRecordType
     {
         A,

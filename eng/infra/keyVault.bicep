@@ -1,5 +1,4 @@
 param name string
-param ipRules array
 
 param location string = resourceGroup().location
 
@@ -15,10 +14,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
 
     networkAcls: {
       bypass: 'None'
-      defaultAction: 'Deny'
-      ipRules: [for ip in ipRules: {
-        value: ip
-      }]
+      defaultAction: 'Allow' // Function app can use more ip addresses than we can configure. Alternative is to whitelist the entire Azure region.
     }
 
     tenantId: tenant().tenantId

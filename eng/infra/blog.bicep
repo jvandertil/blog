@@ -58,7 +58,6 @@ module keyVault 'keyVault.bicep' ={
   name: 'keyVault'
   params: {
     name: kvName
-    ipRules: split(functionApp.properties.possibleOutboundIpAddresses, ',')
     location: location
   }
 }

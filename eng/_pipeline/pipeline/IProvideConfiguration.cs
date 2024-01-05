@@ -1,5 +1,4 @@
 using Nuke.Common;
-using Nuke.Common.ValueInjection;
 
 namespace Vandertil.Blog.Pipeline
 {
