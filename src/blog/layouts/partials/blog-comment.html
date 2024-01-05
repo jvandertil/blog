@@ -21,11 +21,14 @@
         {{ .content | markdownify | replaceRE "(<table>(?:.|\n)+?</table>)" $wrappedTable | safeHTML }}
     </div>
     <div class="comment-footer">
-        <button title="Reply" class="reply-button" onclick="toggleForm('form-reply-{{.id}}')"><small>Reply</small></button>
+        {{ $replyFormId := printf "form-reply-%s" .id }}
+        {{ $replyFormButtonId := printf "btn-form-reply-%s" .id }}
+        
+        <button id="{{ $replyFormButtonId }}" title="Reply" class="reply-button" type="button" ><small>Reply</small></button>
         <div class="post-reply-comment-form">
             <!-- This variable is also in the layout for single. -->
             {{ $commentHookUrl := site.Params.CommentHookUrl }}
-            <form id="form-reply-{{.id}}" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
+            <form id="{{$replyFormId}}" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
                 <div class="form-field">
                     <label for="displayName">Display name:</label>
                     <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" required />
@@ -42,6 +45,9 @@
                 </button>
             </form>
         </div>
+        <script type="text/javascript">
+            new CommentForm.CommentReplyForm("{{$replyFormId}}", "{{ $replyFormButtonId }}");
+        </script>
     </div>
 </blockquote>
 

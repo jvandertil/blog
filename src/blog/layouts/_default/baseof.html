@@ -26,6 +26,12 @@
     {{ $darkmodeJs := resources.Get "js/darkmode.ts" | js.Build | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $darkmodeJs.Permalink }}" integrity="{{ $darkmodeJs.Data.Integrity }}"></script>
 
+    {{ if eq .Params.Type "post" }}
+    <!-- For posts include scripts for comment forms -->
+    {{ $commentFormJs := resources.Get "js/comment-form.ts" | js.Build (dict "format" "cjs") | resources.Minify | resources.Fingerprint }}
+    <script type="text/javascript" src="{{ $commentFormJs.Permalink }}" integrity="{{ $commentFormJs.Data.Integrity }}"></script>
+    {{ end }}
+
     <header>
         <nav>
             <a class="navbar-brand" href="{{ $.Site.BaseURL }}">{{ .Site.Params.title }}</a>
