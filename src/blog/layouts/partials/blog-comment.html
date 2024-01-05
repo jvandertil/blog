@@ -28,7 +28,7 @@
         <div class="post-reply-comment-form">
             <!-- This variable is also in the layout for single. -->
             {{ $commentHookUrl := site.Params.CommentHookUrl }}
-            <form id="{{$replyFormId}}" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
+            <form id="{{ $replyFormId }}" method="post" action="{{ strings.TrimSuffix "/" $commentHookUrl }}/api/v1/posts/{{ $postName }}/comment/{{ $thread }}/reply/{{ .id }}" class="reply-form d-none" aria-hidden="true">
                 <div class="form-field">
                     <label for="displayName">Display name:</label>
                     <input id="displayName" name="DisplayName" type="text" placeholder="Display name" title="Name displayed with your comment" required />
@@ -46,7 +46,7 @@
             </form>
         </div>
         <script type="text/javascript">
-            new CommentForm.CommentReplyForm("{{$replyFormId}}", "{{ $replyFormButtonId }}");
+            new CommentForm.CommentReplyForm("{{ $replyFormId }}", "{{ $replyFormButtonId }}");
         </script>
     </div>
 </blockquote>
