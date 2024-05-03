@@ -68,13 +68,8 @@ internal class MsTestLogger : ILogger
 
     private void WriteLog(string message)
     {
-        bool writtenWithinTimeout = SpinWait.SpinUntil(() => _logs.TryWrite(message), TimeSpan.FromSeconds(1));
-
-        if (!writtenWithinTimeout)
-        {
-            // Since we created an unbounded channel we don't expect this to fail, but if it does we want to know.
-            throw new TimeoutException("Timed out while writing to log channel.");
-        }
+        // Since we use an unbounded channel, this will only fail if the channel is closed.
+        _logs.TryWrite(message);
     }
 
     /// <summary>
@@ -182,3 +177,5 @@ internal class MsTestLoggerFactory : ILoggerFactory
 In Visual Studio the output will be shown in the 'Test Details' window, example screenshot below.
 
 {{< figure src="screenshot.png" alt="Partial screenshot of the Test Details window showing captured logging.">}}
+
+*Update 03-05-2024: Removed SpinWait in writing logs as this is not needed.*
