@@ -1,4 +1,4 @@
-{{ $dark := resources.Get "css/prism-vs-dark.scss" | resources.ToCSS (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
+{{ $dark := resources.Get "css/prism-vs-dark.scss" | css.Sass (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
 <link rel="stylesheet"
       href="{{ $dark.Permalink }}"
       integrity="{{ $dark.Data.Integrity }}"

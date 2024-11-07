@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
 
     <!-- Custom stlylesheet -->
-    {{ $style := resources.Get "dist/404.css" | resources.ToCSS (dict "targetPath" "css/404.css")  | resources.Minify | resources.Fingerprint }}
+    {{ $style := resources.Get "dist/404.css" | css.Sass (dict "targetPath" "css/404.css")  | resources.Minify | resources.Fingerprint }}
     <link type="text/css" rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
 </head>
 
