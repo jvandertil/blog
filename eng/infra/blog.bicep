@@ -124,7 +124,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   }
 }
 
-resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
+resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
   name: 'fa-${appName}-${env}'
   location: location
   kind: 'functionapp,linux'
@@ -201,6 +201,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       ]
 
       minTlsVersion: '1.2'
+      minTlsCipherSuite: 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
       scmMinTlsVersion: '1.2'
       ftpsState: 'Disabled'
       http20Enabled: true
