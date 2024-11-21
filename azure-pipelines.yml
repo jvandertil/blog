@@ -19,11 +19,8 @@ stages:
   jobs:
   - job: Build
     steps: 
-      - task: UseDotNet@2
-        displayName: Ensure latest .NET SDK available
-        inputs:
-          packageType: sdk
-          version: 8.x
+      - template: eng/azure-devops/steps/ensure-dotnet.yml
+
       - pwsh: |
           .\build.ps1 --target Clean Build
         displayName: Execute Nuke build
@@ -66,17 +63,13 @@ stages:
           - download: none
           - checkout: self
 
+          - template: eng/azure-devops/steps/ensure-dotnet.yml
+
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
               artifactName: 'build'
               targetPath: './artifacts'
-
-          - task: UseDotNet@2
-            displayName: Ensure latest .NET SDK available
-            inputs:
-              packageType: sdk
-              version: 8.x
 
           - task: AzureCLI@2
             displayName: 'Run deployment script'

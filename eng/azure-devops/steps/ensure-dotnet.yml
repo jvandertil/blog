@@ -1,0 +1,6 @@
+steps:
+  - task: UseDotNet@2
+    displayName: Ensure .NET SDK available
+    inputs:
+      packageType: sdk
+      version: 9.x
