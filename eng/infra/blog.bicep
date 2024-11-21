@@ -38,7 +38,7 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = 
       ipRules: [for range in cloudFlareIps: {
         value: range
         action: 'Allow'
-      }] 
+      }]
     }
 
     // customDomain is configured later in the pipeline
@@ -137,7 +137,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       use32BitWorkerProcess: false
       linuxFxVersion: 'DOTNET-ISOLATED|9.0'
 
-      appSettings: concat([
+      appSettings: [
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
@@ -188,7 +188,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
         }
         {
           name: 'GitHub__EnablePullRequestCreation'
-          value: env == 'prd'
+          value: string(env == 'prd')
         }
         {
           name: 'KeyVault__Url'
@@ -198,7 +198,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
           name: 'KeyVault__KeyName'
           value: 'jvandertil-blog-bot'
         }
-      ])
+      ]
 
       minTlsVersion: '1.2'
       scmMinTlsVersion: '1.2'

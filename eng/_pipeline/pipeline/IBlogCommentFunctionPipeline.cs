@@ -42,6 +42,7 @@ namespace Vandertil.Blog.Pipeline
                     .SetConfiguration(Configuration)
                     .SetProject(FunctionSourceDirectory / "BlogComments" / "BlogComments.csproj")
                     .SetOutput(artifactsPath)
+                    .EnableSelfContained()
                     .SetRuntime("linux-x64"));
 
                 artifactsPath.CompressTo(ArtifactsDirectory / "blog-comments-function.zip");
