@@ -117,8 +117,14 @@ namespace BlogComments.Functions.Persistence
             var comment = MapComment(contents);
 
             // Create branch
-            var baseBranch = await github.Git.Reference.Get(username, repositoryName, "heads/main");
-            var branchRef = await github.Git.Reference.CreateBranch(username, repositoryName, "blog-bot/comment/post/" + postName + "/" + comment.Id, baseBranch);
+            var repository = await github.Repository.Get(username, repositoryName);
+
+            var baseBranch = await github.Git.Reference.Get(repository.Id, "heads/main");
+            var branchRef = await github.Git.Reference.CreateBranch(
+                username,
+                repositoryName,
+                "blog-bot/comment/post/" + postName + "/" + comment.Id,
+                baseBranch);
 
             string content = SerializeComment(comment);
 
@@ -132,8 +138,6 @@ namespace BlogComments.Functions.Persistence
 
             if (settings.EnablePullRequestCreation)
             {
-                var repository = await github.Repository.Get(username, repositoryName);
-
                 await github.Repository.PullRequest.Create(username, repositoryName, new NewPullRequest(file.Message, branchRef.Ref, repository.DefaultBranch));
             }
         }
