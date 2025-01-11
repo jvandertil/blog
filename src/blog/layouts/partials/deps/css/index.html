@@ -3,6 +3,6 @@
 {{ $style := resources.Get "css/main.scss" | css.Sass (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
 <link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.1/css/all.min.css"
-      integrity="sha256-Mg1XLfuETnFSSAt7YjdCNsSJbMyjrJ1puwPzvCA0rLg="
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"
+      integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo="
       crossorigin="anonymous">
