@@ -201,7 +201,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
       ]
 
       minTlsVersion: '1.2'
-      minTlsCipherSuite: 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
+      minTlsCipherSuite: 'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
       scmMinTlsVersion: '1.2'
       ftpsState: 'Disabled'
       http20Enabled: true
