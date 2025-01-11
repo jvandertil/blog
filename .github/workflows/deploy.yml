@@ -53,6 +53,7 @@ jobs:
             tdnf install -y gawk
             tdnf install -y tar
             tdnf install -y icu
+            tdnf install -y azcopy
 
             chmod +x $GITHUB_WORKSPACE/build.sh
             $GITHUB_WORKSPACE/build.sh Deploy --environment prd --cloudflare-api-key "$CLOUDFLARE_API_KEY" --cloudflare-zone-id "$CLOUDFLARE_ZONE_ID"          
