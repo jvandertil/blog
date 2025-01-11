@@ -50,9 +50,14 @@ jobs:
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         with: 
           inlineScript: |
+            # Install dependencies for .NET installation script
             tdnf install -y gawk
             tdnf install -y tar
+
+            # Install dependencies for .NET
             tdnf install -y icu
+
+            # Install additional tool dependencies
             tdnf install -y azcopy
 
             chmod +x $GITHUB_WORKSPACE/build.sh
