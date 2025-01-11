@@ -8,6 +8,9 @@ on:
     branches: 
       - main
 
+concurrency: 
+  group: ${{ github.workflow}}-${{ github.ref_name }}
+
 jobs:
   deploy:
     permissions: 
@@ -49,7 +52,8 @@ jobs:
           inlineScript: |
             tdnf install -y gawk
             tdnf install -y tar
-            
+            tdnf install -y icu
+
             chmod +x $GITHUB_WORKSPACE/build.sh
             $GITHUB_WORKSPACE/build.sh Deploy --environment prd --cloudflare-api-key "$CLOUDFLARE_API_KEY" --cloudflare-zone-id "$CLOUDFLARE_ZONE_ID"          
       
