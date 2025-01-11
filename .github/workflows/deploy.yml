@@ -47,6 +47,9 @@ jobs:
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         with: 
           inlineScript: |
+            tdnf install -y gawk
+            tdnf install -y tar
+            
             chmod +x $GITHUB_WORKSPACE/build.sh
             $GITHUB_WORKSPACE/build.sh Deploy --environment prd --cloudflare-api-key "$CLOUDFLARE_API_KEY" --cloudflare-zone-id "$CLOUDFLARE_ZONE_ID"          
       
