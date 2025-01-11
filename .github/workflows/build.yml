@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  NUKE_TELEMETRY_OPTOUT: 1
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: 0 
+
+jobs:
+  build:
+    permissions: 
+      checks: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+      
+      - run: .\build.ps1 --target Clean Build
+        shell: pwsh
+        name: Execute NUKE build
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          comment_mode: off
+          files: |
+            artifacts/TestResults/**/*.trx
+
+      - run: |
+          cd artifacts
+          mkdir drop
+          copy *.zip drop
+        shell: pwsh
+        name:  Prepare artifacts
+
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: artifacts/drop/*
