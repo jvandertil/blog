@@ -15,8 +15,8 @@
     <PackageReference Include="Nuke.Common" Version="9.0.4" />
 
     <PackageReference Include="FluentAssertions" Version="[7.2.0, 8.0.0)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
 
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
@@ -24,7 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Verify.MSTest" Version="28.11.0" />
+    <PackageReference Include="Verify.MSTest" Version="28.13.0" />
     <PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
   </ItemGroup>
 
