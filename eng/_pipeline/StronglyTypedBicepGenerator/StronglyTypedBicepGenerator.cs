@@ -13,37 +13,23 @@ using Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator.Parser;
 namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
 {
     [Generator]
-    public class StronglyTypedBicepGenerator : ISourceGenerator
+    public class StronglyTypedBicepGenerator : IIncrementalGenerator
     {
         internal const string AttributeNamespace = "Vandertil.BicepGenerator";
         internal const string AttributeName = "BicepFileAttribute";
 
-        internal class SyntaxReceiver : ISyntaxReceiver
+        private class BicepToGenerate
         {
-            public List<ClassDeclarationSyntax> DecoratorRequestingClasses { get; } = new();
+            public ClassDeclarationSyntax Class { get; set; } = null!;
 
-            public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-            {
-                if (syntaxNode is ClassDeclarationSyntax cds
-                    && cds.AttributeLists.Any()
-                    && HasBicepLocationAttribute(cds))
-                {
-                    DecoratorRequestingClasses.Add(cds);
-                }
-            }
+            public string FileName { get; set; } = null!;
 
-            private static bool HasBicepLocationAttribute(ClassDeclarationSyntax cds)
-            {
-                return cds.AttributeLists
-                    .SelectMany(x => x.Attributes)
-                    .Select(x => x.Name).OfType<NameSyntax>()
-                    .Any(x => x.ToString() == "BicepFile" || x.ToString() == "Vandertil.BicepGenerator.BicepFile");
-            }
+            public LanguageVersion LanguageVersion { get; set; }
         }
 
-        public void Initialize(GeneratorInitializationContext context)
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            context.RegisterForPostInitialization(i =>
+            context.RegisterPostInitializationOutput(ctx =>
             {
                 var codeWriter = new CodeWriter(LanguageVersion.Default);
 
@@ -74,61 +60,92 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
                         .CloseBlock()
                     .CloseBlock();
 
-                i.AddSource("BicepFileAttribute.Generated", codeWriter.ToString());
+                ctx.AddSource("BicepFileAttribute.Generated", codeWriter.ToString());
             });
-            context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+
+            IncrementalValuesProvider<BicepToGenerate?> enumsToGenerate = context.SyntaxProvider
+                .CreateSyntaxProvider(
+                    predicate: static (s, _) => IsSyntaxTargetForGeneration(s), // select enums with attributes
+                    transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx)) // select enums with the [EnumExtensions] attribute and extract details
+                .Where(static m => m is not null);
+
+            context.RegisterSourceOutput(enumsToGenerate, (spc, source) => Execute(source!, spc));
+
+            static bool IsSyntaxTargetForGeneration(SyntaxNode node)
+                => node is ClassDeclarationSyntax cds && cds.AttributeLists.Count > 0;
+
+            static BicepToGenerate? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
+            {
+                // we know the node is a EnumDeclarationSyntax thanks to IsSyntaxTargetForGeneration
+                var cds = (ClassDeclarationSyntax)context.Node;
+
+                // loop through all the attributes on the method
+                foreach (AttributeListSyntax attributeListSyntax in cds.AttributeLists)
+                {
+                    foreach (AttributeSyntax attributeSyntax in attributeListSyntax.Attributes)
+                    {
+                        if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
+                        {
+                            // weird, we couldn't get the symbol, ignore it
+                            continue;
+                        }
+
+                        INamedTypeSymbol attributeContainingTypeSymbol = attributeSymbol.ContainingType;
+                        string fullName = attributeContainingTypeSymbol.ToDisplayString();
+
+                        // Is the attribute the [EnumExtensions] attribute?
+                        if (fullName == "Vandertil.BicepGenerator.BicepFileAttribute")
+                        {
+                            // return the enum. Implementation shown in section 7.
+                            return new BicepToGenerate
+                            {
+                                Class = cds,
+                                FileName = attributeSyntax.ArgumentList!.Arguments.Single().ToString().Trim('\"'),
+                                LanguageVersion = ((CSharpCompilation)context.SemanticModel.Compilation).LanguageVersion
+                            };
+                        }
+                    }
+                }
+
+                // we didn't find the attribute we were looking for
+                return null;
+            }
         }
 
-        public void Execute(GeneratorExecutionContext context)
+        private void Execute(BicepToGenerate toGenerate, SourceProductionContext spc)
         {
-            if (context.SyntaxReceiver is not SyntaxReceiver receiver)
-            {
-                throw new ArgumentException("Received invalid receiver in Execute step");
-            }
+            var classDefinition = toGenerate.Class;
 
-            if (context.Compilation is not CSharpCompilation comp)
-            {
-                return;
-            }
+            var filePath = classDefinition.SyntaxTree.FilePath;
+            var file = Path.Combine(Path.GetDirectoryName(filePath), toGenerate.FileName);
 
-            foreach (var classDefinition in receiver.DecoratorRequestingClasses)
-            {
-                var filePath = classDefinition.SyntaxTree.FilePath;
+            var bicepFile = BicepParser.ParseFile(file);
 
-                var model = context.Compilation.GetSemanticModel(classDefinition.SyntaxTree);
+            var sourceBuilder = new CodeWriter(toGenerate.LanguageVersion);
+            WriteFileHeaderAndUsings(sourceBuilder);
 
-                var bicepFiles = classDefinition.AttributeLists
-                   .SelectAttribute($"{AttributeNamespace}.{AttributeName}", model)
-                   .Select(x => x.ArgumentList!.Arguments.Single().ToString().Trim('\"'))
-                   .Select(file => Path.Combine(Path.GetDirectoryName(filePath), file))
-                   .Select(BicepParser.ParseFile)
-                   .ToList();
+            OpenNamespace(classDefinition, sourceBuilder);
 
-                var sourceBuilder = new CodeWriter(comp.LanguageVersion);
-                WriteFileHeaderAndUsings(sourceBuilder);
+            OpenContainingClassBlocks(classDefinition, sourceBuilder);
 
-                OpenNamespace(classDefinition, sourceBuilder);
+            WriteDeployments(bicepFile, sourceBuilder);
 
-                OpenContainingClassBlocks(classDefinition, sourceBuilder);
+            WriteParameters(bicepFile, sourceBuilder);
 
-                WriteDeployments(bicepFiles, sourceBuilder);
+            CloseContainingClassBlocks(classDefinition, sourceBuilder);
 
-                WriteParameters(bicepFiles, sourceBuilder);
+            CloseNamespace(classDefinition, sourceBuilder);
 
-                CloseContainingClassBlocks(classDefinition, sourceBuilder);
+            sourceBuilder.AppendLine("#nullable restore");
 
-                CloseNamespace(classDefinition, sourceBuilder);
+            var result = sourceBuilder.ToString();
 
-                sourceBuilder.AppendLine("#nullable restore");
-
-                var result = sourceBuilder.ToString();
-                context.AddSource($"{Path.GetFileNameWithoutExtension(classDefinition.SyntaxTree.FilePath)}.Generated", SourceText.From(result, Encoding.UTF8));
-            }
+            spc.AddSource($"{Path.GetFileNameWithoutExtension(classDefinition.SyntaxTree.FilePath)}.Generated", SourceText.From(result, Encoding.UTF8));
         }
 
-        private static void WriteParameters(List<BicepFile> bicepFiles, CodeWriter sourceBuilder)
+        private static void WriteParameters(BicepFile file, CodeWriter sourceBuilder)
         {
-            if (!bicepFiles.Any(x => x.Parameters.Count > 0))
+            if (file.Parameters.Count == 0)
             {
                 // No bicep file has parameters, skip this.
                 return;
@@ -140,35 +157,32 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
                     .AppendLine("public static class Parameters")
                     .OpenBlock();
 
-            foreach (var file in bicepFiles.OrderBy(x => x.Name))
+            var name = file.Name;
+            var className = name.Replace('-', '_').Pascalize() + "Parameters";
+
+            sourceBuilder
+                .AppendLine()
+                .EmitGeneratedCodeAttribute()
+                .EmitExcludeFromCodeCoverageAttribute()
+                .Append("public class ").AppendLine(className)
+                .OpenBlock();
+
+            foreach (var param in file.Parameters)
             {
-                var name = file.Name;
-                var className = name.Replace('-', '_').Pascalize() + "Parameters";
-
-                sourceBuilder
-                    .AppendLine()
-                    .EmitGeneratedCodeAttribute()
-                    .EmitExcludeFromCodeCoverageAttribute()
-                    .Append("public class ").AppendLine(className)
-                    .OpenBlock();
-
-                foreach (var param in file.Parameters)
+                if (param.IsSecret)
                 {
-                    if (param.IsSecret)
-                    {
-                        sourceBuilder.AppendLine($"[{AttributeNamespace}.Secret]");
-                    }
-
-                    string required = (param.Required && sourceBuilder.LanguageVersion >= LanguageVersion.CSharp11) ? "required " : "";
-                    string setOrInit = (sourceBuilder.LanguageVersion >= LanguageVersion.CSharp9) ? "init" : "set";
-
-                    sourceBuilder
-                        .AppendLine($"public {required}{BicepDataTypeToTypeString(param.DataType)} {param.Name} {{ get; {setOrInit}; }}");
+                    sourceBuilder.AppendLine($"[{AttributeNamespace}.Secret]");
                 }
 
+                string required = (param.Required && sourceBuilder.LanguageVersion >= LanguageVersion.CSharp11) ? "required " : "";
+                string setOrInit = (sourceBuilder.LanguageVersion >= LanguageVersion.CSharp9) ? "init" : "set";
+
                 sourceBuilder
-                    .CloseBlock(); // nested class
+                    .AppendLine($"public {required}{BicepDataTypeToTypeString(param.DataType)} {param.Name} {{ get; {setOrInit}; }}");
             }
+
+            sourceBuilder
+                .CloseBlock(); // nested class
 
             sourceBuilder
                 .CloseBlock();
@@ -226,7 +240,7 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
             return @namespace is not null;
         }
 
-        private static void WriteDeployments(IList<BicepFile> bicepFiles, CodeWriter sourceBuilder)
+        private static void WriteDeployments(BicepFile file, CodeWriter sourceBuilder)
         {
             sourceBuilder
                     .EmitGeneratedCodeAttribute()
@@ -234,17 +248,14 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
                     .AppendLine("public static class Deployments")
                     .OpenBlock();
 
-            foreach (var file in bicepFiles.OrderBy(x => x.Name))
+            foreach (var module in file.Modules.OrderBy(x => x.Name))
             {
-                foreach (var module in file.Modules.OrderBy(x => x.Name))
-                {
-                    WriteBicepModule(module, sourceBuilder);
-                }
+                WriteBicepModule(module, sourceBuilder);
+            }
 
-                if (file.Outputs.Count > 0)
-                {
-                    WriteBicepDeployment(file.Name, file, sourceBuilder);
-                }
+            if (file.Outputs.Count > 0)
+            {
+                WriteBicepDeployment(file.Name, file, sourceBuilder);
             }
 
             sourceBuilder
