@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/jvandertil/OpenSource/_apis/build/status/jvandertil.blog?branchName=main)](https://dev.azure.com/jvandertil/OpenSource/_build/latest?definitionId=30&branchName=main)
+[![Deployment](https://github.com/jvandertil/blog/actions/workflows/deploy.yml/badge.svg)](https://github.com/jvandertil/blog/actions/workflows/deploy.yml)
 # jvandertil.nl
 
 This repository contains the source code and content for my blog located at [www.jvandertil.nl](https://www.jvandertil.nl).
