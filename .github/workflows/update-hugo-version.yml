@@ -5,6 +5,9 @@ on:
     - cron: "0 3 * * *" # Every day at 03:00 UTC
   workflow_dispatch:
 
+env:
+  HUGO_VERSION_FILE: eng/_pipeline/pipeline/IBlogContentPipeline.cs
+
 jobs:
   update-hugo:
     runs-on: ubuntu-latest
@@ -21,7 +24,7 @@ jobs:
       - name: Read current Hugo version from source file
         id: current
         run: |
-          current=$(grep -oP 'private const string HugoVersion = "\K[0-9\.]+' path/to/YourFile.cs)
+          current=$(grep -oP 'private const string HugoVersion = "\K[0-9\.]+' $HUGO_VERSION_FILE)
           echo "current=$current" >> $GITHUB_OUTPUT
 
       - name: Compare versions and update if needed
@@ -30,7 +33,7 @@ jobs:
           latest="${{ steps.hugo.outputs.latest }}"
           current="${{ steps.current.outputs.current }}"
           if [ "$latest" != "$current" ]; then
-            sed -i "s/private const string HugoVersion = \".*\";/private const string HugoVersion = \"$latest\";/" path/to/YourFile.cs
+            sed -i "s/private const string HugoVersion = \".*\";/private const string HugoVersion = \"$latest\";/" $HUGO_VERSION_FILE
             echo "updated=true" >> $GITHUB_OUTPUT
           else
             echo "updated=false" >> $GITHUB_OUTPUT
