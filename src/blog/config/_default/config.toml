@@ -1,8 +1,9 @@
 languageCode = "en-us"
 title = "Jos van der Til - Software Engineer"
 
-# Highlighting should output classes
-pygmentsUseClasses = true
+[markup]
+  [markup.highlight]
+    noClasses = false # Highlighting should output classes
 
 [params]
 	author = "Jos van der Til"
