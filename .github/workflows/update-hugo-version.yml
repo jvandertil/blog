@@ -32,7 +32,10 @@ jobs:
         run: |
           latest="${{ steps.hugo.outputs.latest }}"
           current="${{ steps.current.outputs.current }}"
-          if [ "$latest" != "$current" ]; then
+          if [ -z "$latest" ] || [ "$latest" = "null" ]; then
+            echo "Latest Hugo version is null or not found. Skipping update."
+            echo "updated=false" >> $GITHUB_OUTPUT
+          elif [ "$latest" != "$current" ]; then
             sed -i "s/private const string HugoVersion = \".*\";/private const string HugoVersion = \"$latest\";/" $HUGO_VERSION_FILE
             echo "updated=true" >> $GITHUB_OUTPUT
           else
