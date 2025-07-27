@@ -7,11 +7,17 @@ tags = [ ".NET", "C#" ]
 draft = true
 +++
 
+Dynamic object creation pops up in many .NET contexts: frameworks, serializers, and code where types aren't known until runtime. 
+The standard approach uses reflection, but that flexibility comes with a performance cost—especially in hot paths.
+
+In this post, I’ll show how you can use IL Emit to speed up dynamic creation when your types share a predictable constructor signature.
+
 {{< notice >}}
-This is an advanced performance trick. Ensure that you really need this before applying it.
+This is an advanced performance trick. Make sure you actually need it before using it. 
+Needing this in regular business application code is rare.
 {{< /notice >}}
 
-Assume you have various classes that look like this:
+Suppose you have classes like this:
 ```cs
 public record SomeId
 {
@@ -32,22 +38,25 @@ public record SomeId
 }
 ```
 
-and you need to create these dynamically.
+You want to create instances dynamically, knowing only the type and a `Guid` at runtime.
 
 The easiest and most straightforward way is to use the `Activator` class like this:
 ```cs
 var id = (SomeId)Activator.CreateInstance(typeof(SomeId), _value)
 ```
 
-This is obviously the most flexible way of creating instances dynamically. 
+This works for any constructor signature, but incurs overhead from reflection, boxing, and type checking.
 But if we know that all our types have a common constructor, for example: `Type(Guid id)`, then we can optimize for this.
 
 ## Using IL Emit for Fast Object Creation
 
+IL Emit lets you generate and compile methods at runtime, producing delegates that instantiate your objects almost as fast as direct constructor calls. 
+This is much faster than reflection once the delegate is compiled.
+
 The idea is simple: when you have many types that follow the same constructor signature, you use IL Emit to create a delegate for instantiating them, avoiding the overhead of reflection on every object creation.
 
 {{< notice >}}
-Ensure that you are calling the compiled delegate often enough that the first-call compilation penalty is acceptable!
+The first call to compile the delegate is expensive. Only use this approach when you'll create many instances over time, so the initial cost is amortized.
 {{< /notice >}}
 
 Here’s a factory that uses IL Emit for fast construction:
@@ -91,9 +100,18 @@ public class IdActivator
 }
 ```
 
+Some notes about this code:
+- Only works for types with a public constructor accepting a single `Guid`.
+- Delegates are cached for performance.
+- Factory is made thread-safe by using a `ConcurrentDictionary` as cache.
+
 ## Benchmarking the Approaches
 
-To see the performance difference, let’s use [BenchmarkDotNet](https://benchmarkdotnet.org/) to compare direct construction, `Activator.CreateInstance`, and our IL Emit approach:
+Let’s use [BenchmarkDotNet](https://benchmarkdotnet.org/) to compare three approaches:
+
+- Direct construction (the baseline)
+- `Activator.CreateInstance`
+- IL Emit-based factory (IdActivator)
 
 ```cs
 [MemoryDiagnoser]
@@ -126,12 +144,6 @@ public class BenchmarkObjectCreation
 
 ### Results
 
-When running the benchmark, you’ll see:
-
-- **Direct construction** is always fastest, as it’s just a plain constructor call.
-- **Activator.CreateInstance** is much slower because of reflection.
-- **IdActivator (IL Emit)** is slower than direct construction, but far faster than `Activator`.
-
 Here's the results on my machine:
 
 ```
@@ -141,15 +153,17 @@ BenchmarkDotNet v0.15.2, Windows 11 (10.0.26100.4652/24H2/2024Update/HudsonValle
   DefaultJob : .NET 9.0.7 (9.0.725.31616), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
   Job-YWWROQ : .NET 9.0.7 (9.0.725.31616), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
 
-
 ```
+
+**Normal (steady-state) results:**
+
 | Method                  | RunStrategy | Mean             | Error           | StdDev         | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
 |------------------------ |------------ |-----------------:|----------------:|---------------:|------:|--------:|-------:|----------:|------------:|
 | DirectConstructor       | Default     |         3.156 ns |       0.0581 ns |      0.0454 ns |  1.00 |    0.02 | 0.0019 |      32 B |        1.00 |
 | ActivatorCreateInstance | Default     |        95.615 ns |       1.5014 ns |      1.3309 ns | 30.30 |    0.58 | 0.0191 |     320 B |       10.00 |
 | IdActivatorCreate       | Default     |        12.207 ns |       0.2717 ns |      0.4230 ns |  3.87 |    0.14 | 0.0019 |      32 B |        1.00 |
 
-And the cold start results, which show that `Activator` is much faster on the first invocation, where as the compilation of the delegate takes a (relatively) significant amount of time.
+**Cold-start results (includes delegate compilation):**
 
 | Method                  | RunStrategy | Mean         | Error      | StdDev    | Ratio | RatioSD |
 |------------------------ |------------ |-------------:|-----------:|----------:|------:|--------:|
@@ -157,6 +171,12 @@ And the cold start results, which show that `Activator` is much faster on the fi
 | ActivatorCreateInstance | ColdStart   |   262.600 μs |  35.240 μs |  9.152 μs |  1.74 |    0.06 |
 | IdActivatorCreate       | ColdStart   | 1,333.800 μs | 148.963 μs | 38.685 μs |  8.82 |    0.27 |
 
+You can see in the results that:
+- Direct construction is always fastest.
+- Activator is flexible but slow (and allocates much more).
+- IL Emit is almost as fast as direct construction after the first call, with allocations identical to direct construction.
+- The cold-start penalty for IL Emit is significant (due to delegate compilation), but only paid once.
+- IL Emit allocations per instance are identical to direct construction.
 
 ### Summary
 
@@ -164,3 +184,5 @@ If you need dynamic object creation for types with a predictable constructor, IL
 You get nearly the same performance as direct instantiation, while retaining the flexibility to create different types dynamically.
 
 Use this approach for performance-critical scenarios where Activator is too slow, and there’s a common constructor pattern across your types.
+
+If you need to support more complex signatures or are targeting Ahead-of-Time (AOT) compilation, consider source generators or other forms of code generation.
