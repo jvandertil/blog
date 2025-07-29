@@ -1,7 +1,7 @@
 +++
 author = "Jos van der Til"
 title = "Faster dynamic object creation with IL Emit"
-date  = 2025-07-26T21:00:00+02:00
+date  = 2025-07-29T21:00:00+02:00
 type = "post"
 tags = [ ".NET", "C#" ]
 draft = true
@@ -19,9 +19,9 @@ It's rarely needed in typical application code; consider it only if object creat
 
 ## Background
 
-I originally implemented this technique around 2020-2022, before C# introduced static abstract members in interfaces. At that time, using IL Emit was one of the best ways to achieve fast dynamic object creation without incurring the overhead of reflection—provided your types shared a common constructor signature. If you're maintaining or reviewing older infrastructure code, you may still encounter this pattern.
+This post has been hanging on my backlog for a while, and I originally implemented this technique around 2020-2022, before C# introduced static abstract members in interfaces. At that time, using IL Emit was one of the ways to achieve fast dynamic object creation without incurring the overhead of reflection—provided your types shared a common constructor signature. 
 
-These days, .NET has evolved and there are newer, more idiomatic approaches available (see the Modern Alternative below). Still, understanding this technique remains useful for legacy code, or in scenarios where you don't control all the types involved.
+These days, .NET has evolved and there are newer, more idiomatic approaches available (see the [Modern Alternative](#modern-alternative-static-abstract-factory-method) below). Still, understanding this technique remains useful for legacy code, or in scenarios where you don't control all the types involved.
 
 ## Typical Scenario
 
@@ -181,13 +181,13 @@ BenchmarkDotNet v0.15.2, Windows 11 (10.0.26100.4652/24H2/2024Update/HudsonValle
 You can see in the results that:
 - Direct construction is always fastest.
 - Activator is flexible but slow (and allocates much more).
-- IL Emit is almost as fast as direct construction after the first call, with allocations identical to direct construction.
+- IL Emit is much faster than Activator after the first call, with allocations identical to direct construction.
 - The cold-start penalty for IL Emit is significant (due to delegate compilation), but only paid once.
 - IL Emit allocations per instance are identical to direct construction.
 
 ## Modern Alternative: static abstract Factory Method
 
-Since the time I first wrote this draft (in 2022), C# and .NET have evolved. If you control your types and are on .NET 7 or newer, you can now use a `static abstract` factory method on a common interface. This has several advantages: it's compile-time safe, AOT-friendly, and doesn't require IL Emit or reflection.
+Since the time I first wrote this draft (in 2022), C# and .NET have evolved. If you control your types and are on a supported .NET version, since .NET 7 (C# 11) you can use a `static abstract` factory method on a common interface. This has several advantages: it's compile-time safe, AOT-friendly, and doesn't require IL Emit or reflection.
 
 ```csharp
 public interface IIdFactory<T>
@@ -209,7 +209,7 @@ If you can use this pattern, it's the cleanest and fastest option for this probl
 
 ## When Should You Use IL Emit?
 
-- You need to create many instances dynamically, and performance is critical.
+- You need to create many instances dynamically, and performance is **critical**.
 - All types share a predictable constructor.
 - You can't use static abstract factories (older .NET, or you don't control the types).
 
