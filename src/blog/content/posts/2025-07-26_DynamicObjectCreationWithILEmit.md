@@ -14,14 +14,14 @@ In this post, I’ll show how you can use IL Emit to speed up dynamic creation w
 
 {{< notice >}}
 This is an advanced performance technique. 
-It's rarely needed in typical application code; consider it only if object creation is a proven bottleneck.
+It's rarely (never) needed in typical application code; consider it only if object creation is a proven bottleneck.
 {{< /notice >}}
 
 ## Background
 
-This post has been hanging on my backlog for a while, and I originally implemented this technique around 2020-2022, before C# introduced static abstract members in interfaces. At that time, using IL Emit was one of the ways to achieve fast dynamic object creation without incurring the overhead of reflection—provided your types shared a common constructor signature. 
+This post has been hanging on my backlog for a while, and I originally implemented this technique around 2020-2022, before C# introduced static abstract members in interfaces. At that time, using IL Emit was one of the ways to achieve fast dynamic object creation without incurring the overhead of reflection—provided the types shared a common constructor signature. 
 
-These days, .NET has evolved and there are newer, more idiomatic approaches available (see the [Modern Alternative](#modern-alternative-static-abstract-factory-method) below). Still, understanding this technique remains useful for legacy code, or in scenarios where you don't control all the types involved.
+These days, .NET has evolved and there are newer, more idiomatic approaches available (see the [Modern Alternative](#modern-alternative-static-abstract-factory-method) below). Still, understanding this technique may be useful for legacy code, or in scenarios where you don't control all the types involved.
 
 ## Typical Scenario
 
@@ -179,8 +179,8 @@ BenchmarkDotNet v0.15.2, Windows 11 (10.0.26100.4652/24H2/2024Update/HudsonValle
 | IdActivatorCreate       | ColdStart   | 1,333.800 μs | 148.963 μs | 38.685 μs |  8.82 |    0.27 |
 
 You can see in the results that:
-- Direct construction is always fastest.
-- Activator is flexible but slow (and allocates much more).
+- Direct construction is, as expected, always fastest.
+- Activator is much slower, and allocates more memory.
 - IL Emit is much faster than Activator after the first call, with allocations identical to direct construction.
 - The cold-start penalty for IL Emit is significant (due to delegate compilation), but only paid once.
 - IL Emit allocations per instance are identical to direct construction.
@@ -200,25 +200,17 @@ public record SomeId(Guid Value) : IIdFactory<SomeId>
     public static SomeId Create(Guid value) => new(value);
 }
 
-// Usage:
+// Example usage:
 public static T CreateId<T>(Guid value) where T : IIdFactory<T>
     => T.Create(value);
 ```
 
 If you can use this pattern, it's the cleanest and fastest option for this problem.
 
-## When Should You Use IL Emit?
+## Closing thoughts
 
-- You need to create many instances dynamically, and performance is **critical**.
-- All types share a predictable constructor.
-- You can't use static abstract factories (older .NET, or you don't control the types).
-
-If you need to support more complex signatures, or your code must run under AOT (where IL Emit isn't supported), consider using static interface members, source generators, or build-time code generation.
-
-## Summary
-
-IL Emit was a powerful solution for fast dynamic object creation when your types fit the pattern, especially before C# gained static abstract interface members. 
+IL Emit was a powerful solution that I applied for fast dynamic object creation, especially before C# gained static abstract interface members. 
 These days, the static abstract factory pattern is preferred where possible. 
-Still, understanding IL Emit remains valuable for maintaining and reasoning about legacy code, or for specialized cases where modern language features aren't available.
 
-If you've identified dynamic creation as a bottleneck and your scenario matches, IL Emit is a tool worth knowing about—even if it's less often needed today.
+I still think that IL Emit is a tool worth knowing about—even if it's less often needed today.
+You never know when you might have to reach for it.
