@@ -1,5 +1,6 @@
 using System;
 using BlogComments.GitHub.Helpers;
+using Shouldly;
 using Xunit;
 
 namespace BlogComments.Tests
@@ -18,7 +19,7 @@ YmFy
 
             ReadOnlyMemory<byte> result = PemPrivateKeyConverter.ExtractRsaPrivateKey(input);
 
-            Assert.Equal(expected, result.Span);
+            result.Span.ToArray().ShouldBe(expected.ToArray());
         }
     }
 }

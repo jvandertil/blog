@@ -1,6 +1,7 @@
 using System;
 using BlogComments.GitHub.Helpers;
 using BlogComments.GitHub.Jwt;
+using Shouldly;
 using Xunit;
 
 namespace BlogComments.Tests
@@ -47,7 +48,7 @@ vJZcnFq2CZ2CpfhEDOoRbIBs1+l8ktaAZJBr6o2KUPUE2AzkHNfZeHjZ/6AXmKuy
             var signature = signer.CalculateSignature([]);
             var signatureBase64 = Convert.ToBase64String(signature);
 
-            Assert.Equal(expectedSignature, signatureBase64);
+            signatureBase64.ShouldBe(expectedSignature);
         }
     }
 }
