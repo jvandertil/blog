@@ -7,14 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shouldly" Version="4.3.0" />
-
     <ProjectReference Include="..\..\src\BlogComments\BlogComments.csproj" />
 
-    <PackageReference Include="coverlet.collector" Version="6.0.4">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="Shouldly" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

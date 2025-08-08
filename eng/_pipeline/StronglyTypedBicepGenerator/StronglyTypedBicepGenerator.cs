@@ -93,10 +93,9 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
                         INamedTypeSymbol attributeContainingTypeSymbol = attributeSymbol.ContainingType;
                         string fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                        // Is the attribute the [EnumExtensions] attribute?
+                        // Is the attribute the [BicepFileAttribute] attribute?
                         if (fullName == "Vandertil.BicepGenerator.BicepFileAttribute")
                         {
-                            // return the enum. Implementation shown in section 7.
                             return new BicepToGenerate
                             {
                                 Class = cds,
