@@ -2,13 +2,14 @@ using System;
 using BlogComments.GitHub.Helpers;
 using BlogComments.GitHub.Jwt;
 using Shouldly;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlogComments.Tests
 {
+    [TestClass]
     public class InMemoryRs256CryptographicSignerTests
     {
-        [Fact]
+        [TestMethod]
         public void CalculateSignature_CalculatesValidSignature()
         {
             // This is a key generated for test purposes and is not used for anything else.
