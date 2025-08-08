@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using BlogComments.Functions.ModelBinding;
 using BlogComments.Functions.Persistence;
-using FluentAssertions;
+using Shouldly;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Xunit;
@@ -26,7 +26,7 @@ namespace BlogComments.Tests.Functions.ModelBinding
 
             var result = TryBindAndValidate(form, out _, out var _);
 
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         private bool TryBindAndValidate(
