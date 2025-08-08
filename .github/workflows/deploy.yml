@@ -47,6 +47,7 @@ jobs:
             # Install dependencies for .NET installation script
             tdnf install -y gawk
             tdnf install -y tar
+            tdnf install -y perl
 
             # Install dependencies for .NET
             tdnf install -y icu
