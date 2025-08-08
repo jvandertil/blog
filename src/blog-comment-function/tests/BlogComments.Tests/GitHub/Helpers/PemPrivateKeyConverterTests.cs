@@ -1,13 +1,14 @@
 using System;
 using BlogComments.GitHub.Helpers;
 using Shouldly;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlogComments.Tests
 {
+    [TestClass]
     public class PemPrivateKeyConverterTests
     {
-        [Fact]
+        [TestMethod]
         public void ExtractRsaPrivateKey_StripsPemFormat()
         {
             const string input = @"-----BEGIN RSA PRIVATE KEY-----

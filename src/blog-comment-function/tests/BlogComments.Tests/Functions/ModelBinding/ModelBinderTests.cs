@@ -4,10 +4,11 @@ using BlogComments.Functions.Persistence;
 using Shouldly;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlogComments.Tests.Functions.ModelBinding
 {
+    [TestClass]
     public class ModelBinderTests
     {
         private readonly ModelBinder _binder;
@@ -17,7 +18,7 @@ namespace BlogComments.Tests.Functions.ModelBinding
             _binder = new ModelBinder(new CommentContentsValidator());
         }
 
-        [Fact]
+        [TestMethod]
         public void TryBindAndValidate_WhenEmptyForm_ReturnsFalse()
         {
             var form = new Dictionary<string, StringValues>
