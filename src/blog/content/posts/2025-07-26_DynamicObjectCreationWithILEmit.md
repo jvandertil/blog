@@ -7,23 +7,20 @@ tags = [ ".NET", "C#" ]
 draft = true
 +++
 
-Dynamic object creation comes up often in .NET infrastructure—think serializers, frameworks, and code that needs to work with types discovered at runtime. 
-The flexible approach is to use reflection, but that comes at a performance cost, especially on hot paths.
+In this post I will show how you can use IL Emit in C# code. This is more a documentation post for myself, but perhaps it might help someone out.
+I do not recommend using the technique, but knowing it exists can be valuable.
 
-In this post, I’ll show how you can use IL Emit to speed up dynamic creation when your types share a predictable constructor signature.
+For those unfamiliar with the internal workings of .NET, Intermediate Language (IL), also known as Common Intermediate Language (CIL), is a low-level, platform-agnostic instruction set used by the .NET runtime. 
+When you compile .NET source code (such as C# or F#), it is transformed into IL rather than directly into native machine code. 
+IL serves as a bridge between high-level languages and the final machine code that runs on your system.
 
-{{< notice >}}
-This is an advanced performance technique. 
-It's rarely (never) needed in typical application code; consider it only if object creation is a proven bottleneck.
-{{< /notice >}}
+ILEmit is a powerful feature in .NET that allows you to generate and emit IL instructions at runtime.
+Using it, you can programmatically define new types, methods, and even assemblies by emitting IL instructions.
 
-## Background
+As an example, I’ll show how you can use IL Emit to speed up dynamic creation when your types share a predictable constructor signature.
+This is just an example to show how this might be useful.
 
-This post has been hanging on my backlog for a while, and I originally implemented this technique around 2020-2022, before C# introduced static abstract members in interfaces. At that time, using IL Emit was one of the ways to achieve fast dynamic object creation without incurring the overhead of reflection—provided the types shared a common constructor signature. 
-
-These days, .NET has evolved and there are newer, more idiomatic approaches available (see the [Modern Alternative](#modern-alternative-static-abstract-factory-method) below). Still, understanding this technique may be useful for legacy code, or in scenarios where you don't control all the types involved.
-
-## Typical Scenario
+## Dynamically constructing objects
 
 Suppose you have classes like this:
 ```cs
@@ -50,13 +47,11 @@ You want to create instances dynamically, knowing only the type and a `Guid` at 
 
 The easiest and most straightforward way is to use the `Activator` class like this:
 ```cs
-var id = (SomeId)Activator.CreateInstance(typeof(SomeId), _value)
+var id = (SomeId)Activator.CreateInstance(typeof(SomeId), value)
 ```
 
 This works for any constructor signature, but incurs overhead from reflection, boxing, and type checking.
 But if we know that all our types have a common constructor, for example: `Type(Guid id)`, then we can optimize for this.
-
-## Using IL Emit for Fast Object Creation
 
 IL Emit lets you generate and compile methods at runtime, producing delegates that instantiate your objects almost as fast as direct constructor calls. 
 This is much faster than reflection once the delegate is compiled.
@@ -64,7 +59,8 @@ This is much faster than reflection once the delegate is compiled.
 The idea is simple: when you have many types that follow the same constructor signature, you use IL Emit to create a delegate for instantiating them, avoiding the overhead of reflection on every object creation.
 
 {{< notice >}}
-The first call to compile the delegate is expensive. Only use this approach when you'll create many instances over time, so the initial cost is amortized.
+The first call to compile the delegate is expensive. 
+This is only makes sense if you will be calling the compiled delegate many times.
 {{< /notice >}}
 
 Here’s a thread-safe factory using IL Emit:
@@ -111,6 +107,7 @@ public class IdActivator
 Some notes about this code:
 - Only works for types with a public constructor accepting a single `Guid`.
 - Delegates are cached for performance.
+- The `IdFactory` delegate returns an object, so if you construct a `struct` type it will still be boxed.
 
 ## Benchmarking the Approaches
 
@@ -187,7 +184,10 @@ You can see in the results that:
 
 ## Modern Alternative: static abstract Factory Method
 
-Since the time I first wrote this draft (in 2022), C# and .NET have evolved. If you control your types and are on a supported .NET version, since .NET 7 (C# 11) you can use a `static abstract` factory method on a common interface. This has several advantages: it's compile-time safe, AOT-friendly, and doesn't require IL Emit or reflection.
+If you read this post and are thinking about implementing the example presented above, consider this modern alternative first.
+
+If you control your types and are on a supported .NET version, since .NET 7 (C# 11) you can use a `static abstract` factory method on a common interface.
+This has several advantages: it's compile-time safe, AOT-friendly, and doesn't require IL Emit or reflection.
 
 ```csharp
 public interface IIdFactory<T>
@@ -206,11 +206,3 @@ public static T CreateId<T>(Guid value) where T : IIdFactory<T>
 ```
 
 If you can use this pattern, it's the cleanest and fastest option for this problem.
-
-## Closing thoughts
-
-IL Emit was a powerful solution that I applied for fast dynamic object creation, especially before C# gained static abstract interface members. 
-These days, the static abstract factory pattern is preferred where possible. 
-
-I still think that IL Emit is a tool worth knowing about—even if it's less often needed today.
-You never know when you might have to reach for it.
