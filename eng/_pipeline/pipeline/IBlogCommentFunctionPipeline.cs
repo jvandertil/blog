@@ -23,18 +23,19 @@ namespace Vandertil.Blog.Pipeline
                     .SetConfiguration(Configuration)
                     .EnableNoRestore());
 
-                var projectFiles = FunctionTestsDirectory.GlobFiles("**/*.csproj");
-                foreach (var project in projectFiles)
-                {
-                    DotNetTest(s => s
-                        .EnableNoBuild()
-                        .SetConfiguration(Configuration)
-                        .SetProjectFile(project)
-                        .AddLoggers("trx")
-                        .SetDataCollector("XPlat Code Coverage")
-                        .SetResultsDirectory(ArtifactsDirectory / "TestResults")
-                    );
-                }
+                // NUKE build does not support MTP v2 yet.
+                //var projectFiles = FunctionTestsDirectory.GlobFiles("**/*.csproj");
+                //foreach (var project in projectFiles)
+                //{
+                //    DotNetTest(s => s
+                //        .EnableNoBuild()
+                //        .SetConfiguration(Configuration)
+                //        .SetProjectFile(project)
+                //        .AddLoggers("trx")
+                //        .SetDataCollector("XPlat Code Coverage")
+                //        .SetResultsDirectory(ArtifactsDirectory / "TestResults")
+                //    );
+                //}
 
                 var artifactsPath = ArtifactsDirectory / "work";
 
