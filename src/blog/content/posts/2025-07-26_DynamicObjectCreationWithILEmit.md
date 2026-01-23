@@ -23,7 +23,7 @@ This is just an example to show how this might be useful.
 ## Dynamically constructing objects
 
 Suppose you have classes like this:
-```cs
+```csharp
 public record SomeId
 {
     private readonly Guid _value;
@@ -65,7 +65,7 @@ This is only makes sense if you will be calling the compiled delegate many times
 
 Here’s a thread-safe factory using IL Emit:
 
-```cs
+```csharp
 public class IdActivator
 {
     private delegate object IdFactory(Guid value);
@@ -117,7 +117,7 @@ Let’s use [BenchmarkDotNet](https://benchmarkdotnet.org/) to compare three app
 - `Activator.CreateInstance`
 - IL Emit-based factory (IdActivator)
 
-```cs
+```csharp
 [MemoryDiagnoser]
 [SimpleJob()]
 [SimpleJob(RunStrategy.ColdStart, iterationCount: 1, launchCount: 5)]
