@@ -67,7 +67,7 @@
                 </script>
             </div>
 
-            {{ $allComments := index .Site.Data "comments" }}
+            {{ $allComments := index hugo.Data "comments" }}
             {{ if $allComments }}
             {{ $postComments := index $allComments "posts" }}
             {{ if $postComments }}

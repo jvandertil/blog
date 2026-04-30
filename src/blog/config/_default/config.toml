@@ -1,4 +1,4 @@
-languageCode = "en-us"
+locale = "en-us"
 title = "Jos van der Til - Software Engineer"
 
 [markup]
