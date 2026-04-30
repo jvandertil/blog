@@ -163,10 +163,6 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
           value: 'fa-${appName}-${env}'
         }
         {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: monitoring.outputs.appInsightsInstrumentationKey
-        }
-        {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
           value: monitoring.outputs.appInsightsConnectionString
         }
