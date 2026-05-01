@@ -1,4 +1,4 @@
 artifacts/
 .vs/
 .bin/
-.nuke/**
+.tmp/

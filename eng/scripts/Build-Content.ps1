@@ -1,0 +1,69 @@
+#Requires -Version 7.0
+[CmdletBinding()]
+param()
+
+$ErrorActionPreference = 'Stop'
+
+$RepoRoot         = (Resolve-Path "$PSScriptRoot\..\..")
+$ArtifactsDir     = Join-Path $RepoRoot 'artifacts'
+$ContentSourceDir = Join-Path $RepoRoot 'src' 'blog'
+$HugoVersion      = '0.161.1'
+$HugoBinDir       = Join-Path $RepoRoot '.bin' 'hugo'
+
+# ── Hugo binary restore ────────────────────────────────────────────────────────
+
+if ($IsWindows) {
+    $HugoFileName = "hugo_extended_${HugoVersion}_windows-amd64.zip"
+    $HugoExe      = Join-Path $HugoBinDir 'hugo.exe'
+} else {
+    $HugoFileName = "hugo_extended_${HugoVersion}_linux-amd64.tar.gz"
+    $HugoExe      = Join-Path $HugoBinDir 'hugo'
+}
+
+$HugoReleaseUrl = "https://github.com/gohugoio/hugo/releases/download/v${HugoVersion}/${HugoFileName}"
+$DestFile       = Join-Path $HugoBinDir $HugoFileName
+
+if (-not (Test-Path $DestFile)) {
+    Write-Host "Restoring Hugo binary v$HugoVersion..."
+    New-Item -ItemType Directory -Path $HugoBinDir -Force | Out-Null
+    Invoke-WebRequest `
+        -Uri $HugoReleaseUrl `
+        -OutFile $DestFile `
+        -UserAgent 'jvandertil/blog build script' `
+        -TimeoutSec 30
+
+    if ($IsWindows) {
+        Expand-Archive -Path $DestFile -DestinationPath $HugoBinDir -Force
+    } else {
+        & tar -xzf $DestFile -C $HugoBinDir
+        & chmod +x $HugoExe
+    }
+} else {
+    Write-Host "Skipping Hugo restore, already restored."
+}
+
+# ── Build each environment ─────────────────────────────────────────────────────
+
+$ArtifactBlogDir = Join-Path $ArtifactsDir 'blog'
+New-Item -ItemType Directory -Path $ArtifactBlogDir -Force | Out-Null
+
+foreach ($environment in @('tst', 'prd')) {
+    Write-Host "Building Hugo site for environment: $environment"
+    $destDir = Join-Path $ArtifactBlogDir $environment
+    & $HugoExe --environment $environment --source $ContentSourceDir --destination $destDir --minify
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
+# ── Zip and clean up ───────────────────────────────────────────────────────────
+
+Write-Host "Compressing blog content..."
+Push-Location $ArtifactBlogDir
+try {
+    Compress-Archive -Path '*' -DestinationPath (Join-Path $ArtifactsDir 'blog.zip') -Force
+} finally {
+    Pop-Location
+}
+
+Remove-Item $ArtifactBlogDir -Recurse -Force
+
+Write-Host "Blog content build complete."

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Vandertil.Blog.Pipeline.BicepPsGenerator</RootNamespace>
+    <AssemblyName>BicepPsGenerator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="3.0.10" />
+  </ItemGroup>
+
+  <!-- Link the parser source directly to avoid a project reference to the Roslyn analyzer -->
+  <ItemGroup>
+    <Compile Include="..\StronglyTypedBicepGenerator\Parser\**\*.cs"
+             Link="Parser\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

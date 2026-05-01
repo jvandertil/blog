@@ -4,8 +4,6 @@ trigger:
       - 'main'
 
 variables:
-  NUKE_TELEMETRY_OPTOUT: 1
-
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: 1
@@ -18,12 +16,12 @@ stages:
 - stage: Build
   jobs:
   - job: Build
-    steps: 
+    steps:
       - template: eng/azure-devops/steps/ensure-dotnet.yml
 
       - pwsh: |
-          .\build.ps1 --target Clean Build
-        displayName: Execute Nuke build
+          .\build.ps1 -Target CleanBuild
+        displayName: Build
 
       - task: PublishTestResults@2
         condition: always()
@@ -50,7 +48,7 @@ stages:
   condition: |
     and(
       succeeded(),
-      eq(variables['IS_MAIN_BRANCH'], true), 
+      eq(variables['IS_MAIN_BRANCH'], true),
       eq(variables['IS_PULLREQUEST'], false)
     )
   jobs:
@@ -78,8 +76,9 @@ stages:
               scriptType: 'pscore'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                .\build.ps1 Deploy --environment prd --cloudflare-api-key $env:CLOUDFLARE_API_KEY --cloudflare-zone-id $env:CLOUDFLARE_ZONE_ID
+                .\build.ps1 -Target Deploy -Environment prd -CloudflareApiKey $env:CLOUDFLARE_API_KEY -CloudflareZoneId $env:CLOUDFLARE_ZONE_ID
             env:
               CLOUDFLARE_API_KEY: $(SECRET_CF_API_KEY)
               CLOUDFLARE_ZONE_ID: $(SECRET_CF_ZONE_ID)
+
 

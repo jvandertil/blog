@@ -206,7 +206,6 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
             sourceBuilder.AppendLine("using System;");
             sourceBuilder.AppendLine("using System.Collections.Concurrent;");
             sourceBuilder.AppendLine("using System.Linq;");
-            sourceBuilder.AppendLine("using Nuke.Common.Tooling;");
             sourceBuilder.AppendLine();
         }
 
