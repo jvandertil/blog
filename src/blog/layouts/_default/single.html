@@ -16,6 +16,8 @@
 
     {{ if eq .Params.Type "post" }}
     <footer>
+        {{ partial "ai-assisted-notice" . }}
+
         <div class="author-card">
             <section class="author">
                 <div id="author-img"></div>
@@ -79,7 +81,7 @@
                 <h3> {{ len . }} responses</h3>
 
                 {{ range (sort .) }}
-                
+
                 <div id="thread-{{ .id }}">
                     {{ partial "blog-comment" (dict "level" 0 "data" . "thread" .id "postName" $postName) }}
                 </div>
