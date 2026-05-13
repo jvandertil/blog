@@ -22,7 +22,7 @@
     <PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
 
     <!-- Vulnerable transitive dependencies -->
-    <PackageReference Include="NuGet.Packaging" Version="6.12.5" />
+    <PackageReference Include="NuGet.Packaging" Version="7.6.0" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.15" />
   </ItemGroup>
 
