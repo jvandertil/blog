@@ -33,14 +33,14 @@ I came up with the following Bicep module which shows a nice way to hide the nas
 param storageAccountName string
 param principalId string
 
-@allowed[
+@allowed([
     'Device'
     'ForeignGroup'
     'Group'
     'ServicePrincipal'
     'User'
     ''
-]
+])
 param principalType string = ''
 
 @allowed([
