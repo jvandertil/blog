@@ -35,10 +35,12 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = 
     networkAcls: {
       defaultAction: 'Allow' // This will be set to Deny after deployment
       bypass: 'None'
-      ipRules: [for range in cloudFlareIps: {
-        value: range
-        action: 'Allow'
-      }]
+      ipRules: [
+        for range in cloudFlareIps: {
+          value: range
+          action: 'Allow'
+        }
+      ]
     }
 
     // customDomain is configured later in the pipeline
@@ -54,7 +56,7 @@ resource contentStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = 
 }
 
 var kvName = 'kv-${appName}-${env}'
-module keyVault 'keyVault.bicep' ={
+module keyVault 'keyVault.bicep' = {
   name: 'keyVault'
   params: {
     name: kvName
@@ -106,6 +108,29 @@ resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01
     allowBlobPublicAccess: false
     allowCrossTenantReplication: false
   }
+
+  resource deploymentContainer 'blobServices' = {
+    name: 'default'
+
+    resource deployments 'containers' = {
+      name: 'deployments'
+    }
+  }
+}
+
+resource flexHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
+  name: 'asp-fa-flex-${appName}-${env}'
+  location: location
+
+  sku: {
+    name: 'FC1'
+    tier: 'FlexConsumption'
+  }
+
+  kind: 'functionapp'
+  properties: {
+    reserved: true
+  }
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
@@ -129,38 +154,33 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
   location: location
   kind: 'functionapp,linux'
   properties: {
-    reserved: true
-    serverFarmId: hostingPlan.id
+    serverFarmId: flexHostingPlan.id
     clientAffinityEnabled: false
+
+    functionAppConfig: {
+      deployment: {
+        storage: {
+          type: 'blobContainer'
+          value: '${contentStorageAccount.properties.primaryEndpoints.blob}deployments'
+          authentication: {
+            type: 'SystemAssignedIdentity'
+          }
+        }
+      }
+
+      runtime: {
+        name: 'dotnet-isolated'
+        version: '10.0'
+      }
+    }
 
     siteConfig: {
       use32BitWorkerProcess: false
-      linuxFxVersion: 'DOTNET-ISOLATED|10.0'
 
       appSettings: [
         {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
-        }
-        {
-          name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~4'
-        }
-        {
-          name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: 'dotnet-isolated'
-        }
-        {
-          name: 'WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED'
-          value: '1'
-        }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
-        }
-        {
-          name: 'WEBSITE_CONTENTSHARE'
-          value: 'fa-${appName}-${env}'
+          name: 'AzureWebJobsStorage__accountName'
+          value: functionAppStorageAccount.name
         }
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
@@ -204,8 +224,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
 
       scmIpSecurityRestrictionsUseMain: false
       scmIpSecurityRestrictionsDefaultAction: 'Deny'
-      scmIpSecurityRestrictions: [
-      ]
+      scmIpSecurityRestrictions: []
     }
 
     httpsOnly: true
@@ -215,7 +234,16 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
   identity: {
     type: 'SystemAssigned'
   }
+}
 
+module functionAppRole 'modules/storage-account-role.bicep' = {
+  name: 'functionAppRole'
+  params: {
+    storageAccountName: functionAppStorageAccount.name
+    principalId: functionApp.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinition: 'Storage Blob Data Contributor'
+  }
 }
 
 resource functionAppLogs 'microsoft.insights/diagnosticSettings@2021-05-01-preview' = {
