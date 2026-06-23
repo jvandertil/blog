@@ -109,7 +109,7 @@ resource functionAppStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01
     allowCrossTenantReplication: false
   }
 
-  resource deploymentContainer 'blobServices' = {
+  resource blobServices 'blobServices' = {
     name: 'default'
 
     resource deployments 'containers' = {
@@ -161,7 +161,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
       deployment: {
         storage: {
           type: 'blobContainer'
-          value: '${contentStorageAccount.properties.primaryEndpoints.blob}deployments'
+          value: '${functionAppStorageAccount.properties.primaryEndpoints.blob}${functionAppStorageAccount::blobServices::deployments.name}'
           authentication: {
             type: 'SystemAssignedIdentity'
           }
@@ -247,7 +247,7 @@ module functionAppRole 'modules/storage-account-role.bicep' = {
     storageAccountName: functionAppStorageAccount.name
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
-    roleDefinition: 'Storage Blob Data Owner'
+    roleDefinition: 'Storage Blob Data Contributor'
   }
 }
 
