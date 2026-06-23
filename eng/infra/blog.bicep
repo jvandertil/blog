@@ -168,6 +168,10 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
         }
       }
 
+      scaleAndConcurrency: {
+        instanceMemoryMB: 512
+      }
+
       runtime: {
         name: 'dotnet-isolated'
         version: '10.0'
