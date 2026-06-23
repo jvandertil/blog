@@ -150,7 +150,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
 }
 
 resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
-  name: 'fa-${appName}-${env}'
+  name: 'fa-flex-${appName}-${env}'
   location: location
   kind: 'functionapp,linux'
   properties: {
