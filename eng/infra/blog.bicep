@@ -124,7 +124,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   }
 }
 
-resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
+resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
   name: 'fa-${appName}-${env}'
   location: location
   kind: 'functionapp,linux'
@@ -135,7 +135,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
 
     siteConfig: {
       use32BitWorkerProcess: false
-      linuxFxVersion: 'DOTNET-ISOLATED|9.0'
+      linuxFxVersion: 'DOTNET-ISOLATED|10.0'
 
       appSettings: [
         {
