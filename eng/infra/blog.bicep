@@ -247,7 +247,7 @@ module functionAppRole 'modules/storage-account-role.bicep' = {
     storageAccountName: functionAppStorageAccount.name
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
-    roleDefinition: 'Storage Blob Data Contributor'
+    roleDefinition: 'Storage Blob Data Owner'
   }
 }
 
