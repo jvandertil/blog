@@ -32,7 +32,7 @@ jobs:
           dotnet-version: 10.x
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
           
       - run: .\build.ps1 --target Clean Build
         shell: pwsh
