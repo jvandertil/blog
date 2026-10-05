@@ -1,5 +1,5 @@
 using System;
-using Nuke.Common;
+using Fallout.Common;
 
 namespace Vandertil.Blog.Pipeline.Azure
 {

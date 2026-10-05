@@ -1,4 +1,5 @@
 artifacts/
 .vs/
 .bin/
-.nuke/**
+.fallout/**
+!.fallout/parameters.json

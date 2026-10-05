@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Nuke.Common;
-using Nuke.Common.IO;
+using Fallout.Common;
+using Fallout.Common.IO;
 using Vandertil.Blog.Pipeline.Azure;
 using Vandertil.Blog.Pipeline.CloudFlare;
 
 namespace Vandertil.Blog.Pipeline
 {
-    public class Program : NukeBuild, IClean, IBlogContentPipeline, IBlogCommentFunctionPipeline
+    public class Program : FalloutBuild, IClean, IBlogContentPipeline, IBlogCommentFunctionPipeline
     {
         private const string AzureLocation = "westeurope";
 

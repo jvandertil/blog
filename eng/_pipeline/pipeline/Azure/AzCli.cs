@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Nuke.Common.IO;
-using Nuke.Common.Tooling;
+using Fallout.Common.IO;
+using Fallout.Common.Tooling;
 
 namespace Vandertil.Blog.Pipeline.Azure
 {
