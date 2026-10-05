@@ -1,9 +1,9 @@
-﻿//HintName: StronglyTypedBicepGeneratorTests.Generated.cs
+//HintName: StronglyTypedBicepGeneratorTests.Generated.cs
 #nullable disable
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Nuke.Common.Tooling;
+using Fallout.Common.Tooling;
 
 namespace BicepTests
 {
@@ -130,7 +130,7 @@ namespace BicepTests
             [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             private static class AzCli
             {
-                private static Nuke.Common.Tooling.Tool Az => ToolResolver.GetPathTool("az");
+                private static Fallout.Common.Tooling.Tool Az => ToolResolver.GetPathTool("az");
 
                 public static string GetDeploymentOutputValue(string resourceGroup, string deploymentName, string outputName)
                 {
@@ -139,7 +139,7 @@ namespace BicepTests
                     return ReadFirstLine(output);
                 }
 
-                private static string ReadFirstLine(System.Collections.Generic.IReadOnlyCollection<Nuke.Common.Tooling.Output> output)
+                private static string ReadFirstLine(System.Collections.Generic.IReadOnlyCollection<Fallout.Common.Tooling.Output> output)
                 {
                     return output.EnsureOnlyStd().First().Text;
                 }

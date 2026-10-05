@@ -1,9 +1,9 @@
-using Nuke.Common;
-using Nuke.Common.IO;
+using Fallout.Common;
+using Fallout.Common.IO;
 
 namespace Vandertil.Blog.Pipeline
 {
-    public interface IProvideArtifactsDirectory : INukeBuild
+    public interface IProvideArtifactsDirectory : IFalloutBuild
     {
         AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
     }

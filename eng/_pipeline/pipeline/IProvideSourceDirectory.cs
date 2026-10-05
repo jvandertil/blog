@@ -1,9 +1,9 @@
-using Nuke.Common;
-using Nuke.Common.IO;
+using Fallout.Common;
+using Fallout.Common.IO;
 
 namespace Vandertil.Blog.Pipeline
 {
-    public interface IProvideSourceDirectory : INukeBuild
+    public interface IProvideSourceDirectory : IFalloutBuild
     {
         AbsolutePath SourceDirectory => RootDirectory / "src";
     }

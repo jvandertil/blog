@@ -14,7 +14,7 @@ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 ###########################################################################
 
 $BuildProjectFile = "$PSScriptRoot/eng/_pipeline/pipeline/pipeline.csproj"
-$TempDirectory = "$PSScriptRoot/.nuke/temp"
+$TempDirectory = "$PSScriptRoot/.fallout/temp"
 
 $DotNetGlobalFile = "$PSScriptRoot/global.json"
 $DotNetInstallUrl = "https://dot.net/v1/dotnet-install.ps1"

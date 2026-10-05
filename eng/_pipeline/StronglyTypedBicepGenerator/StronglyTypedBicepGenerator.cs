@@ -206,7 +206,7 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
             sourceBuilder.AppendLine("using System;");
             sourceBuilder.AppendLine("using System.Collections.Concurrent;");
             sourceBuilder.AppendLine("using System.Linq;");
-            sourceBuilder.AppendLine("using Nuke.Common.Tooling;");
+            sourceBuilder.AppendLine("using Fallout.Common.Tooling;");
             sourceBuilder.AppendLine();
         }
 
@@ -262,7 +262,7 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
                 .EmitExcludeFromCodeCoverageAttribute()
                 .AppendLine("private static class AzCli")
                 .OpenBlock()
-                    .AppendLine("private static Nuke.Common.Tooling.Tool Az => ToolResolver.GetPathTool(\"az\");")
+                    .AppendLine("private static Fallout.Common.Tooling.Tool Az => ToolResolver.GetPathTool(\"az\");")
                     .AppendLine()
                     .AppendLine("public static string GetDeploymentOutputValue(string resourceGroup, string deploymentName, string outputName)")
                     .OpenBlock()
@@ -271,7 +271,7 @@ namespace Vandertil.Blog.Pipeline.StronglyTypedBicepGenerator
                         .AppendLine("return ReadFirstLine(output);")
                     .CloseBlock()
                     .AppendLine()
-                    .AppendLine("private static string ReadFirstLine(System.Collections.Generic.IReadOnlyCollection<Nuke.Common.Tooling.Output> output)")
+                    .AppendLine("private static string ReadFirstLine(System.Collections.Generic.IReadOnlyCollection<Fallout.Common.Tooling.Output> output)")
                     .OpenBlock()
                         .AppendLine("return output.EnsureOnlyStd().First().Text;")
                     .CloseBlock()
