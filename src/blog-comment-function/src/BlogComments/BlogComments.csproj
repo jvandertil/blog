@@ -23,7 +23,7 @@
 
     <PackageReference Include="NUlid" Version="1.7.3" />
     <PackageReference Include="Octokit" Version="14.0.0" />
-    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
 
     <!-- Vulnerable transitive dependencies -->
