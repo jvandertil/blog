@@ -18,6 +18,10 @@
 
     {{ partial "deps/css/index" . }}
 
+    {{ if and (eq .Params.Type "post") site.Params.turnstileSiteKey }}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+    {{ end }}
+
     <!-- Load polyfills for old browsers (IE). -->
     {{ $polyfills := resources.Get "js/polyfills.js" | resources.Minify | resources.Fingerprint }}
     <script type="text/javascript" src="{{ $polyfills.Permalink }}" integrity="{{ $polyfills.Data.Integrity }}"></script>
@@ -29,7 +33,7 @@
     {{ if eq .Params.Type "post" }}
     <!-- For posts include scripts for comment forms -->
     {{ $commentFormJs := resources.Get "js/comment-form.ts" | js.Build (dict "format" "cjs") | resources.Minify | resources.Fingerprint }}
-    <script type="text/javascript" src="{{ $commentFormJs.Permalink }}" integrity="{{ $commentFormJs.Data.Integrity }}"></script>
+    <script type="text/javascript" src="{{ $commentFormJs.Permalink }}" integrity="{{ $commentFormJs.Data.Integrity }}" defer></script>
     {{ end }}
 
     <header>

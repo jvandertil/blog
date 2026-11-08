@@ -39,6 +39,10 @@
                     <textarea id="content" name="Contents" placeholder="Join the discussion" rows="3" required></textarea>
                 </div>
 
+                {{ with site.Params.turnstileSiteKey }}
+                <div class="turnstile-widget" data-turnstile-sitekey="{{ . }}"></div>
+                {{ end }}
+
                 <button type="submit">
                     Post reply
                     <span class="submitSpinner spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
@@ -46,7 +50,7 @@
             </form>
         </div>
         <script type="text/javascript">
-            new CommentForm.CommentReplyForm("{{ $replyFormId }}", "{{ $replyFormButtonId }}");
+            document.addEventListener("DOMContentLoaded", () => new CommentForm.CommentReplyForm("{{ $replyFormId }}", "{{ $replyFormButtonId }}"));
         </script>
     </div>
 </blockquote>

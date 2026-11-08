@@ -1,1 +1,3 @@
 commentHookUrl = "https://fa-flex-jvandertilblog-prd.azurewebsites.net/"
+# Set this to the public site key for a Turnstile widget allowed on www.jvandertil.nl.
+turnstileSiteKey = "0x4AAAAAAF5FbYAKKc2ts08-"

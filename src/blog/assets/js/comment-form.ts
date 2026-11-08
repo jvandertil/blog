@@ -1,11 +1,39 @@
 namespace CommentForm {
+    interface TurnstileApi {
+        render(element: HTMLElement, options: { sitekey: string }): string;
+        reset(widgetId: string): void;
+    }
+
+    declare const turnstile: TurnstileApi;
+
     export class CommentForm {
         private readonly form: HTMLFormElement;
+        private turnstileWidgetId: string | null = null;
 
-        constructor(formId: string) {
+        constructor(formId: string, renderTurnstile = true) {
             this.form = document.getElementById(formId)! as HTMLFormElement;
 
             this.form.addEventListener("submit", e => this.submitEventHandler(e));
+
+            if (renderTurnstile) {
+                this.renderTurnstile();
+            }
+        }
+
+        public renderTurnstile() {
+            let widget = this.form.querySelector<HTMLElement>("[data-turnstile-sitekey]");
+            if (widget == null || typeof turnstile === "undefined") {
+                return;
+            }
+
+            if (this.turnstileWidgetId == null) {
+                let sitekey = widget.dataset.turnstileSitekey;
+                if (sitekey != null) {
+                    this.turnstileWidgetId = turnstile.render(widget, { sitekey });
+                }
+            } else {
+                turnstile.reset(this.turnstileWidgetId);
+            }
         }
 
         private submitEventHandler(e: SubmitEvent) {
@@ -49,6 +77,9 @@ namespace CommentForm {
                     this.showAlert('comment-failure-alert');
                 })
                 .finally(() => {
+                    if (this.turnstileWidgetId != null && typeof turnstile !== "undefined") {
+                        turnstile.reset(this.turnstileWidgetId);
+                    }
                     submitBtn.disabled = false;
                     Utils.hideElement(submitBtn.querySelector('.submitSpinner'));
                 });
@@ -100,8 +131,10 @@ namespace CommentForm {
     }
 
     export class CommentReplyForm {
+        private readonly commentForm: CommentForm;
+
         constructor(formId: string, toggleButtonId: string) {
-            new CommentForm(formId);
+            this.commentForm = new CommentForm(formId, false);
 
             let toggler = document.getElementById(toggleButtonId) as HTMLButtonElement;
             toggler.addEventListener("click", () => this.toggleForm(formId))
@@ -113,6 +146,7 @@ namespace CommentForm {
                 Utils.hideElement(form);
             } else {
                 Utils.showElement(form);
+                this.commentForm.renderTurnstile();
             }
         }
     }

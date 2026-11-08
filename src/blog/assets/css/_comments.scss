@@ -15,6 +15,10 @@
         @extend .btn;
         @extend .btn-primary;
     }
+
+    .turnstile-widget {
+        @extend .mb-3;
+    }
 }
 
 .post-comment {

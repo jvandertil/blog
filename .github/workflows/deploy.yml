@@ -42,6 +42,7 @@ jobs:
         env:
           CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
         with: 
           inlineScript: |
             # Install dependencies for .NET installation script
@@ -56,5 +57,5 @@ jobs:
             tdnf install -y azcopy
 
             chmod +x $GITHUB_WORKSPACE/build.sh
-            $GITHUB_WORKSPACE/build.sh Deploy --environment prd --cloudflare-api-key "$CLOUDFLARE_API_KEY" --cloudflare-zone-id "$CLOUDFLARE_ZONE_ID"          
-      
+            $GITHUB_WORKSPACE/build.sh Deploy --environment prd --cloudflare-api-key "$CLOUDFLARE_API_KEY" --cloudflare-zone-id "$CLOUDFLARE_ZONE_ID" --turnstile-secret-key "$TURNSTILE_SECRET_KEY"
+

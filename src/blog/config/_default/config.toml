@@ -28,6 +28,7 @@ title = "Jos van der Til - Software Engineer"
 
 	# Defined in environment configs
 	commentHookUrl = ""
+	turnstileSiteKey = ""
 
 [menu]
 	[[menu.main]]

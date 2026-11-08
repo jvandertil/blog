@@ -13,15 +13,18 @@ namespace BlogComments.Functions
     {
         private readonly CommentRepository _repository;
         private readonly IPostExistenceValidator _postExistenceValidator;
+        private readonly ITurnstileValidator _turnstileValidator;
         private readonly ModelBinder _modelBinder;
 
         public SubmitPostCommentReply(
             CommentRepository repository,
             IPostExistenceValidator postExistenceValidator,
+            ITurnstileValidator turnstileValidator,
             ModelBinder modelBinder)
         {
             _repository = repository;
             _postExistenceValidator = postExistenceValidator;
+            _turnstileValidator = turnstileValidator;
             _modelBinder = modelBinder;
         }
 
@@ -32,6 +35,15 @@ namespace BlogComments.Functions
             [FromRoute] string thread_id,
             [FromRoute] string comment_id)
         {
+            var form = await req.ReadFormAsync();
+            if (!await _turnstileValidator.IsValidAsync(form["cf-turnstile-response"], req.HttpContext.RequestAborted))
+            {
+                return new BadRequestObjectResult(new[]
+                {
+                    new ValidationError("cf-turnstile-response", "Please complete the security check.")
+                });
+            }
+
             var repositoryPostName = await _postExistenceValidator.TryGetPostFileNameFromRepositoryAsync(post_name);
             if (repositoryPostName is null)
             {
@@ -40,7 +52,6 @@ namespace BlogComments.Functions
 
             var postName = repositoryPostName;
 
-            var form = await req.ReadFormAsync();
             if (!Ulid.TryParse(thread_id, out var threadId)
                 || !Ulid.TryParse(comment_id, out var commentId))
             {

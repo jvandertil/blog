@@ -1,5 +1,7 @@
 param env string
 param location string = resourceGroup().location
+@secure()
+param turnstileSecretKey string
 
 var appName = 'jvandertilblog'
 var cloudFlareIps = json(loadTextContent('cloudflare-ips.txt')).result.ipv4_cidrs
@@ -218,6 +220,10 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
         {
           name: 'KeyVault__KeyName'
           value: 'jvandertil-blog-bot'
+        }
+        {
+          name: 'Turnstile__SecretKey'
+          value: turnstileSecretKey
         }
       ]
 

@@ -40,7 +40,7 @@
 
             <div id="comment-validation-alert" class="alert alert-danger fade show d-none" aria-hidden="true">
                 <p><b>OOPS:</b> Your comment has not been submitted. </p>
-                Looks like you have some validation errors. Please fill in all fields.
+                Please complete the security check and fill in all fields.
             </div>
 
             <div class="post-add-comment-form">
@@ -57,13 +57,17 @@
                         <textarea id="content" name="Contents" placeholder="Join the discussion" rows="3" required></textarea>
                     </div>
 
+                    {{ with site.Params.turnstileSiteKey }}
+                    <div class="turnstile-widget" data-turnstile-sitekey="{{ . }}"></div>
+                    {{ end }}
+
                     <button id="submitComment" type="submit">
                         Submit comment
                         <span class="submitSpinner spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     </button>
                 </form>
                 <script type="text/javascript">
-                    new CommentForm.CommentForm("comment-form");
+                    document.addEventListener("DOMContentLoaded", () => new CommentForm.CommentForm("comment-form"));
                 </script>
             </div>
 

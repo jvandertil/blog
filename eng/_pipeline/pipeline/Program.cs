@@ -21,6 +21,9 @@ namespace Vandertil.Blog.Pipeline
         [Parameter("Deploy only - The zone id this blog is hosted on in CloudFlare.", Name = "CloudflareZoneId")]
         public string? CloudFlareZoneId { get; set; }
 
+        [Parameter("Deploy only - The Cloudflare Turnstile secret key.", Name = "TurnstileSecretKey")]
+        public string? TurnstileSecretKey { get; set; }
+
         public static int Main() => Execute<Program>(x => x.Build);
 
         private AbsolutePath ArtifactsDirectory => (this as IProvideArtifactsDirectory).ArtifactsDirectory;
@@ -54,6 +57,7 @@ namespace Vandertil.Blog.Pipeline
             .Requires(() => Environment)
             .Requires(() => CloudFlareApiKey)
             .Requires(() => CloudFlareZoneId)
+            .Requires(() => TurnstileSecretKey)
             .Requires(() => BlogArtifact.FileExists())
             .Requires(() => CommentFunctionArtifact.FileExists())
             .Executes(async () =>
@@ -135,6 +139,7 @@ namespace Vandertil.Blog.Pipeline
             {
                 env = Environment!,
                 location = AzureLocation,
+                turnstileSecretKey = TurnstileSecretKey!,
             });
 
             AzCli.Az($"functionapp cors add --resource-group {ResourceGroup} --name {deployment.FunctionAppName} --allowed-origins https://{CustomDomain}");

@@ -7,6 +7,7 @@
     "GitHub__Username": "jvandertil",
     "GitHub__Repository": "blog",
     "GitHub__EnablePullRequestCreation": false,
+    "Turnstile__SecretKey": "1x0000000000000000000000000000000AA",
     "KeyVault__Url": "https://jvandertil-blog-t-kv.vault.azure.net/",
     "KeyVault__KeyName": "jvandertil-blog-bot"
   },

@@ -20,6 +20,11 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
 
+        services.AddHttpClient<ITurnstileValidator, CloudflareTurnstileValidator>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
+
         services.AddSingleton<GitHubClientFactory>();
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<CommentRepository>();
@@ -62,6 +67,11 @@ var host = new HostBuilder()
                 return !string.IsNullOrWhiteSpace(opts.KeyName)
                     && opts.Url is not null;
             });
+
+        services.AddOptions<TurnstileOptions>()
+            .Bind(builder.Configuration.GetSection("Turnstile"))
+            .Validate(opts => !string.IsNullOrWhiteSpace(opts.SecretKey), "Turnstile:SecretKey must be configured.")
+            .ValidateOnStart();
 
         services.AddTransient<ModelBinder>();
         services.AddValidatorsFromAssemblyContaining<Program>();
