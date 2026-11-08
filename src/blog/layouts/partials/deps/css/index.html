@@ -1,6 +1,6 @@
 {{ partial "deps/css/prismjs" . }}
 
-{{ $style := resources.Get "css/main.scss" | css.Sass (dict "outputStyle" "compressed") | resources.Minify | resources.Fingerprint }}
+{{ $style := resources.Get "css/main.scss" | css.Sass (dict "outputStyle" "compressed" "transpiler" "dartsass") | resources.Minify | resources.Fingerprint }}
 <link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" />
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"

@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .navbar-darkmode {
     @extend .btn;
     @extend .btn-outline-light;
@@ -60,6 +62,6 @@
         @extend .bg-dark;
 
         $color: #212529;
-        border-color: lighten($color, 10%);
+        border-color: color.adjust($color, $lightness: 10%);
     }
 }
