@@ -29,10 +29,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - run: |
-          npm install -g sass
-        shell: pwsh
-        name: Install SASS
+      - name: Install Dart Sass
+        run: sudo snap install dart-sass
       
       - run: .\build.ps1 --target Clean Build
         shell: pwsh
