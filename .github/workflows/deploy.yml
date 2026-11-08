@@ -54,13 +54,6 @@ jobs:
         with: 
           inlineScript: |
             tdnf install -y dotnet-sdk-10.0
-            # Install dependencies for .NET installation script
-            #tdnf install -y gawk
-            #tdnf install -y tar
-            #tdnf install -y perl
-
-            # Install dependencies for .NET
-            #tdnf install -y icu
 
             # Install additional tool dependencies
             tdnf install -y azcopy
