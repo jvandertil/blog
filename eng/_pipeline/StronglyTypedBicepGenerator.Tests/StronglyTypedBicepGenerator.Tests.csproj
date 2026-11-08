@@ -12,17 +12,14 @@
   <ItemGroup>
     <ProjectReference Include="..\StronglyTypedBicepGenerator\StronglyTypedBicepGenerator.csproj" />
     
-    <PackageReference Include="Fallout.Common" Version="10.4.0" />
+    <PackageReference Include="Fallout.Common" Version="10.5.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.9.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
 
     <PackageReference Include="Humanizer" Version="3.0.10" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
-    <PackageReference Include="Verify.MSTest" Version="33.3.0" />
+    <PackageReference Include="Verify.MSTest" Version="33.3.4" />
     <PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
-
-    <!-- Vulnerable transitive dependencies -->
-    <PackageReference Include="NuGet.Packaging" Version="7.9.0" />
 </ItemGroup>
 
   <PropertyGroup>
