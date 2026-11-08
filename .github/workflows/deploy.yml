@@ -65,6 +65,7 @@ jobs:
             # Install additional tool dependencies
             tdnf install -y azcopy
 
+            unset XDG_RUNTIME_DIR
             chmod +x $GITHUB_WORKSPACE/build.sh
             $GITHUB_WORKSPACE/build.sh Deploy --environment prd --cloudflare-api-key "$CLOUDFLARE_API_KEY" --cloudflare-zone-id "$CLOUDFLARE_ZONE_ID" --turnstile-secret-key "$TURNSTILE_SECRET_KEY"
 
