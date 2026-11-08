@@ -53,13 +53,14 @@ jobs:
           TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
         with: 
           inlineScript: |
+            tdnf install -y dotnet-sdk-10.0
             # Install dependencies for .NET installation script
-            tdnf install -y gawk
-            tdnf install -y tar
-            tdnf install -y perl
+            #tdnf install -y gawk
+            #tdnf install -y tar
+            #tdnf install -y perl
 
             # Install dependencies for .NET
-            tdnf install -y icu
+            #tdnf install -y icu
 
             # Install additional tool dependencies
             tdnf install -y azcopy
