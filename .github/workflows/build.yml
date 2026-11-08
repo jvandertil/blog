@@ -28,6 +28,11 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v7
+
+      - run: |
+          npm install -g sass
+        shell: pwsh
+        name: Install SASS
       
       - run: .\build.ps1 --target Clean Build
         shell: pwsh
