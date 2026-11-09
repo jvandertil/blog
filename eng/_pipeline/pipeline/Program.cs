@@ -21,7 +21,7 @@ namespace Vandertil.Blog.Pipeline
         [Parameter("Deploy only - The zone id this blog is hosted on in CloudFlare.", Name = "CloudflareZoneId")]
         public string? CloudFlareZoneId { get; set; }
 
-        [Parameter("Deploy only - The Cloudflare Turnstile secret key.", Name = "TurnstileSecretKey")]
+        [Secret, Parameter("Deploy only - The Cloudflare Turnstile secret key.", Name = "TurnstileSecretKey")]
         public string? TurnstileSecretKey { get; set; }
 
         public static int Main() => Execute<Program>(x => x.Build);
