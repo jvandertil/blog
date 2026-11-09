@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.IO.Compression;
 using Fallout.Common;
 using Fallout.Common.IO;
 using Fallout.Common.Tools.DotNet;
@@ -46,7 +49,21 @@ namespace Vandertil.Blog.Pipeline
                     .EnableSelfContained()
                     .SetRuntime("linux-x64"));
 
-                artifactsPath.CompressTo(ArtifactsDirectory / "blog-comments-function.zip");
+                var hostJsonPath = artifactsPath / "host.json";
+                if (OperatingSystem.IsLinux())
+                {
+                    // Flex Consumption reads files directly from the deployed package. Keep
+                    // host.json readable by the Functions host when ZIP metadata is applied.
+                    File.SetUnixFileMode(
+                        hostJsonPath,
+                        UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.GroupRead | UnixFileMode.OtherRead);
+                }
+
+                ZipFile.CreateFromDirectory(
+                    artifactsPath,
+                    ArtifactsDirectory / "blog-comments-function.zip",
+                    CompressionLevel.Optimal,
+                    includeBaseDirectory: false);
                 artifactsPath.DeleteDirectory();
             });
     }
