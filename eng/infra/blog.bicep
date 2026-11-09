@@ -225,10 +225,6 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
           name: 'Turnstile__SecretKey'
           value: turnstileSecretKey
         }
-        {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
-        }
       ]
 
       minTlsVersion: '1.2'
