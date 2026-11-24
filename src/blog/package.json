@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "bootstrap": "5.3.8",
+    "bootstrap": "5.3.9",
     "@fortawesome/fontawesome-free": "7.3.1",
     "prismjs": "1.30.0",
     "prism-themes": "1.9.0"
