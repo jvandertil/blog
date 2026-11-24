@@ -53,7 +53,7 @@ jobs:
           TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
         with: 
           inlineScript: |
-            tdnf install -y dotnet-sdk-10.0
+            tdnf install -y dotnet-sdk-11.0
 
             # Install additional tool dependencies
             tdnf install -y azcopy
