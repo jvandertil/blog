@@ -58,7 +58,7 @@
                     </div>
 
                     {{ with site.Params.turnstileSiteKey }}
-                    <div class="turnstile-widget" data-turnstile-sitekey="{{ . }}"></div>
+                    <div class="turnstile-widget" data-turnstile-sitekey="{{ . }}" data-action="comment"></div>
                     {{ end }}
 
                     <button id="submitComment" type="submit">

@@ -5,6 +5,6 @@ namespace BlogComments.Functions.Validation
 {
     public interface ITurnstileValidator
     {
-        Task<bool> IsValidAsync(string? token, CancellationToken cancellationToken = default);
+        Task<bool> IsValidAsync(string? token, string expectedAction, CancellationToken cancellationToken = default);
     }
 }

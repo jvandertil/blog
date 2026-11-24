@@ -1,6 +1,6 @@
 namespace CommentForm {
     interface TurnstileApi {
-        render(element: HTMLElement, options: { sitekey: string }): string;
+        render(element: HTMLElement, options: { sitekey: string; action: string }): string;
         reset(widgetId: string): void;
     }
 
@@ -29,7 +29,10 @@ namespace CommentForm {
             if (this.turnstileWidgetId == null) {
                 let sitekey = widget.dataset.turnstileSitekey;
                 if (sitekey != null) {
-                    this.turnstileWidgetId = turnstile.render(widget, { sitekey });
+                    let action = widget.dataset.action;
+                    if (action != null) {
+                        this.turnstileWidgetId = turnstile.render(widget, { sitekey, action });
+                    }
                 }
             } else {
                 turnstile.reset(this.turnstileWidgetId);

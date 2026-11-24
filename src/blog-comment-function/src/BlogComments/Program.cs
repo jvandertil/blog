@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
@@ -71,6 +72,7 @@ var host = new HostBuilder()
         services.AddOptions<TurnstileOptions>()
             .Bind(builder.Configuration.GetSection("Turnstile"))
             .Validate(opts => !string.IsNullOrWhiteSpace(opts.SecretKey), "Turnstile:SecretKey must be configured.")
+            .Validate(opts => opts.ExpectedHostnames.Length > 0 && opts.ExpectedHostnames.All(hostname => !string.IsNullOrWhiteSpace(hostname)), "Turnstile:ExpectedHostnames must contain at least one hostname.")
             .ValidateOnStart();
 
         services.AddTransient<ModelBinder>();

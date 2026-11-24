@@ -225,6 +225,10 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
           name: 'Turnstile__SecretKey'
           value: turnstileSecretKey
         }
+        {
+          name: 'Turnstile__ExpectedHostnames__0'
+          value: env == 'prd' ? 'www.jvandertil.nl' : 'tst.jvandertil.nl'
+        }
       ]
 
       minTlsVersion: '1.2'

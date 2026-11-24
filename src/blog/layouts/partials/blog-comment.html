@@ -40,7 +40,7 @@
                 </div>
 
                 {{ with site.Params.turnstileSiteKey }}
-                <div class="turnstile-widget" data-turnstile-sitekey="{{ . }}"></div>
+                <div class="turnstile-widget" data-turnstile-sitekey="{{ . }}" data-action="reply"></div>
                 {{ end }}
 
                 <button type="submit">

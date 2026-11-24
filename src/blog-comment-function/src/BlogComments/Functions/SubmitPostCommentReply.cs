@@ -36,7 +36,7 @@ namespace BlogComments.Functions
             [FromRoute] string comment_id)
         {
             var form = await req.ReadFormAsync();
-            if (!await _turnstileValidator.IsValidAsync(form["cf-turnstile-response"], req.HttpContext.RequestAborted))
+            if (!await _turnstileValidator.IsValidAsync(form["cf-turnstile-response"], "reply", req.HttpContext.RequestAborted))
             {
                 return new BadRequestObjectResult(new[]
                 {
