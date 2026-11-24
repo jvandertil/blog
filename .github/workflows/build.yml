@@ -20,14 +20,14 @@ jobs:
       checks: write
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
       # Install the .NET Core workload
       - name: Install .NET Core
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-
-      - name: Checkout
-        uses: actions/checkout@v7
 
       - name: Install Dart Sass
         run: sudo snap install dart-sass
